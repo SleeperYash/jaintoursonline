@@ -2,7 +2,7 @@ import SiteLayout from "@/components/site/SiteLayout";
 import HeroLuxe from "@/components/site/home/HeroLuxe";
 import FeaturedDestinations from "@/components/site/home/FeaturedDestinations";
 import HowItWorks from "@/components/site/home/HowItWorks";
-import ReviewsSlider from "@/components/site/home/ReviewsSlider";
+import ReviewsCardStack from "@/components/site/home/ReviewsCardStack";
 import InquiryBand from "@/components/site/InquiryBand";
 import { useSeo } from "@/hooks/useSeo";
 
@@ -19,7 +19,7 @@ const Index = () => {
       <HeroLuxe />
       <FeaturedDestinations />
       <HowItWorks />
-      <ReviewsSlider />
+      <ReviewsCardStack />
       <InquiryBand />
     </SiteLayout>
   );
