@@ -1,0 +1,94 @@
+import { Link } from "react-router-dom";
+import { MapPin, Phone, Mail, Clock, Star } from "lucide-react";
+import { BRAND, waLink } from "@/lib/brand";
+
+const Footer = () => {
+  return (
+    <footer className="border-t border-border/60 bg-ink mt-32">
+      <div className="container py-20 grid gap-12 md:grid-cols-2 lg:grid-cols-4">
+        <div>
+          <Link to="/" className="block">
+            <span className="font-serif text-2xl text-foreground">
+              Jain <span className="text-gold italic text-xl">Tours & Travels</span>
+            </span>
+            <p className="tracking-luxe uppercase text-muted-foreground mt-1 text-xs">
+              · Mumbai
+            </p>
+          </Link>
+          <p className="mt-6 text-sm text-muted-foreground leading-relaxed font-light">
+            Curating extraordinary journeys for discerning travellers across India and the world.
+          </p>
+          <div className="mt-6 flex items-center gap-2 text-gold">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Star key={i} className="w-4 h-4 fill-current" />
+            ))}
+            <span className="text-xs text-muted-foreground ml-2">
+              {BRAND.rating} · {BRAND.reviewCount} reviews
+            </span>
+          </div>
+        </div>
+
+        <div>
+          <h4 className="text-xs uppercase tracking-luxe text-gold mb-6">Explore</h4>
+          <ul className="space-y-3 text-sm text-muted-foreground">
+            
+            <li><Link to="/destinations" className="hover:text-foreground transition">Destinations</Link></li>
+            <li><Link to="/services" className="hover:text-foreground transition">Services</Link></li>
+            <li><Link to="/reviews" className="hover:text-foreground transition">Reviews</Link></li>
+            <li><Link to="/about" className="hover:text-foreground transition">About</Link></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 className="text-xs uppercase tracking-luxe text-gold mb-6">Services</h4>
+          <ul className="space-y-3 text-sm text-muted-foreground">
+            <li>International & Domestic Holidays</li>
+            <li>Honeymoon Packages</li>
+            <li>Cruise Bookings</li>
+            <li>Corporate Travel</li>
+            <li>Visa & Travel Insurance</li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 className="text-xs uppercase tracking-luxe text-gold mb-6">Reach Us</h4>
+          <ul className="space-y-4 text-sm text-muted-foreground">
+            <li className="flex gap-3">
+              <MapPin className="w-4 h-4 mt-0.5 text-gold shrink-0" />
+              <span className="leading-relaxed">{BRAND.address}</span>
+            </li>
+            <li className="flex gap-3">
+              <Phone className="w-4 h-4 mt-0.5 text-gold shrink-0" />
+              <a href={`tel:${BRAND.phoneDigits}`} className="hover:text-foreground">{BRAND.phoneDisplay}</a>
+            </li>
+            <li className="flex gap-3">
+              <Mail className="w-4 h-4 mt-0.5 text-gold shrink-0" />
+              <a href={`mailto:${BRAND.email}`} className="hover:text-foreground">{BRAND.email}</a>
+            </li>
+            <li className="flex gap-3">
+              <Clock className="w-4 h-4 mt-0.5 text-gold shrink-0" />
+              <span>{BRAND.hours}</span>
+            </li>
+          </ul>
+          <a
+            href={waLink()}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-6 inline-flex items-center px-5 py-2.5 border border-gold/50 text-gold text-[11px] uppercase tracking-luxe hover:bg-gold hover:text-primary-foreground transition"
+          >
+            WhatsApp Us
+          </a>
+        </div>
+      </div>
+
+      <div className="border-t border-border/60">
+        <div className="container py-6 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-muted-foreground">
+          <p>© {new Date().getFullYear()} {BRAND.name}. All rights reserved.</p>
+          <p className="tracking-wide">Crafted with care in Mumbai · India</p>
+        </div>
+      </div>
+    </footer>
+  );
+};
+
+export default Footer;
