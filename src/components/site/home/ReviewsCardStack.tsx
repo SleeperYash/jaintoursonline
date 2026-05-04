@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Star, MapPin, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 import { clientReviews } from "@/data/clientPhotos";
-import { GoogleRatingBadge, VerifiedTag } from "./reviews/GoogleBadge";
+import { GoogleRatingBadge, VerifiedTag } from "@/components/site/reviews/GoogleBadge";
 import { useReveal } from "@/hooks/useReveal";
 
 const AUTO_MS = 6000;
