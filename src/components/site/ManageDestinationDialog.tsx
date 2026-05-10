@@ -23,12 +23,15 @@ import {
   GripVertical,
   ImagePlus,
   FileText,
+  MessageSquareQuote,
 } from "lucide-react";
 import { useAdminAuth, fileToBase64, adminPublicUrl } from "@/hooks/useAdminAuth";
 import {
   useDestinationImages,
   type DestinationImage,
 } from "@/hooks/useDestinationImages";
+import { useClientReviews, type DbClientReview } from "@/hooks/useClientReviews";
+import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { destinations as ALL_DESTINATIONS } from "@/data/destinations";
 
