@@ -41,7 +41,14 @@ export const useAdminAuth = () => {
         body: JSON.stringify({ action, ...payload }),
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data?.error ?? `Request failed (${res.status})`);
+      if (!res.ok) {
+        if (res.status === 401) {
+          sessionStorage.removeItem(ADMIN_KEY);
+          setPwd("");
+          setAuthed(false);
+        }
+        throw new Error(data?.error ?? `Request failed (${res.status})`);
+      }
       return data;
     },
     [pwd],
