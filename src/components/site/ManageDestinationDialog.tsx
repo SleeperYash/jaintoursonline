@@ -30,6 +30,7 @@ import {
   type DestinationImage,
 } from "@/hooks/useDestinationImages";
 import { cn } from "@/lib/utils";
+import { destinations as ALL_DESTINATIONS } from "@/data/destinations";
 
 type Itinerary = {
   id: string;
@@ -39,15 +40,31 @@ type Itinerary = {
 };
 
 type Props = {
-  destinationSlug: string;
-  destinationName: string;
+  destinationSlug?: string;
+  destinationName?: string;
+  allowSwitcher?: boolean;
+  triggerClassName?: string;
+  triggerLabel?: string;
 };
 
 const ACCEPT_IMG = "image/jpeg,image/jpg,image/png,image/webp,image/avif";
 
-const ManageDestinationDialog = ({ destinationSlug, destinationName }: Props) => {
+const ManageDestinationDialog = ({
+  destinationSlug: propSlug,
+  destinationName: propName,
+  allowSwitcher = false,
+  triggerClassName,
+  triggerLabel,
+}: Props) => {
   const { toast } = useToast();
   const { pwd, setPwd, authed, callAdmin, unlock } = useAdminAuth();
+  const initialSlug = propSlug ?? ALL_DESTINATIONS[0]?.slug ?? "";
+  const initialName =
+    propName ?? ALL_DESTINATIONS.find((x) => x.slug === initialSlug)?.name ?? "";
+  const [currentSlug, setCurrentSlug] = useState(initialSlug);
+  const [currentName, setCurrentName] = useState(initialName);
+  const destinationSlug = currentSlug;
+  const destinationName = currentName;
   const { images, refetch: refetchImages } = useDestinationImages(destinationSlug);
 
   const [open, setOpen] = useState(false);
