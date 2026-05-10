@@ -757,7 +757,7 @@ const ManageDestinationDialog = ({
                         maxLength={40}
                       />
                     </div>
-                    <div>
+                    <div className="md:col-span-1">
                       <Label className="text-xs uppercase tracking-luxe text-foreground/70">
                         Photo (optional)
                       </Label>
@@ -765,11 +765,62 @@ const ManageDestinationDialog = ({
                         id="manage-review-input"
                         type="file"
                         accept={ACCEPT_IMG}
-                        onChange={(e) => setRevFile(e.target.files?.[0] ?? null)}
+                        onChange={(e) => {
+                          const f = e.target.files?.[0] ?? null;
+                          e.target.value = "";
+                          if (f && f.size > 10 * 1024 * 1024) {
+                            toast({ title: "Image too large (max 10MB)", variant: "destructive" });
+                            return;
+                          }
+                          setRevFile(f);
+                          if (f) setRevShowEditor(true);
+                        }}
                         className="mt-2"
                       />
                     </div>
                   </div>
+
+                  {revPreview && (
+                    <div className="flex items-start gap-3 border border-border/60 rounded-md p-3">
+                      <img
+                        src={revPreview}
+                        alt="Preview"
+                        className="w-20 h-20 object-cover rounded border border-border/60 shrink-0"
+                      />
+                      <div className="flex-1 space-y-1 min-w-0">
+                        <p className="text-xs uppercase tracking-luxe text-foreground/60">
+                          Photo preview
+                        </p>
+                        <p className="text-xs text-foreground/80 truncate">
+                          {revFile?.name} · {((revFile?.size ?? 0) / 1024).toFixed(0)} KB
+                        </p>
+                        <div className="flex gap-2 pt-1">
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setRevShowEditor(true)}
+                          >
+                            <CropIcon className="w-3 h-3 mr-2" /> Crop & resize
+                          </Button>
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              setRevFile(null);
+                              const input = document.getElementById(
+                                "manage-review-input",
+                              ) as HTMLInputElement | null;
+                              if (input) input.value = "";
+                            }}
+                          >
+                            <X className="w-3 h-3 mr-2" /> Clear
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   <Button
                     type="submit"
