@@ -1,5 +1,6 @@
 import SiteLayout from "@/components/site/SiteLayout";
 import HeroLuxe from "@/components/site/home/HeroLuxe";
+import HeroTrustBadges from "@/components/site/home/HeroTrustBadges";
 import FeaturedDestinations from "@/components/site/home/FeaturedDestinations";
 import HowItWorks from "@/components/site/home/HowItWorks";
 import ReviewsCardStack from "@/components/site/home/ReviewsCardStack";
@@ -17,6 +18,7 @@ const Index = () => {
   return (
     <SiteLayout>
       <HeroLuxe />
+      <HeroTrustBadges />
       <FeaturedDestinations />
       <HowItWorks />
       <ReviewsCardStack />
