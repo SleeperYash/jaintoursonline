@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Star, MapPin, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 import { clientReviews } from "@/data/clientPhotos";
 import { GoogleRatingBadge, VerifiedTag } from "@/components/site/reviews/GoogleBadge";
 import { useReveal } from "@/hooks/useReveal";
+import { useClientReviews } from "@/hooks/useClientReviews";
 
 const AUTO_MS = 6000;
 
@@ -11,7 +12,11 @@ const ReviewsCardStack = () => {
   const [i, setI] = useState(0);
   const [paused, setPaused] = useState(false);
   const touchX = useRef<number | null>(null);
-  const items = clientReviews;
+  const { display: dbReviews } = useClientReviews();
+  const items = useMemo(
+    () => (dbReviews.length > 0 ? dbReviews : clientReviews),
+    [dbReviews],
+  );
   const n = items.length;
 
   useEffect(() => {
@@ -92,12 +97,22 @@ const ReviewsCardStack = () => {
                 }}
               >
                 <div className="relative h-full rounded-2xl overflow-hidden shadow-luxe border border-gold/20 bg-card group">
-                  <img
-                    src={r.image}
-                    alt={`${r.name} in ${r.destination}`}
-                    loading={idx < 3 ? "eager" : "lazy"}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2000ms] ease-out group-hover:scale-105"
-                  />
+                  {r.image ? (
+                    <img
+                      src={r.image}
+                      alt={`${r.name} in ${r.destination}`}
+                      loading={idx < 3 ? "eager" : "lazy"}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2000ms] ease-out group-hover:scale-105"
+                    />
+                  ) : (
+                    <div
+                      className="absolute inset-0"
+                      style={{
+                        background:
+                          "linear-gradient(135deg, hsl(var(--gold) / 0.18) 0%, hsl(220 50% 10%) 60%)",
+                      }}
+                    />
+                  )}
                   {/* Gradient overlay */}
                   <div
                     className="absolute inset-0"

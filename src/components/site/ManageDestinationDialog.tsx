@@ -23,12 +23,15 @@ import {
   GripVertical,
   ImagePlus,
   FileText,
+  MessageSquareQuote,
 } from "lucide-react";
 import { useAdminAuth, fileToBase64, adminPublicUrl } from "@/hooks/useAdminAuth";
 import {
   useDestinationImages,
   type DestinationImage,
 } from "@/hooks/useDestinationImages";
+import { useClientReviews, type DbClientReview } from "@/hooks/useClientReviews";
+import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { destinations as ALL_DESTINATIONS } from "@/data/destinations";
 
@@ -84,6 +87,16 @@ const ManageDestinationDialog = ({
   const [itinFile, setItinFile] = useState<File | null>(null);
   const [uploadingItin, setUploadingItin] = useState(false);
 
+  // Reviews
+  const { reviews, refetch: refetchReviews } = useClientReviews();
+  const [revName, setRevName] = useState("");
+  const [revDestination, setRevDestination] = useState("");
+  const [revText, setRevText] = useState("");
+  const [revRating, setRevRating] = useState(5);
+  const [revDate, setRevDate] = useState("");
+  const [revFile, setRevFile] = useState<File | null>(null);
+  const [savingReview, setSavingReview] = useState(false);
+
   const fetchItineraries = useCallback(async () => {
     const { data } = await supabase
       .from("itineraries")
@@ -96,6 +109,65 @@ const ManageDestinationDialog = ({
   useEffect(() => {
     if (open && authed) fetchItineraries();
   }, [open, authed, fetchItineraries]);
+
+  const handleSubmitReview = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!revName.trim() || !revText.trim()) {
+      toast({ title: "Add name and review text", variant: "destructive" });
+      return;
+    }
+    setSavingReview(true);
+    try {
+      const payload: Record<string, unknown> = {
+        name: revName.trim(),
+        destination: revDestination.trim() || null,
+        text: revText.trim(),
+        rating: revRating,
+        date_label: revDate.trim() || null,
+      };
+      if (revFile) {
+        if (!revFile.type.startsWith("image/")) {
+          toast({ title: "Image must be JPG/PNG/WEBP/AVIF", variant: "destructive" });
+          setSavingReview(false);
+          return;
+        }
+        if (revFile.size > 10 * 1024 * 1024) {
+          toast({ title: "Image too large (max 10MB)", variant: "destructive" });
+          setSavingReview(false);
+          return;
+        }
+        payload.file_base64 = await fileToBase64(revFile);
+        payload.file_name = revFile.name;
+        payload.content_type = revFile.type;
+      }
+      await callAdmin("review_create", payload);
+      toast({ title: "Review added" });
+      setRevName("");
+      setRevDestination("");
+      setRevText("");
+      setRevRating(5);
+      setRevDate("");
+      setRevFile(null);
+      const input = document.getElementById("manage-review-input") as HTMLInputElement | null;
+      if (input) input.value = "";
+      await refetchReviews();
+    } catch (err) {
+      toast({ title: "Failed", description: (err as Error).message, variant: "destructive" });
+    } finally {
+      setSavingReview(false);
+    }
+  };
+
+  const handleDeleteReview = async (r: DbClientReview) => {
+    if (!confirm(`Delete review by "${r.name}"?`)) return;
+    try {
+      await callAdmin("review_delete", { id: r.id });
+      toast({ title: "Deleted" });
+      await refetchReviews();
+    } catch (err) {
+      toast({ title: "Failed", description: (err as Error).message, variant: "destructive" });
+    }
+  };
 
   const handleUnlock = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -380,12 +452,15 @@ const ManageDestinationDialog = ({
             </form>
           ) : (
             <Tabs defaultValue="itinerary" className="mt-2">
-              <TabsList className="grid w-full grid-cols-2">
+              <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="itinerary" className="text-xs uppercase tracking-luxe">
                   <FileText className="w-4 h-4 mr-2" /> Itinerary
                 </TabsTrigger>
                 <TabsTrigger value="images" className="text-xs uppercase tracking-luxe">
                   <ImagePlus className="w-4 h-4 mr-2" /> Images
+                </TabsTrigger>
+                <TabsTrigger value="reviews" className="text-xs uppercase tracking-luxe">
+                  <MessageSquareQuote className="w-4 h-4 mr-2" /> Reviews
                 </TabsTrigger>
               </TabsList>
 
@@ -580,6 +655,172 @@ const ManageDestinationDialog = ({
                               <Trash2 className="w-3 h-3" />
                             </button>
                           </div>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </TabsContent>
+
+              {/* REVIEWS TAB */}
+              <TabsContent value="reviews" className="mt-4 space-y-6">
+                <form
+                  onSubmit={handleSubmitReview}
+                  className="space-y-4 border border-border/60 p-4 md:p-5 rounded-md"
+                >
+                  <p className="text-xs uppercase tracking-luxe text-gold">Add a review</p>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                      <Label className="text-xs uppercase tracking-luxe text-foreground/70">
+                        Guest name
+                      </Label>
+                      <Input
+                        value={revName}
+                        onChange={(e) => setRevName(e.target.value)}
+                        placeholder="Priya Mehta"
+                        className="mt-2"
+                        maxLength={80}
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-xs uppercase tracking-luxe text-foreground/70">
+                        Destination (optional)
+                      </Label>
+                      <Input
+                        value={revDestination}
+                        onChange={(e) => setRevDestination(e.target.value)}
+                        placeholder="Bali, Indonesia"
+                        className="mt-2"
+                        maxLength={120}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label className="text-xs uppercase tracking-luxe text-foreground/70">
+                      Review
+                    </Label>
+                    <Textarea
+                      value={revText}
+                      onChange={(e) => setRevText(e.target.value)}
+                      placeholder="What did they love about the trip?"
+                      className="mt-2 min-h-[100px]"
+                      maxLength={800}
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div>
+                      <Label className="text-xs uppercase tracking-luxe text-foreground/70">
+                        Rating
+                      </Label>
+                      <select
+                        value={revRating}
+                        onChange={(e) => setRevRating(Number(e.target.value))}
+                        className="mt-2 w-full bg-background border border-border/60 rounded-md px-3 py-2 text-sm text-foreground focus:outline-none focus:border-gold"
+                      >
+                        {[5, 4, 3, 2, 1].map((n) => (
+                          <option key={n} value={n}>
+                            {n} ★
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <Label className="text-xs uppercase tracking-luxe text-foreground/70">
+                        Date label
+                      </Label>
+                      <Input
+                        value={revDate}
+                        onChange={(e) => setRevDate(e.target.value)}
+                        placeholder="2 months ago"
+                        className="mt-2"
+                        maxLength={40}
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-xs uppercase tracking-luxe text-foreground/70">
+                        Photo (optional)
+                      </Label>
+                      <Input
+                        id="manage-review-input"
+                        type="file"
+                        accept={ACCEPT_IMG}
+                        onChange={(e) => setRevFile(e.target.files?.[0] ?? null)}
+                        className="mt-2"
+                      />
+                    </div>
+                  </div>
+
+                  <Button
+                    type="submit"
+                    disabled={savingReview}
+                    className="bg-gold text-primary-foreground hover:bg-gold/90"
+                  >
+                    {savingReview ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" /> Publishing…
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="w-4 h-4 mr-2" /> Publish review
+                      </>
+                    )}
+                  </Button>
+                </form>
+
+                <div>
+                  <p className="text-xs uppercase tracking-luxe text-gold mb-3">
+                    Published ({reviews.length})
+                  </p>
+                  {reviews.length === 0 ? (
+                    <p className="text-sm text-muted-foreground font-light">
+                      No reviews yet. Add one above.
+                    </p>
+                  ) : (
+                    <ul className="space-y-2">
+                      {reviews.map((r) => (
+                        <li
+                          key={r.id}
+                          className="flex items-start gap-3 border border-border/60 p-3 rounded-md"
+                        >
+                          {r.image_path ? (
+                            <img
+                              src={adminPublicUrl(r.image_path)}
+                              alt=""
+                              className="w-14 h-14 rounded object-cover shrink-0 border border-border/60"
+                            />
+                          ) : (
+                            <div className="w-14 h-14 rounded bg-gold/10 border border-gold/30 flex items-center justify-center text-gold text-xs shrink-0">
+                              {r.name[0]?.toUpperCase()}
+                            </div>
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <p className="text-sm text-foreground font-medium truncate">
+                                {r.name}
+                              </p>
+                              <div className="flex gap-0.5">
+                                {Array.from({ length: r.rating }).map((_, k) => (
+                                  <Star key={k} className="w-3 h-3 fill-gold text-gold" />
+                                ))}
+                              </div>
+                            </div>
+                            {r.destination && (
+                              <p className="text-[10px] uppercase tracking-luxe text-muted-foreground">
+                                {r.destination}
+                              </p>
+                            )}
+                            <p className="text-xs text-foreground/80 mt-1 line-clamp-2">{r.text}</p>
+                          </div>
+                          <button
+                            onClick={() => handleDeleteReview(r)}
+                            className="p-2 text-foreground/60 hover:text-destructive shrink-0"
+                            title="Delete"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
                         </li>
                       ))}
                     </ul>

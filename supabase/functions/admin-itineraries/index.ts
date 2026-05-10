@@ -305,6 +305,69 @@ Deno.serve(async (req) => {
       return json({ ok: true });
     }
 
+    // ---------- CLIENT REVIEWS ----------
+    if (action === "review_create") {
+      const { name, destination, text, rating, date_label, file_base64, file_name, content_type } = body ?? {};
+      if (!name || !text) return json({ error: "Missing name or text" }, 400);
+      let image_path: string | null = null;
+      if (file_base64 && file_name && content_type) {
+        if (!ALLOWED_IMAGE_TYPES.has(String(content_type).toLowerCase())) {
+          return json({ error: "Only JPG, PNG, WEBP or AVIF images allowed" }, 400);
+        }
+        const bin = atob(file_base64);
+        const bytes = new Uint8Array(bin.length);
+        for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+        if (bytes.byteLength > 10 * 1024 * 1024) return json({ error: "Max 10MB per image" }, 400);
+        const safe = String(file_name).replace(/[^a-zA-Z0-9._-]/g, "_");
+        image_path = `reviews/${Date.now()}-${safe}`;
+        const { error: upErr } = await supabase.storage
+          .from("itineraries")
+          .upload(image_path, bytes, { contentType: String(content_type), upsert: false });
+        if (upErr) return json({ error: upErr.message }, 500);
+      }
+      const { data: maxRow } = await supabase
+        .from("client_reviews")
+        .select("position")
+        .order("position", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      const nextPos = (maxRow?.position ?? -1) + 1;
+      const { data, error: dbErr } = await supabase
+        .from("client_reviews")
+        .insert({
+          name: String(name).trim(),
+          destination: destination ? String(destination).trim() : null,
+          text: String(text).trim(),
+          rating: Math.max(1, Math.min(5, Number(rating) || 5)),
+          date_label: date_label ? String(date_label).trim() : null,
+          image_path,
+          position: nextPos,
+        })
+        .select()
+        .single();
+      if (dbErr) {
+        if (image_path) await supabase.storage.from("itineraries").remove([image_path]);
+        return json({ error: dbErr.message }, 500);
+      }
+      return json({ ok: true, review: data });
+    }
+
+    if (action === "review_delete") {
+      const { id } = body ?? {};
+      if (!id) return json({ error: "Missing id" }, 400);
+      const { data: existing } = await supabase
+        .from("client_reviews")
+        .select("image_path")
+        .eq("id", id)
+        .maybeSingle();
+      const { error: delErr } = await supabase.from("client_reviews").delete().eq("id", id);
+      if (delErr) return json({ error: delErr.message }, 500);
+      if (existing?.image_path) {
+        await supabase.storage.from("itineraries").remove([existing.image_path]);
+      }
+      return json({ ok: true });
+    }
+
     return json({ error: "Unknown action" }, 400);
   } catch (err) {
     return json({ error: err instanceof Error ? err.message : "Unknown error" }, 500);
