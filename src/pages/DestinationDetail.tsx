@@ -3,7 +3,7 @@ import { useState } from "react";
 import SiteLayout from "@/components/site/SiteLayout";
 import InquiryBand from "@/components/site/InquiryBand";
 import ItineraryViewer from "@/components/site/ItineraryViewer";
-import ManageDestinationDialog from "@/components/site/ManageDestinationDialog";
+
 import { findDestination } from "@/data/destinations";
 import { useSeo } from "@/hooks/useSeo";
 import { useReveal } from "@/hooks/useReveal";
@@ -73,7 +73,6 @@ const DestinationDetail = () => {
           >
             <ArrowLeft className="w-4 h-4" /> All destinations
           </Link>
-          <ManageDestinationDialog destinationSlug={d.slug} destinationName={d.name} />
         </div>
 
         <div className="grid lg:grid-cols-5 gap-8 lg:gap-12 items-center">
