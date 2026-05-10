@@ -452,12 +452,15 @@ const ManageDestinationDialog = ({
             </form>
           ) : (
             <Tabs defaultValue="itinerary" className="mt-2">
-              <TabsList className="grid w-full grid-cols-2">
+              <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="itinerary" className="text-xs uppercase tracking-luxe">
                   <FileText className="w-4 h-4 mr-2" /> Itinerary
                 </TabsTrigger>
                 <TabsTrigger value="images" className="text-xs uppercase tracking-luxe">
                   <ImagePlus className="w-4 h-4 mr-2" /> Images
+                </TabsTrigger>
+                <TabsTrigger value="reviews" className="text-xs uppercase tracking-luxe">
+                  <MessageSquareQuote className="w-4 h-4 mr-2" /> Reviews
                 </TabsTrigger>
               </TabsList>
 
