@@ -38,7 +38,7 @@ const HeroLuxe = () => {
         </h1>
 
         <p className="mt-8 max-w-2xl mx-auto text-base md:text-lg text-muted-foreground font-light leading-relaxed">
-          From Mumbai to the world — curated holidays, seamless bookings, and unforgettable journeys tailored just for you.
+          From Mumbai to the world — <br /> curated holidays, seamless bookings, and unforgettable journeys tailored just for you.
         </p>
 
         <div className="mt-12 flex flex-wrap items-center justify-center gap-4">
