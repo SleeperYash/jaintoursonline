@@ -87,6 +87,16 @@ const ManageDestinationDialog = ({
   const [itinFile, setItinFile] = useState<File | null>(null);
   const [uploadingItin, setUploadingItin] = useState(false);
 
+  // Reviews
+  const { reviews, refetch: refetchReviews } = useClientReviews();
+  const [revName, setRevName] = useState("");
+  const [revDestination, setRevDestination] = useState("");
+  const [revText, setRevText] = useState("");
+  const [revRating, setRevRating] = useState(5);
+  const [revDate, setRevDate] = useState("");
+  const [revFile, setRevFile] = useState<File | null>(null);
+  const [savingReview, setSavingReview] = useState(false);
+
   const fetchItineraries = useCallback(async () => {
     const { data } = await supabase
       .from("itineraries")
@@ -99,6 +109,65 @@ const ManageDestinationDialog = ({
   useEffect(() => {
     if (open && authed) fetchItineraries();
   }, [open, authed, fetchItineraries]);
+
+  const handleSubmitReview = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!revName.trim() || !revText.trim()) {
+      toast({ title: "Add name and review text", variant: "destructive" });
+      return;
+    }
+    setSavingReview(true);
+    try {
+      const payload: Record<string, unknown> = {
+        name: revName.trim(),
+        destination: revDestination.trim() || null,
+        text: revText.trim(),
+        rating: revRating,
+        date_label: revDate.trim() || null,
+      };
+      if (revFile) {
+        if (!revFile.type.startsWith("image/")) {
+          toast({ title: "Image must be JPG/PNG/WEBP/AVIF", variant: "destructive" });
+          setSavingReview(false);
+          return;
+        }
+        if (revFile.size > 10 * 1024 * 1024) {
+          toast({ title: "Image too large (max 10MB)", variant: "destructive" });
+          setSavingReview(false);
+          return;
+        }
+        payload.file_base64 = await fileToBase64(revFile);
+        payload.file_name = revFile.name;
+        payload.content_type = revFile.type;
+      }
+      await callAdmin("review_create", payload);
+      toast({ title: "Review added" });
+      setRevName("");
+      setRevDestination("");
+      setRevText("");
+      setRevRating(5);
+      setRevDate("");
+      setRevFile(null);
+      const input = document.getElementById("manage-review-input") as HTMLInputElement | null;
+      if (input) input.value = "";
+      await refetchReviews();
+    } catch (err) {
+      toast({ title: "Failed", description: (err as Error).message, variant: "destructive" });
+    } finally {
+      setSavingReview(false);
+    }
+  };
+
+  const handleDeleteReview = async (r: DbClientReview) => {
+    if (!confirm(`Delete review by "${r.name}"?`)) return;
+    try {
+      await callAdmin("review_delete", { id: r.id });
+      toast({ title: "Deleted" });
+      await refetchReviews();
+    } catch (err) {
+      toast({ title: "Failed", description: (err as Error).message, variant: "destructive" });
+    }
+  };
 
   const handleUnlock = async (e: React.FormEvent) => {
     e.preventDefault();
