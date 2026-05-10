@@ -24,6 +24,9 @@ import {
   ImagePlus,
   FileText,
   MessageSquareQuote,
+  Pencil,
+  Crop as CropIcon,
+  X,
 } from "lucide-react";
 import { useAdminAuth, fileToBase64, adminPublicUrl } from "@/hooks/useAdminAuth";
 import {
@@ -34,6 +37,8 @@ import { useClientReviews, type DbClientReview } from "@/hooks/useClientReviews"
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { destinations as ALL_DESTINATIONS } from "@/data/destinations";
+import EditReviewDialog from "./EditReviewDialog";
+import ReviewPhotoEditor from "./ReviewPhotoEditor";
 
 type Itinerary = {
   id: string;
@@ -95,7 +100,20 @@ const ManageDestinationDialog = ({
   const [revRating, setRevRating] = useState(5);
   const [revDate, setRevDate] = useState("");
   const [revFile, setRevFile] = useState<File | null>(null);
+  const [revPreview, setRevPreview] = useState<string | null>(null);
+  const [revShowEditor, setRevShowEditor] = useState(false);
   const [savingReview, setSavingReview] = useState(false);
+  const [editingReview, setEditingReview] = useState<DbClientReview | null>(null);
+
+  useEffect(() => {
+    if (!revFile) {
+      setRevPreview(null);
+      return;
+    }
+    const url = URL.createObjectURL(revFile);
+    setRevPreview(url);
+    return () => URL.revokeObjectURL(url);
+  }, [revFile]);
 
   const fetchItineraries = useCallback(async () => {
     const { data } = await supabase
@@ -739,7 +757,7 @@ const ManageDestinationDialog = ({
                         maxLength={40}
                       />
                     </div>
-                    <div>
+                    <div className="md:col-span-1">
                       <Label className="text-xs uppercase tracking-luxe text-foreground/70">
                         Photo (optional)
                       </Label>
@@ -747,11 +765,62 @@ const ManageDestinationDialog = ({
                         id="manage-review-input"
                         type="file"
                         accept={ACCEPT_IMG}
-                        onChange={(e) => setRevFile(e.target.files?.[0] ?? null)}
+                        onChange={(e) => {
+                          const f = e.target.files?.[0] ?? null;
+                          e.target.value = "";
+                          if (f && f.size > 10 * 1024 * 1024) {
+                            toast({ title: "Image too large (max 10MB)", variant: "destructive" });
+                            return;
+                          }
+                          setRevFile(f);
+                          if (f) setRevShowEditor(true);
+                        }}
                         className="mt-2"
                       />
                     </div>
                   </div>
+
+                  {revPreview && (
+                    <div className="flex items-start gap-3 border border-border/60 rounded-md p-3">
+                      <img
+                        src={revPreview}
+                        alt="Preview"
+                        className="w-20 h-20 object-cover rounded border border-border/60 shrink-0"
+                      />
+                      <div className="flex-1 space-y-1 min-w-0">
+                        <p className="text-xs uppercase tracking-luxe text-foreground/60">
+                          Photo preview
+                        </p>
+                        <p className="text-xs text-foreground/80 truncate">
+                          {revFile?.name} · {((revFile?.size ?? 0) / 1024).toFixed(0)} KB
+                        </p>
+                        <div className="flex gap-2 pt-1">
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setRevShowEditor(true)}
+                          >
+                            <CropIcon className="w-3 h-3 mr-2" /> Crop & resize
+                          </Button>
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              setRevFile(null);
+                              const input = document.getElementById(
+                                "manage-review-input",
+                              ) as HTMLInputElement | null;
+                              if (input) input.value = "";
+                            }}
+                          >
+                            <X className="w-3 h-3 mr-2" /> Clear
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   <Button
                     type="submit"
@@ -814,13 +883,22 @@ const ManageDestinationDialog = ({
                             )}
                             <p className="text-xs text-foreground/80 mt-1 line-clamp-2">{r.text}</p>
                           </div>
-                          <button
-                            onClick={() => handleDeleteReview(r)}
-                            className="p-2 text-foreground/60 hover:text-destructive shrink-0"
-                            title="Delete"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
+                          <div className="flex flex-col gap-1 shrink-0">
+                            <button
+                              onClick={() => setEditingReview(r)}
+                              className="p-2 text-foreground/60 hover:text-gold"
+                              title="Edit"
+                            >
+                              <Pencil className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteReview(r)}
+                              className="p-2 text-foreground/60 hover:text-destructive"
+                              title="Delete"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
                         </li>
                       ))}
                     </ul>
@@ -831,6 +909,33 @@ const ManageDestinationDialog = ({
           )}
         </DialogContent>
       </Dialog>
+
+      <Dialog open={revShowEditor && !!revFile} onOpenChange={(v) => !v && setRevShowEditor(false)}>
+        <DialogContent className="max-w-xl w-[95vw] bg-card border-border/60">
+          <DialogHeader>
+            <DialogTitle className="font-serif text-lg">Crop & resize photo</DialogTitle>
+            <DialogDescription className="text-muted-foreground font-light">
+              Drag to reposition, slide to zoom. Output is resized for fast loading.
+            </DialogDescription>
+          </DialogHeader>
+          {revFile && (
+            <ReviewPhotoEditor
+              file={revFile}
+              onCancel={() => setRevShowEditor(false)}
+              onConfirm={(f) => {
+                setRevFile(f);
+                setRevShowEditor(false);
+              }}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+
+      <EditReviewDialog
+        review={editingReview}
+        onClose={() => setEditingReview(null)}
+        onSaved={refetchReviews}
+      />
     </>
   );
 };
