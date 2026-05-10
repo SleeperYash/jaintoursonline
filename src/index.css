@@ -1,0 +1,212 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Jain Tours & Travels — Bright pastel design system.
+   Soft peach/cream backgrounds, dusty rose & sage accents, deep ink text.
+   All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Luxurious navy palette with gold accents */
+    --background: 220 50% 10%;           /* deep navy */
+    --foreground: 45 60% 92%;            /* warm ivory/cream */
+
+    --card: 220 45% 14%;                 /* lifted navy */
+    --card-foreground: 45 60% 92%;
+
+    --popover: 220 50% 12%;
+    --popover-foreground: 45 60% 92%;
+
+    --primary: 45 80% 60%;               /* rich gold */
+    --primary-foreground: 220 50% 10%;
+
+    --secondary: 220 40% 18%;            /* navy panel */
+    --secondary-foreground: 45 60% 92%;
+
+    --muted: 220 35% 20%;
+    --muted-foreground: 45 25% 78%;      /* readable soft cream */
+
+    --accent: 45 85% 65%;                /* warm gold */
+    --accent-foreground: 220 50% 10%;
+
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 35% 22%;
+    --input: 220 35% 18%;
+    --ring: 45 80% 60%;
+
+    --radius: 0.5rem;
+
+    /* Brand-specific tokens — gold luxury */
+    --gold: 45 85% 62%;                  /* signature gold */
+    --gold-deep: 38 75% 50%;              /* deep antique gold */
+    --emerald-deep: 220 45% 16%;          /* deep navy panel */
+    --ink: 220 50% 8%;
+
+    /* Category accents on navy */
+    --accent-domestic: 38 80% 60%;        /* warm gold-amber */
+    --accent-domestic-soft: 220 40% 20%;
+    --accent-international: 200 70% 65%;  /* sky/teal blue */
+    --accent-international-soft: 220 40% 20%;
+
+    --gradient-hero: linear-gradient(180deg, hsl(220 50% 8% / 0.2) 0%, hsl(220 50% 8% / 0.55) 60%, hsl(220 50% 8% / 0.92) 100%);
+    --gradient-gold: linear-gradient(135deg, hsl(45 85% 65%), hsl(38 75% 50%));
+    --shadow-luxe: 0 20px 60px -15px hsl(220 60% 4% / 0.6);
+    --shadow-gold: 0 15px 45px -15px hsl(45 85% 50% / 0.45);
+
+    --sidebar-background: 220 50% 10%;
+    --sidebar-foreground: 45 60% 92%;
+    --sidebar-primary: 45 80% 60%;
+    --sidebar-primary-foreground: 220 50% 10%;
+    --sidebar-accent: 220 40% 18%;
+    --sidebar-accent-foreground: 45 60% 92%;
+    --sidebar-border: 220 35% 22%;
+    --sidebar-ring: 45 80% 60%;
+  }
+
+  .dark {
+    --background: 220 50% 10%;
+    --foreground: 45 60% 92%;
+    --card: 220 45% 14%;
+    --card-foreground: 45 60% 92%;
+    --popover: 220 50% 12%;
+    --popover-foreground: 45 60% 92%;
+    --primary: 45 80% 60%;
+    --primary-foreground: 220 50% 10%;
+    --secondary: 220 40% 18%;
+    --secondary-foreground: 45 60% 92%;
+    --muted: 220 35% 20%;
+    --muted-foreground: 45 25% 78%;
+    --accent: 45 85% 65%;
+    --accent-foreground: 220 50% 10%;
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 35% 22%;
+    --input: 220 35% 18%;
+    --ring: 45 80% 60%;
+  }
+}
+
+@layer base {
+  * { @apply border-border; }
+  html { scroll-behavior: smooth; }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, h4, h5 {
+    font-family: 'Cormorant Garamond', 'Times New Roman', serif;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  ::selection { background: hsl(var(--primary) / 0.3); color: hsl(var(--foreground)); }
+}
+
+@layer utilities {
+  .font-serif { font-family: 'Cormorant Garamond', serif; }
+  .text-gold { color: hsl(var(--gold)); }
+  .bg-gold { background-color: hsl(var(--gold)); }
+  .border-gold { border-color: hsl(var(--gold)); }
+  .gradient-gold { background: var(--gradient-gold); }
+  .gradient-hero { background: var(--gradient-hero); }
+  .shadow-luxe { box-shadow: var(--shadow-luxe); }
+  .shadow-gold { box-shadow: var(--shadow-gold); }
+  .tracking-luxe { letter-spacing: 0.25em; }
+
+  .gold-underline {
+    @apply relative after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-px after:bg-gold after:transition-all after:duration-500 hover:after:w-full;
+  }
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.9s ease-out, transform 0.9s ease-out;
+  }
+  .reveal.in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Category accent helpers */
+  .accent-domestic { color: hsl(var(--accent-domestic)); }
+  .bg-accent-domestic { background-color: hsl(var(--accent-domestic)); }
+  .bg-accent-domestic-soft { background-color: hsl(var(--accent-domestic-soft)); }
+  .border-accent-domestic { border-color: hsl(var(--accent-domestic)); }
+  .accent-international { color: hsl(var(--accent-international)); }
+  .bg-accent-international { background-color: hsl(var(--accent-international)); }
+  .bg-accent-international-soft { background-color: hsl(var(--accent-international-soft)); }
+  .border-accent-international { border-color: hsl(var(--accent-international)); }
+
+  /* Glass panel for floating overlays on top of the 3D globe */
+  .glass-panel {
+    background: hsl(var(--card) / 0.65);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid hsl(var(--gold) / 0.25);
+    border-radius: 6px;
+    box-shadow: 0 8px 32px -12px hsl(220 70% 4% / 0.5);
+  }
+
+  /* Marquee pause-on-hover */
+  .pause-on-hover:hover { animation-play-state: paused; }
+
+  /* Subtle film grain overlay */
+  .bg-grain {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    background-size: 160px 160px;
+  }
+
+  /* Faint dotted world-map atmosphere */
+  .bg-dotted-map {
+    background-image: radial-gradient(hsl(var(--gold) / 0.7) 1px, transparent 1.2px);
+    background-size: 22px 22px;
+    background-position: 0 0;
+    -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+            mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+  }
+
+  /* Starfield backdrop for the globe section */
+  .bg-starfield {
+    background-image:
+      radial-gradient(1px 1px at 20% 30%, hsl(var(--gold) / 0.7), transparent 50%),
+      radial-gradient(1px 1px at 75% 15%, hsl(var(--foreground) / 0.5), transparent 50%),
+      radial-gradient(1.5px 1.5px at 50% 70%, hsl(var(--gold) / 0.5), transparent 50%),
+      radial-gradient(1px 1px at 85% 60%, hsl(var(--foreground) / 0.4), transparent 50%),
+      radial-gradient(1px 1px at 10% 80%, hsl(var(--gold) / 0.6), transparent 50%),
+      radial-gradient(1px 1px at 35% 50%, hsl(var(--foreground) / 0.35), transparent 50%),
+      radial-gradient(1.5px 1.5px at 65% 40%, hsl(var(--gold) / 0.45), transparent 50%),
+      radial-gradient(1px 1px at 90% 90%, hsl(var(--foreground) / 0.3), transparent 50%);
+    background-size: 600px 600px;
+    background-repeat: repeat;
+  }
+
+  /* Hide horizontal scrollbar on the destination strip */
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+
+  /* Globe sphere — soft outer glow */
+  .globe-sphere {
+    background: radial-gradient(circle at 30% 30%, hsl(220 50% 18%), hsl(220 70% 6%));
+  }
+}
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee-x,
+  .animate-ken-burns,
+  .animate-orb-drift,
+  .animate-bounce-slow,
+  .animate-word-rise,
+  .animate-fade-in,
+  .animate-fade-in-slow,
+  .animate-ping-gold {
+    animation: none !important;
+  }
+  .globe-texture { transition: none !important; }
+  .reveal { opacity: 1 !important; transform: none !important; }
+}
