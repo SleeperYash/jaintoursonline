@@ -883,13 +883,22 @@ const ManageDestinationDialog = ({
                             )}
                             <p className="text-xs text-foreground/80 mt-1 line-clamp-2">{r.text}</p>
                           </div>
-                          <button
-                            onClick={() => handleDeleteReview(r)}
-                            className="p-2 text-foreground/60 hover:text-destructive shrink-0"
-                            title="Delete"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
+                          <div className="flex flex-col gap-1 shrink-0">
+                            <button
+                              onClick={() => setEditingReview(r)}
+                              className="p-2 text-foreground/60 hover:text-gold"
+                              title="Edit"
+                            >
+                              <Pencil className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteReview(r)}
+                              className="p-2 text-foreground/60 hover:text-destructive"
+                              title="Delete"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
                         </li>
                       ))}
                     </ul>
@@ -900,6 +909,33 @@ const ManageDestinationDialog = ({
           )}
         </DialogContent>
       </Dialog>
+
+      <Dialog open={revShowEditor && !!revFile} onOpenChange={(v) => !v && setRevShowEditor(false)}>
+        <DialogContent className="max-w-xl w-[95vw] bg-card border-border/60">
+          <DialogHeader>
+            <DialogTitle className="font-serif text-lg">Crop & resize photo</DialogTitle>
+            <DialogDescription className="text-muted-foreground font-light">
+              Drag to reposition, slide to zoom. Output is resized for fast loading.
+            </DialogDescription>
+          </DialogHeader>
+          {revFile && (
+            <ReviewPhotoEditor
+              file={revFile}
+              onCancel={() => setRevShowEditor(false)}
+              onConfirm={(f) => {
+                setRevFile(f);
+                setRevShowEditor(false);
+              }}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+
+      <EditReviewDialog
+        review={editingReview}
+        onClose={() => setEditingReview(null)}
+        onSaved={refetchReviews}
+      />
     </>
   );
 };
