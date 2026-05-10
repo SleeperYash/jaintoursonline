@@ -85,7 +85,14 @@ const Footer = () => {
       <div className="border-t border-border/60">
         <div className="container py-6 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-muted-foreground">
           <p>© {new Date().getFullYear()} {BRAND.name}. All rights reserved.</p>
-          <p className="tracking-wide">Crafted with care in Mumbai · India</p>
+          <div className="flex items-center gap-5">
+            <ManageDestinationDialog
+              allowSwitcher
+              triggerLabel="Manage"
+              triggerClassName="text-[10px] uppercase tracking-luxe text-foreground/30 hover:text-gold inline-flex items-center gap-1.5 transition-colors"
+            />
+            <p className="tracking-wide">Crafted with care in Mumbai · India</p>
+          </div>
         </div>
       </div>
     </footer>
