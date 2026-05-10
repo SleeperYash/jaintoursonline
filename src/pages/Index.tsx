@@ -18,6 +18,7 @@ const Index = () => {
   return (
     <SiteLayout>
       <HeroLuxe />
+      <HeroTrustBadges />
       <FeaturedDestinations />
       <HowItWorks />
       <ReviewsCardStack />
