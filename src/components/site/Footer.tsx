@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { MapPin, Phone, Mail, Clock, Star } from "lucide-react";
+import ManageDestinationDialog from "@/components/site/ManageDestinationDialog";
 import { BRAND, waLink } from "@/lib/brand";
 
 const Footer = () => {
