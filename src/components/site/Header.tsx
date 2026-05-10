@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Menu, X, Phone } from "lucide-react";
 import { BRAND } from "@/lib/brand";
 import { cn } from "@/lib/utils";
+import jainLogo from "@/assets/jain-tours-logo.png";
 
 const links = [
   { to: "/", label: "Home" },
@@ -50,8 +51,12 @@ const Header = () => {
         {/* Logo */}
         <Link to="/" className="flex items-center gap-3 group">
           <div className="relative">
-            <div className="w-10 h-10 rounded-full border border-gold/40 flex items-center justify-center bg-background/40 backdrop-blur-sm group-hover:border-gold transition-colors">
-              <span className="font-serif text-gold text-lg leading-none italic">J</span>
+            <div className="w-11 h-11 md:w-12 md:h-12 rounded-full border border-gold/40 flex items-center justify-center bg-background overflow-hidden shadow-luxe group-hover:border-gold transition-colors">
+              <img
+                src={jainLogo}
+                alt="Jain Tours & Travels logo"
+                className="w-full h-full object-cover rounded-full"
+              />
             </div>
             <span className="absolute -inset-0.5 rounded-full border border-gold/0 group-hover:border-gold/30 group-hover:scale-110 transition-all duration-500" />
           </div>
