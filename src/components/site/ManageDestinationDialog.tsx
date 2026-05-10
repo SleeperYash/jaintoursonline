@@ -100,7 +100,20 @@ const ManageDestinationDialog = ({
   const [revRating, setRevRating] = useState(5);
   const [revDate, setRevDate] = useState("");
   const [revFile, setRevFile] = useState<File | null>(null);
+  const [revPreview, setRevPreview] = useState<string | null>(null);
+  const [revShowEditor, setRevShowEditor] = useState(false);
   const [savingReview, setSavingReview] = useState(false);
+  const [editingReview, setEditingReview] = useState<DbClientReview | null>(null);
+
+  useEffect(() => {
+    if (!revFile) {
+      setRevPreview(null);
+      return;
+    }
+    const url = URL.createObjectURL(revFile);
+    setRevPreview(url);
+    return () => URL.revokeObjectURL(url);
+  }, [revFile]);
 
   const fetchItineraries = useCallback(async () => {
     const { data } = await supabase
