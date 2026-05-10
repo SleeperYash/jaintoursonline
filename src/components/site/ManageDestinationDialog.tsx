@@ -417,7 +417,7 @@ const ManageDestinationDialog = ({
               {allowSwitcher ? "Manage Destinations" : `Manage ${destinationName}`}
             </DialogTitle>
             <DialogDescription className="text-muted-foreground font-light">
-              Admin only — manage itineraries and images{allowSwitcher ? " across all destinations." : " for this destination."}
+              Admin only — manage itineraries, images, and published reviews{allowSwitcher ? " across all destinations." : " for this destination."}
             </DialogDescription>
           </DialogHeader>
 
@@ -885,18 +885,20 @@ const ManageDestinationDialog = ({
                           </div>
                           <div className="flex flex-col gap-1 shrink-0">
                             <button
+                              type="button"
                               onClick={() => setEditingReview(r)}
-                              className="p-2 text-foreground/60 hover:text-gold"
-                              title="Edit"
+                              className="inline-flex items-center justify-center gap-1.5 px-3 py-2 border border-gold/50 text-gold text-[10px] uppercase tracking-luxe hover:bg-gold hover:text-primary-foreground transition"
+                              title="Edit review"
                             >
-                              <Pencil className="w-4 h-4" />
+                              <Pencil className="w-3.5 h-3.5" /> Edit
                             </button>
                             <button
+                              type="button"
                               onClick={() => handleDeleteReview(r)}
-                              className="p-2 text-foreground/60 hover:text-destructive"
+                              className="inline-flex items-center justify-center gap-1.5 px-3 py-2 border border-border/60 text-foreground/60 text-[10px] uppercase tracking-luxe hover:border-destructive/60 hover:text-destructive transition"
                               title="Delete"
                             >
-                              <Trash2 className="w-4 h-4" />
+                              <Trash2 className="w-3.5 h-3.5" /> Delete
                             </button>
                           </div>
                         </li>
