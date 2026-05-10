@@ -310,22 +310,50 @@ const ManageDestinationDialog = ({
     <>
       <button
         onClick={() => setOpen(true)}
-        className="text-xs uppercase tracking-luxe text-foreground/50 hover:text-gold inline-flex items-center gap-2"
-        title="Manage destination"
+        className={
+          triggerClassName ??
+          "text-xs uppercase tracking-luxe text-foreground/50 hover:text-gold inline-flex items-center gap-2"
+        }
+        title="Manage destinations"
       >
-        <Settings className="w-4 h-4" /> Manage
+        <Settings className="w-4 h-4" /> {triggerLabel ?? "Manage"}
       </button>
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-3xl w-[95vw] max-h-[90vh] overflow-y-auto bg-card border-border/60">
           <DialogHeader>
             <DialogTitle className="font-serif text-xl md:text-2xl text-foreground flex items-center gap-3">
-              <Lock className="w-5 h-5 text-gold" /> Manage {destinationName}
+              <Lock className="w-5 h-5 text-gold" />
+              {allowSwitcher ? "Manage Destinations" : `Manage ${destinationName}`}
             </DialogTitle>
             <DialogDescription className="text-muted-foreground font-light">
-              Admin only — manage itineraries and images for this destination.
+              Admin only — manage itineraries and images{allowSwitcher ? " across all destinations." : " for this destination."}
             </DialogDescription>
           </DialogHeader>
+
+          {authed && allowSwitcher && (
+            <div className="mt-2">
+              <Label className="text-xs uppercase tracking-luxe text-foreground/70">
+                Destination
+              </Label>
+              <select
+                value={currentSlug}
+                onChange={(e) => {
+                  const slug = e.target.value;
+                  const dest = ALL_DESTINATIONS.find((x) => x.slug === slug);
+                  setCurrentSlug(slug);
+                  setCurrentName(dest?.name ?? slug);
+                }}
+                className="mt-2 w-full bg-background border border-border/60 rounded-md px-3 py-2 text-sm text-foreground focus:outline-none focus:border-gold"
+              >
+                {ALL_DESTINATIONS.map((d) => (
+                  <option key={d.slug} value={d.slug}>
+                    {d.name} — {d.region}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           {!authed ? (
             <form onSubmit={handleUnlock} className="mt-2 space-y-4">
