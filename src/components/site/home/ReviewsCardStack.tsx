@@ -97,12 +97,22 @@ const ReviewsCardStack = () => {
                 }}
               >
                 <div className="relative h-full rounded-2xl overflow-hidden shadow-luxe border border-gold/20 bg-card group">
-                  <img
-                    src={r.image}
-                    alt={`${r.name} in ${r.destination}`}
-                    loading={idx < 3 ? "eager" : "lazy"}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2000ms] ease-out group-hover:scale-105"
-                  />
+                  {r.image ? (
+                    <img
+                      src={r.image}
+                      alt={`${r.name} in ${r.destination}`}
+                      loading={idx < 3 ? "eager" : "lazy"}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2000ms] ease-out group-hover:scale-105"
+                    />
+                  ) : (
+                    <div
+                      className="absolute inset-0"
+                      style={{
+                        background:
+                          "linear-gradient(135deg, hsl(var(--gold) / 0.18) 0%, hsl(220 50% 10%) 60%)",
+                      }}
+                    />
+                  )}
                   {/* Gradient overlay */}
                   <div
                     className="absolute inset-0"
