@@ -57,10 +57,10 @@ const Header = () => {
           </div>
           <div className="flex flex-col leading-none">
             <span className="font-serif text-lg md:text-xl tracking-wide text-foreground">
-              Jain <span className="text-gold italic">Tours</span>
+              Jain <span className="text-gold italic">Tours & Travels</span>
             </span>
             <span className="tracking-luxe uppercase text-muted-foreground mt-1 text-[9px] md:text-[10px]">
-              Mumbai · Est. Crafted Travel
+              Mumbai ·
             </span>
           </div>
         </Link>
@@ -101,7 +101,7 @@ const Header = () => {
             className="flex items-center gap-2 text-[11px] uppercase tracking-luxe text-foreground/70 hover:text-gold transition-colors"
             aria-label="Call us"
           >
-            <Phone className="w-3.5 h-3.5" />
+            <Phone className="w-0 h-0" />
             <span className="tabular-nums">{BRAND.phoneDisplay}</span>
           </a>
           <Link
@@ -162,7 +162,7 @@ const Header = () => {
             href={`tel:${BRAND.phoneDigits}`}
             className="mt-2 flex items-center justify-center gap-2 text-xs text-muted-foreground hover:text-gold transition"
           >
-            <Phone className="w-3 h-3" /> {BRAND.phoneDisplay}
+            <Phone className="w-0 h-0" /> {BRAND.phoneDisplay}
           </a>
         </nav>
       </div>
