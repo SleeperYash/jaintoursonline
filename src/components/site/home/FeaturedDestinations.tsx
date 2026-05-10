@@ -41,9 +41,6 @@ const FeaturedDestinations = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
               </div>
 
-              <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-background/70 backdrop-blur-sm border border-gold/30">
-                <span className="text-[10px] tracking-luxe uppercase text-gold">{d.duration.split(" ")[0]}N</span>
-              </div>
 
               <div className="absolute inset-x-0 bottom-0 p-6 md:p-7">
                 <p className="text-[11px] tracking-luxe uppercase text-muted-foreground mb-2">
