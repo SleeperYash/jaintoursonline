@@ -352,6 +352,73 @@ Deno.serve(async (req) => {
       return json({ ok: true, review: data });
     }
 
+    if (action === "review_update") {
+      const {
+        id,
+        name,
+        destination,
+        text,
+        rating,
+        date_label,
+        file_base64,
+        file_name,
+        content_type,
+        remove_image,
+      } = body ?? {};
+      if (!id) return json({ error: "Missing id" }, 400);
+      const { data: existing, error: fetchErr } = await supabase
+        .from("client_reviews")
+        .select("image_path")
+        .eq("id", id)
+        .maybeSingle();
+      if (fetchErr || !existing) return json({ error: fetchErr?.message ?? "Not found" }, 404);
+
+      const updates: Record<string, unknown> = {};
+      if (typeof name === "string") updates.name = name.trim();
+      if (typeof text === "string") updates.text = text.trim();
+      if (destination !== undefined)
+        updates.destination = destination ? String(destination).trim() : null;
+      if (date_label !== undefined)
+        updates.date_label = date_label ? String(date_label).trim() : null;
+      if (rating !== undefined)
+        updates.rating = Math.max(1, Math.min(5, Number(rating) || 5));
+
+      let oldPathToRemove: string | null = null;
+
+      if (file_base64 && file_name && content_type) {
+        if (!ALLOWED_IMAGE_TYPES.has(String(content_type).toLowerCase())) {
+          return json({ error: "Only JPG, PNG, WEBP or AVIF images allowed" }, 400);
+        }
+        const bin = atob(file_base64);
+        const bytes = new Uint8Array(bin.length);
+        for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+        if (bytes.byteLength > 10 * 1024 * 1024) return json({ error: "Max 10MB per image" }, 400);
+        const safe = String(file_name).replace(/[^a-zA-Z0-9._-]/g, "_");
+        const path = `reviews/${Date.now()}-${safe}`;
+        const { error: upErr } = await supabase.storage
+          .from("itineraries")
+          .upload(path, bytes, { contentType: String(content_type), upsert: false });
+        if (upErr) return json({ error: upErr.message }, 500);
+        updates.image_path = path;
+        if (existing.image_path) oldPathToRemove = existing.image_path;
+      } else if (remove_image && existing.image_path) {
+        updates.image_path = null;
+        oldPathToRemove = existing.image_path;
+      }
+
+      const { data, error: updErr } = await supabase
+        .from("client_reviews")
+        .update(updates)
+        .eq("id", id)
+        .select()
+        .single();
+      if (updErr) return json({ error: updErr.message }, 500);
+      if (oldPathToRemove) {
+        await supabase.storage.from("itineraries").remove([oldPathToRemove]);
+      }
+      return json({ ok: true, review: data });
+    }
+
     if (action === "review_delete") {
       const { id } = body ?? {};
       if (!id) return json({ error: "Missing id" }, 400);
