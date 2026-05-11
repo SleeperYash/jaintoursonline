@@ -14,16 +14,16 @@ const Row = () => (
     {badges.map(({ icon: Icon, value, label }, idx) => (
       <div
         key={`${label}-${idx}`}
-        className="group relative flex items-center gap-3 md:gap-4 px-5 md:px-6 py-4 md:py-5 mx-2 md:mx-3 rounded-xl bg-card/80 backdrop-blur-md border border-gold/25 shadow-luxe shrink-0"
+        className="group relative flex items-center gap-4 px-6 md:px-7 py-5 mx-2 md:mx-3 rounded-xl bg-card/80 backdrop-blur-md border border-gold/25 shadow-luxe shrink-0 min-w-[15rem] md:min-w-0"
       >
-        <div className="shrink-0 w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center bg-gold/10 border border-gold/30">
-          <Icon className="w-4 h-4 md:w-5 md:h-5 text-gold" strokeWidth={1.5} />
+        <div className="shrink-0 w-11 h-11 md:w-12 md:h-12 rounded-full flex items-center justify-center bg-gold/10 border border-gold/30">
+          <Icon className="w-5 h-5 text-gold" strokeWidth={1.5} />
         </div>
         <div className="min-w-0">
-          <p className="font-serif text-lg md:text-2xl text-foreground leading-none whitespace-nowrap">
+          <p className="font-serif text-xl md:text-2xl text-foreground leading-none whitespace-nowrap">
             {value}
           </p>
-          <p className="mt-1.5 text-[10px] md:text-xs uppercase tracking-luxe text-muted-foreground whitespace-nowrap">
+          <p className="mt-1.5 text-[11px] md:text-xs uppercase tracking-luxe text-muted-foreground whitespace-nowrap">
             {label}
           </p>
         </div>
@@ -36,7 +36,13 @@ const Row = () => (
 const HeroTrustBadges = () => {
   return (
     <section className="container -mt-8 md:-mt-12 relative z-20 overflow-hidden">
-      <div className="flex animate-marquee-x pause-on-hover">
+      {/* Mobile: slower marquee, larger min-width so ~1.5 badges fit per view */}
+      <div className="md:hidden flex animate-marquee-x pause-on-hover" style={{ animationDuration: "32s" }}>
+        <div className="flex shrink-0"><Row /></div>
+        <div className="flex shrink-0" aria-hidden><Row /></div>
+      </div>
+      {/* Desktop: standard marquee speed */}
+      <div className="hidden md:flex animate-marquee-x pause-on-hover">
         <div className="flex shrink-0"><Row /></div>
         <div className="flex shrink-0" aria-hidden><Row /></div>
       </div>
