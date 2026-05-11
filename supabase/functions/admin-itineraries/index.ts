@@ -262,6 +262,18 @@ Deno.serve(async (req) => {
       return json({ ok: true });
     }
 
+    if (action === "image_clear_cover") {
+      const { destination_slug } = body ?? {};
+      if (!destination_slug) return json({ error: "Missing destination_slug" }, 400);
+      const { error: updErr } = await supabase
+        .from("destination_images")
+        .update({ is_cover: false })
+        .eq("destination_slug", destination_slug)
+        .eq("is_cover", true);
+      if (updErr) return json({ error: updErr.message }, 500);
+      return json({ ok: true });
+    }
+
     if (action === "image_set_cover") {
       const { id } = body ?? {};
       if (!id) return json({ error: "Missing id" }, 400);
