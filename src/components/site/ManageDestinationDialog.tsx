@@ -602,18 +602,62 @@ const ManageDestinationDialog = ({
                 <div>
                   <div className="flex items-center justify-between mb-3">
                     <p className="text-xs uppercase tracking-luxe text-gold">
-                      Images ({images.length})
+                      Images ({images.length + 1})
                     </p>
                     {busy && <Loader2 className="w-4 h-4 animate-spin text-gold" />}
                   </div>
 
-                  {images.length === 0 ? (
-                    <p className="text-sm text-muted-foreground font-light text-center py-6">
-                      No images yet. Upload one above.
-                    </p>
-                  ) : (
-                    <ul className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                      {images.map((img) => (
+                  {(() => {
+                    const defaultImg = ALL_DESTINATIONS.find((x) => x.slug === destinationSlug)?.image;
+                    const hasDbCover = images.some((i) => i.is_cover);
+                    const defaultIsCover = !hasDbCover;
+                    const handleUseDefaultCover = async () => {
+                      if (defaultIsCover) return;
+                      setBusy(true);
+                      try {
+                        await callAdmin("image_clear_cover", { destination_slug: destinationSlug });
+                        await refetchImages();
+                        toast({ title: "Cover updated" });
+                      } catch (err) {
+                        toast({ title: "Failed", description: (err as Error).message, variant: "destructive" });
+                      } finally {
+                        setBusy(false);
+                      }
+                    };
+                    return (
+                      <ul className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                        {defaultImg && (
+                          <li
+                            className={cn(
+                              "relative group border border-border/60 rounded-md overflow-hidden bg-background",
+                              defaultIsCover && "ring-2 ring-gold",
+                            )}
+                          >
+                            <div className="aspect-[4/5] relative">
+                              <img src={defaultImg} alt="" className="w-full h-full object-cover" />
+                              {defaultIsCover && (
+                                <span className="absolute top-2 left-2 bg-gold text-primary-foreground text-[10px] uppercase tracking-luxe px-2 py-1 rounded inline-flex items-center gap-1">
+                                  <Star className="w-3 h-3" /> Cover
+                                </span>
+                              )}
+                              <span className="absolute top-2 right-2 bg-ink/70 text-foreground text-[10px] uppercase tracking-luxe px-2 py-1 rounded">
+                                Default
+                              </span>
+                            </div>
+                            <div className="p-2 flex flex-wrap gap-1 bg-card">
+                              <button
+                                type="button"
+                                disabled={busy || defaultIsCover}
+                                onClick={handleUseDefaultCover}
+                                className="flex-1 min-w-0 text-[10px] uppercase tracking-luxe px-2 py-1.5 border border-gold/60 text-gold hover:bg-gold/10 transition disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center justify-center gap-1"
+                                title="Use the default image as cover"
+                              >
+                                <Star className="w-3 h-3" /> Cover
+                              </button>
+                            </div>
+                          </li>
+                        )}
+                        {images.map((img) => (
                         <li
                           key={img.id}
                           draggable
@@ -674,9 +718,10 @@ const ManageDestinationDialog = ({
                             </button>
                           </div>
                         </li>
-                      ))}
-                    </ul>
-                  )}
+                        ))}
+                      </ul>
+                    );
+                  })()}
                 </div>
               </TabsContent>
 
