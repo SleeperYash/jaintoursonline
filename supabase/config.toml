@@ -1,1 +1,4 @@
 project_id = "bjiqozjjffhzualmlncw"
+
+[functions.destination-guide]
+verify_jwt = false
