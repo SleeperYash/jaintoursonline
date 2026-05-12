@@ -101,10 +101,10 @@ Rules:
     const days = Array.isArray(parsed.days)
       ? parsed.days.slice(0, dayCount).map((d: any, i: number) => ({
           day: Number(d?.day) || i + 1,
-          location: String(d?.location ?? "").slice(0, 80),
-          description: String(d?.description ?? "").slice(0, 280),
+          location: String(d?.location ?? "").slice(0, 60),
+          description: String(d?.description ?? "").slice(0, 130),
           activities: Array.isArray(d?.activities)
-            ? d.activities.slice(0, 5).map((a: any) => String(a).slice(0, 40))
+            ? d.activities.slice(0, 3).map((a: any) => String(a).slice(0, 24))
             : [],
         }))
       : [];
