@@ -73,30 +73,30 @@ const DestinationDetail = () => {
   return (
     <SiteLayout>
       {/* Photo grid */}
-      <section className="container pt-28 md:pt-32">
+      <section className="container pt-24 md:pt-32">
         <Link
           to="/destinations"
-          className="inline-flex items-center gap-2 text-xs uppercase tracking-luxe text-foreground/70 hover:text-gold transition-colors mb-5"
+          className="inline-flex items-center gap-2 text-[10px] md:text-xs uppercase tracking-luxe text-foreground/70 hover:text-gold transition-colors mb-3 md:mb-5"
         >
           <ChevronLeft className="w-4 h-4" /> All destinations
         </Link>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-3 rounded-2xl overflow-hidden">
+        <div className="grid grid-cols-3 gap-1.5 md:gap-3 rounded-2xl overflow-hidden">
           <button
             onClick={() => setLightbox(0)}
-            className="relative md:col-span-2 group overflow-hidden bg-card aspect-[4/3] md:aspect-auto md:h-[480px]"
+            className="relative col-span-2 group overflow-hidden bg-card aspect-[4/5] md:aspect-auto md:h-[480px]"
           >
             <img src={heroPhoto} alt={d.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
           </button>
-          <div className="grid grid-rows-2 gap-2 md:gap-3 h-[240px] md:h-[480px]">
+          <div className="grid grid-rows-2 gap-1.5 md:gap-3 aspect-[1/2] md:aspect-auto md:h-[480px]">
             <button onClick={() => setLightbox(1)} className="relative group overflow-hidden bg-card">
               <img src={sidePhoto1} alt={`${d.name} 2`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
             </button>
             <button onClick={() => setLightbox(2)} className="relative group overflow-hidden bg-card">
               <img src={sidePhoto2} alt={`${d.name} 3`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
               {photos.length > 3 && (
-                <span className="absolute inset-0 bg-ink/60 flex items-center justify-center text-primary-foreground text-xs uppercase tracking-luxe">
-                  + View all {photos.length} photos
+                <span className="absolute inset-0 bg-ink/60 flex items-center justify-center text-primary-foreground text-[9px] md:text-xs uppercase tracking-luxe text-center px-2 leading-tight">
+                  + View all<br className="md:hidden" /> {photos.length} photos
                 </span>
               )}
             </button>
