@@ -620,22 +620,20 @@ const ManageDestinationDialog = ({
                           // Just clear DB cover so the page falls back to dest.image
                           await callAdmin("image_clear_cover", { destination_slug: destinationSlug });
                         } else {
-                          // Import this AI photo into storage, then mark it as cover
+                          // Import this AI photo into storage and mark it as cover in one shot
                           const res = await fetch(url);
                           const blob = await res.blob();
                           const ct = blob.type || "image/jpeg";
                           const ext = ct.split("/")[1]?.split("+")[0] || "jpg";
                           const file = new File([blob], `ai-${Date.now()}.${ext}`, { type: ct });
                           const file_base64 = await fileToBase64(file);
-                          const created = await callAdmin("image_upload", {
+                          await callAdmin("image_upload", {
                             destination_slug: destinationSlug,
                             file_name: file.name,
                             content_type: ct,
                             file_base64,
-                          }) as { id?: string };
-                          if (created?.id) {
-                            await callAdmin("image_set_cover", { id: created.id });
-                          }
+                            set_as_cover: true,
+                          });
                         }
                         await refetchImages();
                         toast({ title: "Cover updated" });
