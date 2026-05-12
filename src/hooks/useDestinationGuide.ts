@@ -15,7 +15,7 @@ export type DestinationGuide = {
   days: GuideDay[];
 };
 
-const cacheKey = (slug: string) => `jt_guide_${slug}_v1`;
+const cacheKey = (slug: string) => `jt_guide_${slug}_v2`;
 
 export const useDestinationGuide = (
   slug: string,

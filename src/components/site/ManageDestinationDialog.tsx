@@ -602,20 +602,39 @@ const ManageDestinationDialog = ({
                 <div>
                   <div className="flex items-center justify-between mb-3">
                     <p className="text-xs uppercase tracking-luxe text-gold">
-                      Images ({images.length + 1})
+                      Images
                     </p>
                     {busy && <Loader2 className="w-4 h-4 animate-spin text-gold" />}
                   </div>
 
                   {(() => {
-                    const defaultImg = ALL_DESTINATIONS.find((x) => x.slug === destinationSlug)?.image;
+                    const dest = ALL_DESTINATIONS.find((x) => x.slug === destinationSlug);
+                    const defaults = dest ? [dest.image, ...(dest.gallery ?? [])].filter(Boolean) : [];
                     const hasDbCover = images.some((i) => i.is_cover);
-                    const defaultIsCover = !hasDbCover;
-                    const handleUseDefaultCover = async () => {
-                      if (defaultIsCover) return;
+                    const primaryDefaultIsCover = !hasDbCover;
+
+                    const handleUseDefaultCover = async (url: string, isPrimary: boolean) => {
                       setBusy(true);
                       try {
-                        await callAdmin("image_clear_cover", { destination_slug: destinationSlug });
+                        if (isPrimary) {
+                          // Just clear DB cover so the page falls back to dest.image
+                          await callAdmin("image_clear_cover", { destination_slug: destinationSlug });
+                        } else {
+                          // Import this AI photo into storage and mark it as cover in one shot
+                          const res = await fetch(url);
+                          const blob = await res.blob();
+                          const ct = blob.type || "image/jpeg";
+                          const ext = ct.split("/")[1]?.split("+")[0] || "jpg";
+                          const file = new File([blob], `ai-${Date.now()}.${ext}`, { type: ct });
+                          const file_base64 = await fileToBase64(file);
+                          await callAdmin("image_upload", {
+                            destination_slug: destinationSlug,
+                            file_name: file.name,
+                            content_type: ct,
+                            file_base64,
+                            set_as_cover: true,
+                          });
+                        }
                         await refetchImages();
                         toast({ title: "Cover updated" });
                       } catch (err) {
@@ -624,39 +643,45 @@ const ManageDestinationDialog = ({
                         setBusy(false);
                       }
                     };
+
                     return (
                       <ul className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                        {defaultImg && (
-                          <li
-                            className={cn(
-                              "relative group border border-border/60 rounded-md overflow-hidden bg-background",
-                              defaultIsCover && "ring-2 ring-gold",
-                            )}
-                          >
-                            <div className="aspect-[4/5] relative">
-                              <img src={defaultImg} alt="" className="w-full h-full object-cover" />
-                              {defaultIsCover && (
-                                <span className="absolute top-2 left-2 bg-gold text-primary-foreground text-[10px] uppercase tracking-luxe px-2 py-1 rounded inline-flex items-center gap-1">
-                                  <Star className="w-3 h-3" /> Cover
-                                </span>
+                        {defaults.map((url, idx) => {
+                          const isPrimary = idx === 0;
+                          const isCover = isPrimary && primaryDefaultIsCover;
+                          return (
+                            <li
+                              key={`def-${idx}`}
+                              className={cn(
+                                "relative group border border-border/60 rounded-md overflow-hidden bg-background",
+                                isCover && "ring-2 ring-gold",
                               )}
-                              <span className="absolute top-2 right-2 bg-ink/70 text-foreground text-[10px] uppercase tracking-luxe px-2 py-1 rounded">
-                                Default
-                              </span>
-                            </div>
-                            <div className="p-2 flex flex-wrap gap-1 bg-card">
-                              <button
-                                type="button"
-                                disabled={busy || defaultIsCover}
-                                onClick={handleUseDefaultCover}
-                                className="flex-1 min-w-0 text-[10px] uppercase tracking-luxe px-2 py-1.5 border border-gold/60 text-gold hover:bg-gold/10 transition disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center justify-center gap-1"
-                                title="Use the default image as cover"
-                              >
-                                <Star className="w-3 h-3" /> Cover
-                              </button>
-                            </div>
-                          </li>
-                        )}
+                            >
+                              <div className="aspect-[4/5] relative">
+                                <img src={url} alt="" className="w-full h-full object-cover" />
+                                {isCover && (
+                                  <span className="absolute top-2 left-2 bg-gold text-primary-foreground text-[10px] uppercase tracking-luxe px-2 py-1 rounded inline-flex items-center gap-1">
+                                    <Star className="w-3 h-3" /> Cover
+                                  </span>
+                                )}
+                                <span className="absolute top-2 right-2 bg-ink/70 text-foreground text-[10px] uppercase tracking-luxe px-2 py-1 rounded">
+                                  AI {idx + 1}
+                                </span>
+                              </div>
+                              <div className="p-2 flex flex-wrap gap-1 bg-card">
+                                <button
+                                  type="button"
+                                  disabled={busy || isCover}
+                                  onClick={() => handleUseDefaultCover(url, isPrimary)}
+                                  className="flex-1 min-w-0 text-[10px] uppercase tracking-luxe px-2 py-1.5 border border-gold/60 text-gold hover:bg-gold/10 transition disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center justify-center gap-1"
+                                  title={isPrimary ? "Use the default image as cover" : "Import this AI photo and set as cover"}
+                                >
+                                  <Star className="w-3 h-3" /> {isPrimary ? "Cover" : "Use as cover"}
+                                </button>
+                              </div>
+                            </li>
+                          );
+                        })}
                         {images.map((img) => (
                         <li
                           key={img.id}

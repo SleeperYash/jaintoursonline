@@ -73,30 +73,30 @@ const DestinationDetail = () => {
   return (
     <SiteLayout>
       {/* Photo grid */}
-      <section className="container pt-28 md:pt-32">
+      <section className="container pt-24 md:pt-32">
         <Link
           to="/destinations"
-          className="inline-flex items-center gap-2 text-xs uppercase tracking-luxe text-foreground/70 hover:text-gold transition-colors mb-5"
+          className="inline-flex items-center gap-2 text-[10px] md:text-xs uppercase tracking-luxe text-foreground/70 hover:text-gold transition-colors mb-3 md:mb-5"
         >
           <ChevronLeft className="w-4 h-4" /> All destinations
         </Link>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-3 rounded-2xl overflow-hidden">
+        <div className="grid grid-cols-3 gap-1.5 md:gap-3 rounded-2xl overflow-hidden">
           <button
             onClick={() => setLightbox(0)}
-            className="relative md:col-span-2 group overflow-hidden bg-card aspect-[4/3] md:aspect-auto md:h-[480px]"
+            className="relative col-span-2 group overflow-hidden bg-card aspect-[4/5] md:aspect-auto md:h-[480px]"
           >
             <img src={heroPhoto} alt={d.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
           </button>
-          <div className="grid grid-rows-2 gap-2 md:gap-3 h-[240px] md:h-[480px]">
+          <div className="grid grid-rows-2 gap-1.5 md:gap-3 aspect-[1/2] md:aspect-auto md:h-[480px]">
             <button onClick={() => setLightbox(1)} className="relative group overflow-hidden bg-card">
               <img src={sidePhoto1} alt={`${d.name} 2`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
             </button>
             <button onClick={() => setLightbox(2)} className="relative group overflow-hidden bg-card">
               <img src={sidePhoto2} alt={`${d.name} 3`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
               {photos.length > 3 && (
-                <span className="absolute inset-0 bg-ink/60 flex items-center justify-center text-primary-foreground text-xs uppercase tracking-luxe">
-                  + View all {photos.length} photos
+                <span className="absolute inset-0 bg-ink/60 flex items-center justify-center text-primary-foreground text-[9px] md:text-xs uppercase tracking-luxe text-center px-2 leading-tight">
+                  + View all<br className="md:hidden" /> {photos.length} photos
                 </span>
               )}
             </button>
@@ -105,75 +105,75 @@ const DestinationDetail = () => {
       </section>
 
       {/* Header + sticky booking */}
-      <section className="container py-10 md:py-12">
-        <div className="grid lg:grid-cols-3 gap-10">
+      <section className="container py-6 md:py-12">
+        <div className="grid lg:grid-cols-3 gap-6 lg:gap-10">
           <div className="lg:col-span-2">
-            <p className="text-xs tracking-luxe uppercase text-gold mb-2">{d.region} · {d.country}</p>
-            <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-foreground leading-[1.05]">{d.name}</h1>
-            <p className="mt-3 text-base md:text-lg text-foreground/70 font-light max-w-2xl">{d.tagline}</p>
+            <p className="text-[10px] md:text-xs tracking-luxe uppercase text-gold mb-1.5">{d.region} · {d.country}</p>
+            <h1 className="font-serif text-2xl sm:text-3xl md:text-5xl lg:text-6xl text-foreground leading-[1.1]">{d.name}</h1>
+            <p className="mt-2 md:mt-3 text-sm md:text-lg text-foreground/70 font-light max-w-2xl">{d.tagline}</p>
 
-            <div className="mt-4 flex items-center gap-2">
-              {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-gold text-gold" />)}
-              <span className="text-sm text-foreground/70 ml-1">4.9 · 142 reviews</span>
+            <div className="mt-3 md:mt-4 flex items-center gap-1.5">
+              {[...Array(5)].map((_, i) => <Star key={i} className="w-3.5 h-3.5 md:w-4 md:h-4 fill-gold text-gold" />)}
+              <span className="text-xs md:text-sm text-foreground/70 ml-1">4.9 · 142 reviews</span>
             </div>
 
-            <div className="mt-6 flex flex-wrap gap-2">
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-card border border-border text-xs uppercase tracking-luxe text-foreground/80">
-                <Clock className="w-3.5 h-3.5 text-gold" /> {d.duration}
+            <div className="mt-4 md:mt-6 flex flex-wrap gap-1.5 md:gap-2">
+              <span className="inline-flex items-center gap-1.5 md:gap-2 px-2.5 md:px-4 py-1.5 md:py-2 rounded-full bg-card border border-border text-[10px] md:text-xs uppercase tracking-luxe text-foreground/80">
+                <Clock className="w-3 h-3 md:w-3.5 md:h-3.5 text-gold" /> {d.duration}
               </span>
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-card border border-border text-xs uppercase tracking-luxe text-foreground/80">
-                <Users className="w-3.5 h-3.5 text-gold" /> Group / Private
+              <span className="inline-flex items-center gap-1.5 md:gap-2 px-2.5 md:px-4 py-1.5 md:py-2 rounded-full bg-card border border-border text-[10px] md:text-xs uppercase tracking-luxe text-foreground/80">
+                <Users className="w-3 h-3 md:w-3.5 md:h-3.5 text-gold" /> Group / Private
               </span>
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-card border border-border text-xs uppercase tracking-luxe text-foreground/80">
-                <Sun className="w-3.5 h-3.5 text-gold" /> Best: {bestSeasonLabel}
+              <span className="inline-flex items-center gap-1.5 md:gap-2 px-2.5 md:px-4 py-1.5 md:py-2 rounded-full bg-card border border-border text-[10px] md:text-xs uppercase tracking-luxe text-foreground/80">
+                <Sun className="w-3 h-3 md:w-3.5 md:h-3.5 text-gold" /> Best: {bestSeasonLabel}
               </span>
             </div>
 
-            <p className="mt-8 text-foreground/80 font-light leading-relaxed max-w-2xl">{d.overview}</p>
+            <p className="mt-5 md:mt-8 text-sm md:text-base text-foreground/80 font-light leading-relaxed max-w-2xl">{d.overview}</p>
 
             {/* Route strip */}
-            <div className="mt-10">
-              <p className="text-xs uppercase tracking-luxe text-gold mb-3">Your route</p>
-              <div className="flex flex-wrap items-center gap-2">
+            <div className="mt-8 md:mt-10">
+              <p className="text-[10px] md:text-xs uppercase tracking-luxe text-gold mb-2 md:mb-3">Your route</p>
+              <div className="flex flex-wrap items-center gap-1.5 md:gap-2">
                 {stops.map((s, i) => (
-                  <div key={`${s}-${i}`} className="flex items-center gap-2">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-card border border-gold/30 text-sm text-foreground">
-                      <MapPin className="w-3.5 h-3.5 text-gold" /> {s}
+                  <div key={`${s}-${i}`} className="flex items-center gap-1.5 md:gap-2">
+                    <span className="inline-flex items-center gap-1 md:gap-1.5 px-2.5 md:px-3 py-1 md:py-1.5 rounded-full bg-card border border-gold/30 text-xs md:text-sm text-foreground">
+                      <MapPin className="w-3 h-3 md:w-3.5 md:h-3.5 text-gold" /> {s}
                     </span>
-                    {i < stops.length - 1 && <ArrowRight className="w-4 h-4 text-gold/60" />}
+                    {i < stops.length - 1 && <ArrowRight className="w-3.5 h-3.5 md:w-4 md:h-4 text-gold/60" />}
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Day-by-day */}
-            <div className="mt-12">
-              <p className="text-xs uppercase tracking-luxe text-gold mb-3">Day-by-day itinerary</p>
-              <h2 className="font-serif text-3xl md:text-4xl text-foreground mb-8">Your journey, day by day</h2>
+            <div className="mt-10 md:mt-12">
+              <p className="text-[10px] md:text-xs uppercase tracking-luxe text-gold mb-2 md:mb-3">Day-by-day itinerary</p>
+              <h2 className="font-serif text-2xl md:text-4xl text-foreground mb-5 md:mb-8">Your journey, day by day</h2>
 
               {guideLoading && !guide && (
-                <div className="flex items-center gap-3 text-foreground/60 py-10">
-                  <Loader2 className="w-5 h-5 animate-spin text-gold" />
+                <div className="flex items-center gap-3 text-foreground/60 py-8 md:py-10 text-sm">
+                  <Loader2 className="w-4 h-4 md:w-5 md:h-5 animate-spin text-gold" />
                   Crafting your itinerary…
                 </div>
               )}
 
               {guide?.days?.length ? (
-                <div className="relative pl-8 md:pl-10 space-y-6">
-                  <span className="absolute left-[15px] md:left-[19px] top-2 bottom-2 w-px bg-gold/30" aria-hidden />
+                <div className="relative pl-7 md:pl-10 space-y-4 md:space-y-6">
+                  <span className="absolute left-[13px] md:left-[19px] top-2 bottom-2 w-px bg-gold/30" aria-hidden />
                   {guide.days.map((day) => (
                     <div key={day.day} className="relative">
-                      <span className="absolute -left-8 md:-left-10 top-1 w-8 h-8 md:w-10 md:h-10 rounded-full bg-gold text-primary-foreground flex items-center justify-center text-xs font-semibold border-4 border-background shadow-md">
+                      <span className="absolute -left-7 md:-left-10 top-1 w-7 h-7 md:w-10 md:h-10 rounded-full bg-gold text-primary-foreground flex items-center justify-center text-[11px] md:text-xs font-semibold border-[3px] md:border-4 border-background shadow-md">
                         {day.day}
                       </span>
-                      <div className="bg-card border border-border/60 rounded-xl p-5 md:p-6 hover:border-gold/40 transition-colors">
-                        <p className="text-xs uppercase tracking-luxe text-gold mb-1">Day {day.day}</p>
-                        <h3 className="font-serif text-xl md:text-2xl text-foreground mb-2">{day.location}</h3>
-                        <p className="text-sm text-foreground/75 leading-relaxed">{day.description}</p>
+                      <div className="bg-card border border-border/60 rounded-xl p-3.5 md:p-6 hover:border-gold/40 transition-colors">
+                        <p className="text-[10px] md:text-xs uppercase tracking-luxe text-gold mb-0.5 md:mb-1">Day {day.day}</p>
+                        <h3 className="font-serif text-base md:text-2xl text-foreground mb-1 md:mb-2 leading-tight">{day.location}</h3>
+                        <p className="text-xs md:text-sm text-foreground/75 leading-relaxed">{day.description}</p>
                         {day.activities?.length > 0 && (
-                          <div className="mt-4 flex flex-wrap gap-2">
+                          <div className="mt-2.5 md:mt-4 flex flex-wrap gap-1.5 md:gap-2">
                             {day.activities.map((a, i) => (
-                              <span key={i} className="text-xs px-2.5 py-1 rounded-full bg-gold/10 text-foreground/85 border border-gold/20">
+                              <span key={i} className="text-[10px] md:text-xs px-2 md:px-2.5 py-0.5 md:py-1 rounded-full bg-gold/10 text-foreground/85 border border-gold/20">
                                 {a}
                               </span>
                             ))}
@@ -189,16 +189,16 @@ const DestinationDetail = () => {
             </div>
 
             {/* Best time to visit */}
-            <div className="mt-14">
-              <p className="text-xs uppercase tracking-luxe text-gold mb-3">Best time to visit</p>
-              <h2 className="font-serif text-3xl md:text-4xl text-foreground mb-6">When to go</h2>
-              <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-12 gap-2">
+            <div className="mt-10 md:mt-14">
+              <p className="text-[10px] md:text-xs uppercase tracking-luxe text-gold mb-2 md:mb-3">Best time to visit</p>
+              <h2 className="font-serif text-2xl md:text-4xl text-foreground mb-4 md:mb-6">When to go</h2>
+              <div className="grid grid-cols-6 md:grid-cols-12 gap-1.5 md:gap-2">
                 {MONTHS.map((m, i) => {
                   const isBest = bestMonths.has(i + 1);
                   return (
                     <div
                       key={m}
-                      className={`text-center py-3 rounded-lg border text-xs uppercase tracking-luxe transition-all ${
+                      className={`text-center py-2 md:py-3 rounded-md md:rounded-lg border text-[10px] md:text-xs uppercase tracking-luxe transition-all ${
                         isBest
                           ? "bg-emerald-deep/15 border-emerald-deep text-emerald-deep font-semibold"
                           : "bg-card border-border/60 text-foreground/50"
@@ -209,31 +209,31 @@ const DestinationDetail = () => {
                   );
                 })}
               </div>
-              <p className="mt-3 text-xs text-foreground/60">Months in green are recommended for travel.</p>
+              <p className="mt-2 md:mt-3 text-[10px] md:text-xs text-foreground/60">Months in green are recommended for travel.</p>
             </div>
 
             {/* What's included */}
-            <div className="mt-14">
-              <p className="text-xs uppercase tracking-luxe text-gold mb-3">What's included</p>
-              <h2 className="font-serif text-3xl md:text-4xl text-foreground mb-6">In your package</h2>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <div className="mt-10 md:mt-14">
+              <p className="text-[10px] md:text-xs uppercase tracking-luxe text-gold mb-2 md:mb-3">What's included</p>
+              <h2 className="font-serif text-2xl md:text-4xl text-foreground mb-4 md:mb-6">In your package</h2>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">
                 {INCLUDED.map((item) => {
                   const Icon = item.icon;
                   return (
-                    <div key={item.label} className="bg-card border border-border/60 rounded-xl p-4 flex items-center gap-3 hover:border-gold/40 transition-colors">
-                      <span className="w-10 h-10 rounded-full bg-gold/10 border border-gold/30 flex items-center justify-center shrink-0">
-                        <Icon className="w-4 h-4 text-gold" />
+                    <div key={item.label} className="bg-card border border-border/60 rounded-lg md:rounded-xl p-2.5 md:p-4 flex items-center gap-2 md:gap-3 hover:border-gold/40 transition-colors">
+                      <span className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gold/10 border border-gold/30 flex items-center justify-center shrink-0">
+                        <Icon className="w-3.5 h-3.5 md:w-4 md:h-4 text-gold" />
                       </span>
-                      <span className="text-sm text-foreground font-medium">{item.label}</span>
+                      <span className="text-xs md:text-sm text-foreground font-medium leading-tight">{item.label}</span>
                     </div>
                   );
                 })}
               </div>
 
-              <p className="mt-6 text-xs uppercase tracking-luxe text-foreground/60 mb-3">Not included</p>
-              <div className="flex flex-wrap gap-2">
+              <p className="mt-5 md:mt-6 text-[10px] md:text-xs uppercase tracking-luxe text-foreground/60 mb-2 md:mb-3">Not included</p>
+              <div className="flex flex-wrap gap-1.5 md:gap-2">
                 {NOT_INCLUDED.map((n) => (
-                  <span key={n} className="text-xs px-3 py-1.5 rounded-full border border-dashed border-border text-foreground/65">
+                  <span key={n} className="text-[10px] md:text-xs px-2.5 md:px-3 py-1 md:py-1.5 rounded-full border border-dashed border-border text-foreground/65">
                     {n}
                   </span>
                 ))}

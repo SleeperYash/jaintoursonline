@@ -51,7 +51,7 @@ Return JSON in this exact shape:
     {
       "day": 1,
       "location": "Arrival city",
-      "description": "Two short sentences. Indian-traveller voice.",
+      "description": "One short sentence. Crisp, Indian-traveller voice.",
       "activities": ["chip 1","chip 2","chip 3"]
     }
   ]
@@ -61,8 +61,8 @@ Rules:
 - Exactly ${dayCount} day objects, day numbers 1..${dayCount}.
 - "stops" = ordered route cities (3 to 6).
 - "bestMonths" = month numbers (1=Jan..12=Dec) recommended to visit.
-- "activities" = 3 to 5 short chips per day (sightseeing, local food, temples, shopping, tip).
-- description must be max 2 sentences.`;
+- "activities" = exactly 3 short chips per day (max 3 words each).
+- description must be ONE sentence, max 110 characters.`;
 
   try {
     const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -101,10 +101,10 @@ Rules:
     const days = Array.isArray(parsed.days)
       ? parsed.days.slice(0, dayCount).map((d: any, i: number) => ({
           day: Number(d?.day) || i + 1,
-          location: String(d?.location ?? "").slice(0, 80),
-          description: String(d?.description ?? "").slice(0, 280),
+          location: String(d?.location ?? "").slice(0, 60),
+          description: String(d?.description ?? "").slice(0, 130),
           activities: Array.isArray(d?.activities)
-            ? d.activities.slice(0, 5).map((a: any) => String(a).slice(0, 40))
+            ? d.activities.slice(0, 3).map((a: any) => String(a).slice(0, 24))
             : [],
         }))
       : [];
