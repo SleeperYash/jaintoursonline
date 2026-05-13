@@ -95,9 +95,15 @@ const DestinationDetail = () => {
             <button onClick={() => setLightbox(2)} className="relative group overflow-hidden bg-card">
               <img src={sidePhoto2} alt={`${d.name} 3`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
               {photos.length > 3 && (
-                <span className="absolute inset-0 bg-ink/60 flex items-center justify-center text-primary-foreground text-[9px] md:text-xs uppercase tracking-luxe text-center px-2 leading-tight">
-                  + View all<br className="md:hidden" /> {photos.length} photos
-                </span>
+                <>
+                  <span className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/60 to-ink/30" aria-hidden />
+                  <span className="absolute inset-0 flex items-center justify-center">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 md:px-4 md:py-2 rounded-full bg-ink/85 backdrop-blur-sm border border-white/20 text-white text-[10px] md:text-xs uppercase tracking-luxe shadow-lg whitespace-nowrap">
+                      <Camera className="w-3 h-3 md:w-3.5 md:h-3.5" />
+                      +{photos.length - 3} photos
+                    </span>
+                  </span>
+                </>
               )}
             </button>
           </div>
