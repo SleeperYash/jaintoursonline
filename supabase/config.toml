@@ -2,3 +2,6 @@ project_id = "bjiqozjjffhzualmlncw"
 
 [functions.destination-guide]
 verify_jwt = false
+
+[functions.travel-chat]
+verify_jwt = false
