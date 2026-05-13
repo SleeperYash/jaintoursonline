@@ -112,11 +112,6 @@ const DestinationDetail = () => {
             <h1 className="font-serif text-2xl sm:text-3xl md:text-5xl lg:text-6xl text-foreground leading-[1.1]">{d.name}</h1>
             <p className="mt-2 md:mt-3 text-sm md:text-lg text-foreground/70 font-light max-w-2xl">{d.tagline}</p>
 
-            <div className="mt-3 md:mt-4 flex items-center gap-1.5">
-              {[...Array(5)].map((_, i) => <Star key={i} className="w-3.5 h-3.5 md:w-4 md:h-4 fill-gold text-gold" />)}
-              <span className="text-xs md:text-sm text-foreground/70 ml-1">4.9 · 142 reviews</span>
-            </div>
-
             <div className="mt-4 md:mt-6 flex flex-wrap gap-1.5 md:gap-2">
               <span className="inline-flex items-center gap-1.5 md:gap-2 px-2.5 md:px-4 py-1.5 md:py-2 rounded-full bg-card border border-border text-[10px] md:text-xs uppercase tracking-luxe text-foreground/80">
                 <Clock className="w-3 h-3 md:w-3.5 md:h-3.5 text-gold" /> {d.duration}
@@ -186,30 +181,6 @@ const DestinationDetail = () => {
               ) : !guideLoading ? (
                 <p className="text-sm text-foreground/60">Itinerary will be generated when available.</p>
               ) : null}
-            </div>
-
-            {/* Best time to visit */}
-            <div className="mt-10 md:mt-14">
-              <p className="text-[10px] md:text-xs uppercase tracking-luxe text-gold mb-2 md:mb-3">Best time to visit</p>
-              <h2 className="font-serif text-2xl md:text-4xl text-foreground mb-4 md:mb-6">When to go</h2>
-              <div className="grid grid-cols-6 md:grid-cols-12 gap-1.5 md:gap-2">
-                {MONTHS.map((m, i) => {
-                  const isBest = bestMonths.has(i + 1);
-                  return (
-                    <div
-                      key={m}
-                      className={`text-center py-2 md:py-3 rounded-md md:rounded-lg border text-[10px] md:text-xs uppercase tracking-luxe transition-all ${
-                        isBest
-                          ? "bg-emerald-deep/15 border-emerald-deep text-emerald-deep font-semibold"
-                          : "bg-card border-border/60 text-foreground/50"
-                      }`}
-                    >
-                      {m}
-                    </div>
-                  );
-                })}
-              </div>
-              <p className="mt-2 md:mt-3 text-[10px] md:text-xs text-foreground/60">Months in green are recommended for travel.</p>
             </div>
 
             {/* What's included */}
