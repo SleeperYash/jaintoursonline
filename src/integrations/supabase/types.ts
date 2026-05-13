@@ -14,6 +14,60 @@ export type Database = {
   }
   public: {
     Tables: {
+      chat_leads: {
+        Row: {
+          budget: string | null
+          conversation: Json
+          created_at: string
+          departure_city: string | null
+          destination: string | null
+          email: string | null
+          generated_package: Json | null
+          id: string
+          name: string | null
+          phone: string | null
+          preferences: string | null
+          travel_dates: string | null
+          travelers: string | null
+          trip_type: string | null
+          updated_at: string
+        }
+        Insert: {
+          budget?: string | null
+          conversation?: Json
+          created_at?: string
+          departure_city?: string | null
+          destination?: string | null
+          email?: string | null
+          generated_package?: Json | null
+          id?: string
+          name?: string | null
+          phone?: string | null
+          preferences?: string | null
+          travel_dates?: string | null
+          travelers?: string | null
+          trip_type?: string | null
+          updated_at?: string
+        }
+        Update: {
+          budget?: string | null
+          conversation?: Json
+          created_at?: string
+          departure_city?: string | null
+          destination?: string | null
+          email?: string | null
+          generated_package?: Json | null
+          id?: string
+          name?: string | null
+          phone?: string | null
+          preferences?: string | null
+          travel_dates?: string | null
+          travelers?: string | null
+          trip_type?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       client_reviews: {
         Row: {
           created_at: string
