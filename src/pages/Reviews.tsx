@@ -5,11 +5,13 @@ import { clientReviews } from "@/data/clientPhotos";
 import { BRAND } from "@/lib/brand";
 import { useSeo } from "@/hooks/useSeo";
 import { useReveal } from "@/hooks/useReveal";
+import { useClientReviews, type DisplayReview } from "@/hooks/useClientReviews";
 import { Star, ExternalLink, MapPin, Quote } from "lucide-react";
 import { GoogleRatingBadge, VerifiedTag } from "@/components/site/reviews/GoogleBadge";
 import ReviewsCardStack from "@/components/site/home/ReviewsCardStack";
 
 const Reviews = () => {
+  const { display: dbReviews } = useClientReviews();
   useSeo({
     title: "Guest Reviews — 4.9★ on Google | Jain Tours & Travels Mumbai",
     description:
@@ -18,6 +20,8 @@ const Reviews = () => {
   });
 
   const total = ratingDistribution.reduce((s, r) => s + r.count, 0);
+  const galleryReviews = dbReviews.filter((r) => r.image);
+  const wallReviews = dbReviews.length > 0 ? dbReviews : reviews;
 
   return (
     <SiteLayout>
@@ -75,10 +79,10 @@ const Reviews = () => {
       <ReviewsCardStack />
 
       {/* Photo gallery wall */}
-      <PhotoGallery />
+      <PhotoGallery items={galleryReviews.length > 0 ? galleryReviews : clientReviews} />
 
       {/* Text-only reviews wall */}
-      <ReviewWall />
+      <ReviewWall items={wallReviews} />
 
       {/* CTA */}
       <section className="container py-24 text-center">
@@ -101,7 +105,10 @@ const Reviews = () => {
   );
 };
 
-const PhotoGallery = () => {
+type ReviewDisplayItem = DisplayReview | (typeof clientReviews)[number];
+type ReviewWallItem = DisplayReview | (typeof reviews)[number];
+
+const PhotoGallery = ({ items }: { items: ReviewDisplayItem[] }) => {
   const ref = useReveal<HTMLDivElement>();
   return (
     <section className="container py-20">
@@ -112,15 +119,15 @@ const PhotoGallery = () => {
         </h2>
       </div>
       <div ref={ref} className="reveal grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
-        {clientReviews.map((c, i) => (
+        {items.map((c, i) => (
           <figure
-            key={i}
+            key={`${c.name}-${i}`}
             className={`group relative overflow-hidden rounded-xl border border-gold/10 bg-card shadow-luxe ${
               i % 7 === 0 ? "row-span-2 aspect-[3/4]" : "aspect-square"
             }`}
           >
             <img
-              src={c.image}
+              src={c.image ?? ""}
               alt={`${c.name} in ${c.destination}`}
               loading="lazy"
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
@@ -149,7 +156,7 @@ const PhotoGallery = () => {
   );
 };
 
-const ReviewWall = () => {
+const ReviewWall = ({ items }: { items: ReviewWallItem[] }) => {
   const ref = useReveal<HTMLDivElement>();
   return (
     <section className="container py-12">
@@ -160,9 +167,9 @@ const ReviewWall = () => {
         </h2>
       </div>
       <div ref={ref} className="reveal columns-1 md:columns-2 lg:columns-3 gap-6 [column-fill:_balance]">
-        {reviews.map((r) => (
+        {items.map((r, i) => (
           <figure
-            key={r.name}
+            key={`${r.name}-${i}`}
             className="break-inside-avoid mb-6 bg-card border border-gold/10 rounded-xl p-7 hover:border-gold/30 transition-colors relative"
           >
             <Quote className="absolute top-5 right-5 w-7 h-7 text-gold/15" />
@@ -182,7 +189,7 @@ const ReviewWall = () => {
                 <div>
                   <p className="text-sm text-foreground">{r.name}</p>
                   <p className="text-[10px] text-muted-foreground tracking-wide uppercase">
-                    {r.source} · {r.date}
+                    Google · {r.date}
                   </p>
                 </div>
               </div>
