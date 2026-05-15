@@ -79,10 +79,10 @@ const Destinations = () => {
   return (
     <SiteLayout>
       <div className="pt-32 pb-6 container">
-        <p className="text-xs tracking-luxe uppercase text-gold text-center">Curated Worldwide</p>
+        <p className="tracking-luxe uppercase text-gold text-center text-base font-serif font-semibold bg-inherit">Curated Worldwide</p>
       </div>
 
-      <div className="container pb-4">
+      <div className="container pb-[10px]">
         <div role="tablist" aria-label="Filter destinations" className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
           {filterPills.map(({ key, label, icon: Icon }) => (
             <button
@@ -151,7 +151,7 @@ const DestinationGroup = ({
   const Icon = styles.icon;
 
   return (
-    <section className="container py-16 md:py-20">
+    <section className="container py-16 md:py-20 pt-[60px]">
       <div className={`flex items-end justify-between gap-6 mb-10 border-b ${styles.separator} pb-6`}>
         <div>
           <p className={`flex items-center gap-2 text-[11px] tracking-luxe uppercase mb-2 ${styles.text}`}>
