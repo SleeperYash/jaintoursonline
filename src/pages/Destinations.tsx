@@ -111,23 +111,27 @@ const DestinationsContent = ({ filter }: { filter: FilterKey }) => {
   return (
     <div key={filter} className="transition-opacity duration-500 animate-in fade-in">
       {(filter === "all" || filter === "domestic") && (
-        <DestinationGroup
-          category="domestic"
-          eyebrow="Domestic"
-          title="India, intimately known."
-          list={domesticDestinations}
-          covers={covers}
-        />
+        <div className="container py-16 md:py-20 pt-0 pb-[50px]">
+          <DestinationGroup
+            category="domestic"
+            eyebrow="Domestic"
+            title="India, intimately known."
+            list={domesticDestinations}
+            covers={covers}
+          />
+        </div>
       )}
 
       {(filter === "all" || filter === "international") && (
-        <DestinationGroup
-          category="international"
-          eyebrow="International"
-          title="The world, quietly arranged."
-          list={internationalDestinations}
-          covers={covers}
-        />
+        <div className="container py-16 md:py-20 pt-[15px]">
+          <DestinationGroup
+            category="international"
+            eyebrow="International"
+            title="The world, quietly arranged."
+            list={internationalDestinations}
+            covers={covers}
+          />
+        </div>
       )}
     </div>
   );
@@ -151,7 +155,7 @@ const DestinationGroup = ({
   const Icon = styles.icon;
 
   return (
-    <section className="container py-16 md:py-20 pt-[30px]">
+    <section>
       <div className={`flex items-end justify-between gap-6 mb-10 border-b ${styles.separator} pb-6`}>
         <div>
           <p className={`flex items-center gap-2 text-[11px] tracking-luxe uppercase mb-2 ${styles.text}`}>
