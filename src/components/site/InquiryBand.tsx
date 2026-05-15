@@ -6,7 +6,7 @@ import { useReveal } from "@/hooks/useReveal";
 const InquiryBand = () => {
   const ref = useReveal<HTMLDivElement>();
   return (
-    <section className="relative py-24 md:py-32 bg-emerald-deep overflow-hidden">
+    <section className="relative py-24 md:py-32 bg-emerald-deep overflow-hidden pt-[50px] pb-[50px]">
       <div className="absolute inset-0 opacity-[0.04] pointer-events-none"
            style={{ backgroundImage: "radial-gradient(circle at 20% 20%, hsl(var(--gold)) 0%, transparent 40%)" }} />
       <div ref={ref} className="reveal container text-center max-w-3xl">

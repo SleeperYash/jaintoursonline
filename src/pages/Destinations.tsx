@@ -123,7 +123,7 @@ const DestinationsContent = ({ filter }: { filter: FilterKey }) => {
       )}
 
       {(filter === "all" || filter === "international") && (
-        <div className="container py-16 md:py-20 pt-[15px]">
+        <div className="container py-16 md:py-20 pt-0 pb-[80px]">
           <DestinationGroup
             category="international"
             eyebrow="International"
