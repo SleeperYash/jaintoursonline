@@ -2,24 +2,69 @@ import { Link } from "react-router-dom";
 import { MapPin, Phone, Mail, Clock, Star } from "lucide-react";
 import ManageDestinationDialog from "@/components/site/ManageDestinationDialog";
 import { BRAND, waLink } from "@/lib/brand";
+import jainLogo from "@/assets/jain-tours-logo.jpeg";
+
+const InstagramIcon = () => (
+  <svg viewBox="0 0 32 32" className="w-6 h-6" aria-hidden="true">
+    <defs>
+      <radialGradient id="ig-grad" cx="30%" cy="107%" r="150%">
+        <stop offset="0%" stopColor="#fdf497" />
+        <stop offset="5%" stopColor="#fdf497" />
+        <stop offset="45%" stopColor="#fd5949" />
+        <stop offset="60%" stopColor="#d6249f" />
+        <stop offset="90%" stopColor="#285AEB" />
+      </radialGradient>
+    </defs>
+    <rect x="2" y="2" width="28" height="28" rx="7" fill="url(#ig-grad)" />
+    <rect x="8" y="8" width="16" height="16" rx="5" fill="none" stroke="#fff" strokeWidth="2" />
+    <circle cx="16" cy="16" r="4" fill="none" stroke="#fff" strokeWidth="2" />
+    <circle cx="22" cy="10" r="1.4" fill="#fff" />
+  </svg>
+);
+
+const YouTubeIcon = () => (
+  <svg viewBox="0 0 32 32" className="w-7 h-7" aria-hidden="true">
+    <rect x="1" y="6" width="30" height="20" rx="5" fill="#FF0000" />
+    <polygon points="13,11 23,16 13,21" fill="#fff" />
+  </svg>
+);
 
 const Footer = () => {
   return (
     <footer className="border-t border-border/60 bg-ink mt-32">
       <div className="container py-20 grid gap-12 md:grid-cols-2 lg:grid-cols-4">
         <div>
-          <Link to="/" className="block">
-            <span className="font-serif text-2xl text-foreground">
-              Jain <span className="text-gold italic text-xl">Tours & Travels</span>
-            </span>
-            <p className="tracking-luxe uppercase text-muted-foreground mt-1 text-xs">
-              · Mumbai
-            </p>
+          <Link to="/" className="block" aria-label={BRAND.name}>
+            <img
+              src={jainLogo}
+              alt={`${BRAND.name} logo`}
+              className="w-56 md:w-64 h-auto rounded-lg bg-white p-3 shadow-luxe"
+            />
           </Link>
           <p className="mt-6 text-sm text-muted-foreground leading-relaxed font-light">
             Curating extraordinary journeys for discerning travellers across India and the world.
           </p>
-          <div className="mt-6 flex items-center gap-2 text-gold">
+          <div className="mt-5 flex items-center gap-3">
+            <a
+              href="https://www.instagram.com/jain_tours_n_travels?igsh=MWR6aHN0bjR1M2U0YQ=="
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+              className="hover:scale-110 transition-transform"
+            >
+              <InstagramIcon />
+            </a>
+            <a
+              href="https://youtube.com/@jaintours99?si=rNeje8McJxUIPV8n"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="YouTube"
+              className="hover:scale-110 transition-transform"
+            >
+              <YouTubeIcon />
+            </a>
+          </div>
+          <div className="mt-5 flex items-center gap-2 text-gold">
             {Array.from({ length: 5 }).map((_, i) => (
               <Star key={i} className="w-4 h-4 fill-current" />
             ))}
