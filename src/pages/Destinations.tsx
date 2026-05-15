@@ -78,7 +78,7 @@ const Destinations = () => {
 
   return (
     <SiteLayout>
-      <div className="pt-32 pb-6 container">
+      <div className="pb-6 container pt-[100px]">
         <p className="tracking-luxe uppercase text-gold text-center text-base font-serif font-semibold bg-inherit">Curated Worldwide</p>
       </div>
 
@@ -151,7 +151,7 @@ const DestinationGroup = ({
   const Icon = styles.icon;
 
   return (
-    <section className="container py-16 md:py-20 pt-[60px]">
+    <section className="container py-16 md:py-20 pt-[30px]">
       <div className={`flex items-end justify-between gap-6 mb-10 border-b ${styles.separator} pb-6`}>
         <div>
           <p className={`flex items-center gap-2 text-[11px] tracking-luxe uppercase mb-2 ${styles.text}`}>
