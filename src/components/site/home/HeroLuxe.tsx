@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, Star } from "lucide-react";
 import { BRAND } from "@/lib/brand";
+import heroBg from "@/assets/hero-tropical-plane.jpg";
 
 const HeroLuxe = () => {
   return (
@@ -8,12 +9,12 @@ const HeroLuxe = () => {
       {/* Background image with overlay */}
       <div className="absolute inset-0">
         <img
-          src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=2400&q=80"
-          alt="Luxury travel landscape"
-          className="w-full h-full object-cover opacity-40 animate-[ken-burns_20s_ease-in-out_infinite_alternate]"
+          src={heroBg}
+          alt="Aerial view of an airplane over a tropical island — luxury travel"
+          className="w-full h-full object-cover opacity-70 animate-[ken-burns_20s_ease-in-out_infinite_alternate]"
           loading="eager"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/60 to-background" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/55 via-background/40 to-background" />
         <div
           className="absolute inset-0 opacity-30"
           style={{
