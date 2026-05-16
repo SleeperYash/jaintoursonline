@@ -12,32 +12,32 @@
 @layer base {
   :root {
     /* Luxurious navy palette with gold accents */
-    --background: 220 50% 10%;           /* deep navy */
+    --background: 217 100% 21%;          /* imperial blue #00296b */
     --foreground: 45 60% 92%;            /* warm ivory/cream */
 
-    --card: 220 45% 14%;                 /* lifted navy */
+    --card: 217 80% 26%;                 /* lifted imperial */
     --card-foreground: 45 60% 92%;
 
-    --popover: 220 50% 12%;
+    --popover: 217 90% 23%;
     --popover-foreground: 45 60% 92%;
 
     --primary: 45 80% 60%;               /* rich gold */
-    --primary-foreground: 220 50% 10%;
+    --primary-foreground: 217 100% 21%;
 
-    --secondary: 220 40% 18%;            /* navy panel */
+    --secondary: 217 70% 30%;            /* imperial panel */
     --secondary-foreground: 45 60% 92%;
 
-    --muted: 220 35% 20%;
+    --muted: 217 60% 32%;
     --muted-foreground: 45 25% 78%;      /* readable soft cream */
 
     --accent: 45 85% 65%;                /* warm gold */
-    --accent-foreground: 220 50% 10%;
+    --accent-foreground: 217 100% 21%;
 
     --destructive: 0 70% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 35% 22%;
-    --input: 220 35% 18%;
+    --border: 217 55% 35%;
+    --input: 217 65% 28%;
     --ring: 45 80% 60%;
 
     --radius: 0.5rem;
@@ -45,49 +45,49 @@
     /* Brand-specific tokens — gold luxury */
     --gold: 45 85% 62%;                  /* signature gold */
     --gold-deep: 38 75% 50%;              /* deep antique gold */
-    --emerald-deep: 220 45% 16%;          /* deep navy panel */
-    --ink: 220 50% 8%;
+    --emerald-deep: 217 85% 24%;          /* deep imperial panel */
+    --ink: 217 100% 14%;
 
     /* Category accents on navy */
     --accent-domestic: 38 80% 60%;        /* warm gold-amber */
-    --accent-domestic-soft: 220 40% 20%;
+    --accent-domestic-soft: 217 65% 28%;
     --accent-international: 200 70% 65%;  /* sky/teal blue */
-    --accent-international-soft: 220 40% 20%;
+    --accent-international-soft: 217 65% 28%;
 
-    --gradient-hero: linear-gradient(180deg, hsl(220 50% 8% / 0.2) 0%, hsl(220 50% 8% / 0.55) 60%, hsl(220 50% 8% / 0.92) 100%);
+    --gradient-hero: linear-gradient(180deg, hsl(217 100% 14% / 0.2) 0%, hsl(217 100% 14% / 0.55) 60%, hsl(217 100% 14% / 0.92) 100%);
     --gradient-gold: linear-gradient(135deg, hsl(45 85% 65%), hsl(38 75% 50%));
-    --shadow-luxe: 0 20px 60px -15px hsl(220 60% 4% / 0.6);
+    --shadow-luxe: 0 20px 60px -15px hsl(217 100% 8% / 0.6);
     --shadow-gold: 0 15px 45px -15px hsl(45 85% 50% / 0.45);
 
-    --sidebar-background: 220 50% 10%;
+    --sidebar-background: 217 100% 21%;
     --sidebar-foreground: 45 60% 92%;
     --sidebar-primary: 45 80% 60%;
-    --sidebar-primary-foreground: 220 50% 10%;
-    --sidebar-accent: 220 40% 18%;
+    --sidebar-primary-foreground: 217 100% 21%;
+    --sidebar-accent: 217 70% 30%;
     --sidebar-accent-foreground: 45 60% 92%;
-    --sidebar-border: 220 35% 22%;
+    --sidebar-border: 217 55% 35%;
     --sidebar-ring: 45 80% 60%;
   }
 
   .dark {
-    --background: 220 50% 10%;
+    --background: 217 100% 21%;
     --foreground: 45 60% 92%;
-    --card: 220 45% 14%;
+    --card: 217 80% 26%;
     --card-foreground: 45 60% 92%;
-    --popover: 220 50% 12%;
+    --popover: 217 90% 23%;
     --popover-foreground: 45 60% 92%;
     --primary: 45 80% 60%;
-    --primary-foreground: 220 50% 10%;
-    --secondary: 220 40% 18%;
+    --primary-foreground: 217 100% 21%;
+    --secondary: 217 70% 30%;
     --secondary-foreground: 45 60% 92%;
-    --muted: 220 35% 20%;
+    --muted: 217 60% 32%;
     --muted-foreground: 45 25% 78%;
     --accent: 45 85% 65%;
-    --accent-foreground: 220 50% 10%;
+    --accent-foreground: 217 100% 21%;
     --destructive: 0 70% 55%;
     --destructive-foreground: 0 0% 100%;
-    --border: 220 35% 22%;
-    --input: 220 35% 18%;
+    --border: 217 55% 35%;
+    --input: 217 65% 28%;
     --ring: 45 80% 60%;
   }
 }
@@ -191,7 +191,7 @@
 
   /* Globe sphere — soft outer glow */
   .globe-sphere {
-    background: radial-gradient(circle at 30% 30%, hsl(220 50% 18%), hsl(220 70% 6%));
+    background: radial-gradient(circle at 30% 30%, hsl(217 80% 28%), hsl(217 100% 10%));
   }
 }
 
