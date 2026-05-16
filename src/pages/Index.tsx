@@ -1,7 +1,9 @@
 import SiteLayout from "@/components/site/SiteLayout";
 import HeroLuxe from "@/components/site/home/HeroLuxe";
 import HeroTrustBadges from "@/components/site/home/HeroTrustBadges";
-import FeaturedDestinations from "@/components/site/home/FeaturedDestinations";
+import TopTrending from "@/components/site/home/TopTrending";
+import DealsYouCantMiss from "@/components/site/home/DealsYouCantMiss";
+import HandpickedPackages from "@/components/site/home/HandpickedPackages";
 import HowItWorks from "@/components/site/home/HowItWorks";
 import ReviewsCardStack from "@/components/site/home/ReviewsCardStack";
 import InquiryBand from "@/components/site/InquiryBand";
@@ -19,7 +21,9 @@ const Index = () => {
     <SiteLayout>
       <HeroLuxe />
       <HeroTrustBadges />
-      <FeaturedDestinations />
+      <TopTrending />
+      <DealsYouCantMiss />
+      <HandpickedPackages />
       <HowItWorks />
       <ReviewsCardStack />
       <InquiryBand />
