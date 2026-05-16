@@ -30,54 +30,29 @@ const TopTrending = () => {
           </Link>
         </div>
 
-        {/* Mobile: horizontal swipe carousel */}
+        {/* Single-row horizontal carousel (all viewports) */}
         <div
           ref={ref}
-          className="reveal -mx-4 px-4 flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 md:hidden scrollbar-hide"
+          className="reveal -mx-4 px-4 flex gap-3 sm:gap-4 overflow-x-auto snap-x snap-mandatory pb-4 scrollbar-hide"
           style={{ scrollbarWidth: "none" }}
         >
           {items.map((d) => (
             <Link
               key={d.slug}
               to={`/destinations/${d.slug}`}
-              className="group relative shrink-0 w-[78%] snap-start rounded-2xl overflow-hidden border border-border/60 aspect-[4/5] bg-card"
-            >
-              <img src={covers[d.slug] ?? d.image} alt={d.name} loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-              <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/30 to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 p-5">
-                <p className="text-[10px] tracking-luxe uppercase text-gold mb-1">{d.country}</p>
-                <h3 className="font-serif text-2xl text-white leading-tight">{d.name}</h3>
-                <p className="mt-1 text-xs text-white/80 line-clamp-1">{d.tagline}</p>
-              </div>
-            </Link>
-          ))}
-        </div>
-
-        {/* Desktop: grid with hover lift */}
-        <div className="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-5">
-          {items.map((d, i) => (
-            <Link
-              key={d.slug}
-              to={`/destinations/${d.slug}`}
-              className="group relative block overflow-hidden rounded-2xl border border-border/60 hover:border-gold/60 bg-card aspect-[4/5] transition-all duration-500 hover:-translate-y-2 hover:shadow-gold"
-              style={{ animationDelay: `${i * 60}ms` }}
+              className="group relative shrink-0 w-[140px] sm:w-[160px] md:w-[180px] snap-start rounded-xl overflow-hidden border border-border/60 hover:border-gold/60 aspect-[3/4] bg-card transition-all duration-500 hover:-translate-y-1 hover:shadow-gold"
             >
               <img
                 src={covers[d.slug] ?? d.image}
                 alt={d.name}
                 loading="lazy"
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-110"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/30 to-transparent" />
-              <span className="absolute top-3 left-3 text-[9px] uppercase tracking-luxe text-gold bg-background/40 backdrop-blur-sm border border-gold/30 px-2 py-1 rounded-full">
-                {d.region}
-              </span>
-              <div className="absolute inset-x-0 bottom-0 p-5">
-                <p className="text-[10px] tracking-luxe uppercase text-white/70 mb-1">{d.country}</p>
-                <h3 className="font-serif text-2xl text-white leading-tight">{d.name}</h3>
-                <span className="mt-3 inline-flex items-center gap-1 text-[10px] uppercase tracking-luxe text-gold opacity-0 group-hover:opacity-100 -translate-y-1 group-hover:translate-y-0 transition-all">
-                  Explore <ArrowUpRight className="w-3 h-3" />
-                </span>
+              <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/25 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-2.5">
+                <h3 className="font-serif text-sm md:text-base text-white leading-tight text-center font-semibold [text-shadow:_0_1px_4px_rgb(0_0_0_/_0.6)]">
+                  {d.name}
+                </h3>
               </div>
             </Link>
           ))}
