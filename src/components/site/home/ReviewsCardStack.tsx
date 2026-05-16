@@ -44,6 +44,7 @@ const ReviewsCardStack = () => {
 
   return (
     <section
+      id="reviews"
       className="relative py-24 md:py-32 overflow-hidden bg-background"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}

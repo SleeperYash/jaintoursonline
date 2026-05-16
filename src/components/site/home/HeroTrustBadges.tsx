@@ -34,8 +34,21 @@ const Row = () => (
 );
 
 const HeroTrustBadges = () => {
+  const scrollToReviews = () => {
+    document.getElementById("reviews")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
   return (
-    <section className="container -mt-8 md:-mt-12 relative z-20 overflow-hidden">
+    <section
+      onClick={scrollToReviews}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && scrollToReviews()}
+      aria-label="Read reviews from our guests"
+      className="container -mt-8 md:-mt-12 relative z-20 overflow-hidden cursor-pointer group rounded-2xl transition-all hover:opacity-95"
+    >
+      <p className="text-center text-[10px] tracking-luxe uppercase text-gold/80 mb-3 opacity-0 group-hover:opacity-100 transition-opacity">
+        Built on Trust · Tap to read guest reviews
+      </p>
       {/* Mobile: slower marquee, larger min-width so ~1.5 badges fit per view */}
       <div className="md:hidden flex animate-marquee-x pause-on-hover" style={{ animationDuration: "32s" }}>
         <div className="flex shrink-0"><Row /></div>
