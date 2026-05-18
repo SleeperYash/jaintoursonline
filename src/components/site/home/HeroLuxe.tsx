@@ -26,7 +26,7 @@ const HeroLuxe = () => {
 
       {/* Content */}
       <div className="relative z-10 container text-center px-6 py-32 animate-fade-in">
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-gold/40 bg-background/40 backdrop-blur-sm mb-10">
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-gold/40 bg-background/40 backdrop-blur-sm mb-10 bg-slate-50">
           <Star className="w-3.5 h-3.5 fill-gold text-gold" />
           <span className="text-xs tracking-wide text-foreground/90">
             {BRAND.rating} · Reviews
@@ -38,7 +38,7 @@ const HeroLuxe = () => {
           <span className="italic text-amber-400">Crafted in Gold.</span>
         </h1>
 
-        <p className="mt-8 max-w-2xl mx-auto text-base md:text-lg text-muted-foreground font-light leading-relaxed">
+        <p className="mt-8 max-w-2xl mx-auto text-base md:text-lg text-muted-foreground leading-relaxed font-medium shadow-md text-orange-200">
           From Mumbai to the world — <br /> curated holidays, seamless bookings, and unforgettable journeys tailored just for you.
         </p>
 
@@ -52,7 +52,7 @@ const HeroLuxe = () => {
           </Link>
           <Link
             to="/destinations"
-            className="inline-flex items-center px-8 py-4 rounded-full border border-gold/60 text-foreground text-xs uppercase tracking-luxe hover:bg-gold/10 hover:border-gold transition-all"
+            className="inline-flex items-center px-8 py-4 rounded-full border border-gold/60 text-foreground text-xs uppercase tracking-luxe hover:bg-gold/10 hover:border-gold transition-all bg-blue-200 font-normal"
           >
             Explore Destinations
           </Link>
