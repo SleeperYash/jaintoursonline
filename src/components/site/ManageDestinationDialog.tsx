@@ -27,6 +27,7 @@ import {
   Pencil,
   Crop as CropIcon,
   X,
+  Tag,
 } from "lucide-react";
 import { useAdminAuth, fileToBase64, adminPublicUrl } from "@/hooks/useAdminAuth";
 import {
@@ -39,6 +40,7 @@ import { cn } from "@/lib/utils";
 import { destinations as ALL_DESTINATIONS } from "@/data/destinations";
 import EditReviewDialog from "./EditReviewDialog";
 import ReviewPhotoEditor from "./ReviewPhotoEditor";
+import DealsAdminPanel from "./DealsAdminPanel";
 
 type Itinerary = {
   id: string;
@@ -470,7 +472,7 @@ const ManageDestinationDialog = ({
             </form>
           ) : (
             <Tabs defaultValue="itinerary" className="mt-2">
-              <TabsList className="grid w-full grid-cols-3">
+              <TabsList className="grid w-full grid-cols-4">
                 <TabsTrigger value="itinerary" className="text-xs uppercase tracking-luxe">
                   <FileText className="w-4 h-4 mr-2" /> Itinerary
                 </TabsTrigger>
@@ -479,6 +481,9 @@ const ManageDestinationDialog = ({
                 </TabsTrigger>
                 <TabsTrigger value="reviews" className="text-xs uppercase tracking-luxe">
                   <MessageSquareQuote className="w-4 h-4 mr-2" /> Reviews
+                </TabsTrigger>
+                <TabsTrigger value="deals" className="text-xs uppercase tracking-luxe">
+                  <Tag className="w-4 h-4 mr-2" /> Deals
                 </TabsTrigger>
               </TabsList>
 
