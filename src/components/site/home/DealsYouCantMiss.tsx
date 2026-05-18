@@ -16,13 +16,13 @@ const DealsYouCantMiss = () => {
     <section className="py-20 md:py-28 bg-card/30 border-y border-border/40">
       <div className="container">
         <div className="text-center max-w-2xl mx-auto mb-12">
-          <p className="inline-flex items-center gap-2 text-xs tracking-luxe uppercase text-gold mb-3">
+          <p className="inline-flex items-center gap-2 tracking-luxe uppercase text-gold mb-3 font-semibold text-sm">
             <Flame className="w-3.5 h-3.5" /> Limited Time
           </p>
           <h2 className="font-serif text-3xl md:text-5xl text-foreground leading-tight">
             Deals You <span className="italic text-gold">Can't Miss</span>
           </h2>
-          <p className="mt-4 text-sm text-muted-foreground font-light">
+          <p className="mt-4 text-sm text-muted-foreground font-light text-zinc-900">
             Curated packages with all-inclusive premium experiences.
           </p>
         </div>

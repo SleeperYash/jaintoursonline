@@ -22,7 +22,7 @@ const Row = () => (
         </div>
         <div className="min-w-0">
           <p className="font-serif text-xl md:text-2xl leading-none whitespace-nowrap text-foreground">{value}</p>
-          <p className="tracking-luxe uppercase text-muted-foreground mt-1 text-[9px] md:text-[10px] text-slate-300">{label}</p>
+          <p className="tracking-luxe uppercase text-muted-foreground mt-1 text-[9px] md:text-[10px] text-black font-medium">{label}</p>
         </div>
         <span className="absolute top-2 right-2 w-1 h-1 rounded-full bg-gold/60" />
       </div>
