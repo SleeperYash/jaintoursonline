@@ -11,84 +11,84 @@
 
 @layer base {
   :root {
-    /* Luxurious navy palette with gold accents */
-    --background: 217 100% 21%;          /* imperial blue #00296b */
-    --foreground: 45 60% 92%;            /* warm ivory/cream */
+    /* Light theme — sky-blue primary, navy text, white surfaces */
+    --background: 0 0% 100%;             /* #FFFFFF */
+    --foreground: 222 47% 11%;           /* #0F172A navy */
 
-    --card: 217 80% 26%;                 /* lifted imperial */
-    --card-foreground: 45 60% 92%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
 
-    --popover: 217 90% 23%;
-    --popover-foreground: 45 60% 92%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
 
-    --primary: 45 80% 60%;               /* rich gold */
-    --primary-foreground: 217 100% 21%;
+    --primary: 199 89% 48%;              /* #0EA5E9 sky */
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 217 70% 30%;            /* imperial panel */
-    --secondary-foreground: 45 60% 92%;
+    --secondary: 210 40% 96%;            /* #F1F5F9 */
+    --secondary-foreground: 222 47% 11%;
 
-    --muted: 217 60% 32%;
-    --muted-foreground: 45 25% 78%;      /* readable soft cream */
+    --muted: 214 32% 97%;                /* #F5F7FA */
+    --muted-foreground: 215 16% 47%;     /* #64748B slate */
 
-    --accent: 45 85% 65%;                /* warm gold */
-    --accent-foreground: 217 100% 21%;
+    --accent: 199 89% 48%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 70% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 217 55% 35%;
-    --input: 217 65% 28%;
-    --ring: 45 80% 60%;
+    --border: 214 32% 91%;               /* #E2E8F0 */
+    --input: 214 32% 91%;
+    --ring: 199 89% 48%;
 
     --radius: 0.5rem;
 
-    /* Brand-specific tokens — gold luxury */
-    --gold: 45 85% 62%;                  /* signature gold */
-    --gold-deep: 38 75% 50%;              /* deep antique gold */
-    --emerald-deep: 217 85% 24%;          /* deep imperial panel */
-    --ink: 217 100% 14%;
+    /* Brand-specific tokens — primary accent now sky blue */
+    --gold: 199 89% 48%;                 /* primary accent → sky */
+    --gold-deep: 200 98% 39%;            /* hover darker #0284C7 */
+    --emerald-deep: 214 32% 97%;         /* alt section bg #F5F7FA */
+    --ink: 222 47% 11%;                  /* footer dark navy */
 
-    /* Category accents on navy */
-    --accent-domestic: 38 80% 60%;        /* warm gold-amber */
-    --accent-domestic-soft: 217 65% 28%;
-    --accent-international: 200 70% 65%;  /* sky/teal blue */
-    --accent-international-soft: 217 65% 28%;
+    /* Category accents unified to sky */
+    --accent-domestic: 199 89% 48%;
+    --accent-domestic-soft: 204 100% 97%;
+    --accent-international: 199 89% 48%;
+    --accent-international-soft: 204 100% 97%;
 
-    --gradient-hero: linear-gradient(180deg, hsl(217 100% 14% / 0.2) 0%, hsl(217 100% 14% / 0.55) 60%, hsl(217 100% 14% / 0.92) 100%);
-    --gradient-gold: linear-gradient(135deg, hsl(45 85% 65%), hsl(38 75% 50%));
-    --shadow-luxe: 0 20px 60px -15px hsl(217 100% 8% / 0.6);
-    --shadow-gold: 0 15px 45px -15px hsl(45 85% 50% / 0.45);
+    --gradient-hero: linear-gradient(180deg, hsl(222 47% 11% / 0.2) 0%, hsl(222 47% 11% / 0.55) 60%, hsl(222 47% 11% / 0.85) 100%);
+    --gradient-gold: linear-gradient(135deg, hsl(199 89% 48%), hsl(200 98% 39%));
+    --shadow-luxe: 0 2px 8px hsl(222 47% 11% / 0.06);
+    --shadow-gold: 0 15px 45px -15px hsl(199 89% 48% / 0.35);
 
-    --sidebar-background: 217 100% 21%;
-    --sidebar-foreground: 45 60% 92%;
-    --sidebar-primary: 45 80% 60%;
-    --sidebar-primary-foreground: 217 100% 21%;
-    --sidebar-accent: 217 70% 30%;
-    --sidebar-accent-foreground: 45 60% 92%;
-    --sidebar-border: 217 55% 35%;
-    --sidebar-ring: 45 80% 60%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 222 47% 11%;
+    --sidebar-primary: 199 89% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 40% 96%;
+    --sidebar-accent-foreground: 222 47% 11%;
+    --sidebar-border: 214 32% 91%;
+    --sidebar-ring: 199 89% 48%;
   }
 
   .dark {
-    --background: 217 100% 21%;
-    --foreground: 45 60% 92%;
-    --card: 217 80% 26%;
-    --card-foreground: 45 60% 92%;
-    --popover: 217 90% 23%;
-    --popover-foreground: 45 60% 92%;
-    --primary: 45 80% 60%;
-    --primary-foreground: 217 100% 21%;
-    --secondary: 217 70% 30%;
-    --secondary-foreground: 45 60% 92%;
-    --muted: 217 60% 32%;
-    --muted-foreground: 45 25% 78%;
-    --accent: 45 85% 65%;
-    --accent-foreground: 217 100% 21%;
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 199 89% 48%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 214 32% 97%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 199 89% 48%;
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 70% 55%;
     --destructive-foreground: 0 0% 100%;
-    --border: 217 55% 35%;
-    --input: 217 65% 28%;
-    --ring: 45 80% 60%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 199 89% 48%;
   }
 }
 
@@ -191,7 +191,7 @@
 
   /* Globe sphere — soft outer glow */
   .globe-sphere {
-    background: radial-gradient(circle at 30% 30%, hsl(217 80% 28%), hsl(217 100% 10%));
+    background: radial-gradient(circle at 30% 30%, hsl(199 89% 55%), hsl(222 47% 11%));
   }
 }
 
