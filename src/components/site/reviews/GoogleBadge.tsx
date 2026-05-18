@@ -10,7 +10,7 @@ const GoogleG = ({ className = "w-3.5 h-3.5" }: { className?: string }) => (
 );
 
 export const GoogleRatingBadge = ({ rating = 4.9, count = 142 }: { rating?: number; count?: number }) => (
-  <div className="inline-flex items-center gap-2 bg-background/80 backdrop-blur-md border border-gold/30 rounded-full pl-2 pr-3 py-1.5 shadow-sm">
+  <div className="inline-flex items-center gap-2 bg-background/80 backdrop-blur-md border border-gold/30 rounded-full pl-2 pr-3 py-1.5 shadow-sm text-base">
     <GoogleG />
     <span className="text-xs font-medium text-foreground tabular-nums">{rating.toFixed(1)}</span>
     <div className="flex gap-0.5">

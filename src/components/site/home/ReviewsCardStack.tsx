@@ -61,7 +61,7 @@ const ReviewsCardStack = () => {
           <div className="flex justify-center mb-5">
             <GoogleRatingBadge rating={4.9} count={142} />
           </div>
-          <p className="text-xs tracking-luxe uppercase text-gold mb-3">Real Travellers · Real Moments</p>
+          <p className="text-xs tracking-luxe uppercase text-gold mb-3 font-semibold">Real Travellers · Real Moments</p>
           <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl text-foreground leading-tight">
             Postcards from <span className="italic text-gold">our guests</span>
           </h2>
@@ -139,7 +139,7 @@ const ReviewsCardStack = () => {
                         <Star key={k} className="w-3.5 h-3.5 fill-gold text-gold" />
                       ))}
                     </div>
-                    <blockquote className="font-serif text-lg md:text-xl lg:text-2xl text-foreground leading-snug italic">
+                    <blockquote className="font-serif text-lg md:text-xl lg:text-2xl text-foreground leading-snug italic text-slate-300">
                       "{r.text}"
                     </blockquote>
                     <div className="mt-5 flex items-center justify-between gap-4">
@@ -148,7 +148,7 @@ const ReviewsCardStack = () => {
                           {r.initials}
                         </div>
                         <div>
-                          <p className="text-sm text-foreground font-medium">{r.name}</p>
+                          <p className="text-sm text-foreground font-medium text-slate-300">{r.name}</p>
                           <p className="text-[10px] text-muted-foreground tracking-wide uppercase">
                             Google · {r.date}
                           </p>

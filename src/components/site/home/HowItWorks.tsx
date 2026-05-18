@@ -42,7 +42,7 @@ const HowItWorks = () => {
 
       <div className="container relative">
         <div className="text-center max-w-2xl mx-auto mb-12">
-          <p className="text-[11px] tracking-luxe uppercase text-gold mb-3">How It Works</p>
+          <p className="text-[11px] tracking-luxe uppercase text-gold mb-3 font-semibold">How It Works</p>
           <h2 className="font-serif text-2xl md:text-3xl lg:text-4xl text-foreground leading-tight">
             Your Journey in <span className="italic text-gold">4 Steps</span>
           </h2>
@@ -79,14 +79,14 @@ const HowItWorks = () => {
                   transitionDelay: `${i * 180 + 200}ms`,
                 }}
               >
-                <div className="relative mx-auto w-16 h-16 rounded-full border-2 border-gold/60 bg-background flex items-center justify-center transition-all duration-500 group-hover:border-gold group-hover:-translate-y-1 group-hover:shadow-gold">
+                <div className="relative mx-auto w-16 h-16 rounded-full border-2 border-gold/60 bg-background transition-all duration-500 group-hover:border-gold group-hover:-translate-y-1 group-hover:shadow-gold flex items-center justify-center">
                   <Icon className="w-5 h-5 text-gold" strokeWidth={1.25} />
                   <span className="absolute -top-1.5 -right-1 px-2 py-0.5 rounded-full bg-gold text-primary-foreground text-[9px] font-semibold tracking-wide">
                     {n}
                   </span>
                 </div>
-                <h3 className="font-serif text-lg text-foreground mt-4">{title}</h3>
-                <p className="mt-2 text-xs text-muted-foreground font-light leading-relaxed max-w-[220px] mx-auto">
+                <h3 className="font-serif text-lg text-foreground mt-4 font-extralight">{title}</h3>
+                <p className="mt-2 text-xs text-muted-foreground font-light leading-relaxed max-w-[220px] mx-auto text-zinc-800">
                   {desc}
                 </p>
               </li>
