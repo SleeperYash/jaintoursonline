@@ -15,17 +15,14 @@ const Row = () => (
     {badges.map(({ icon: Icon, value, label }, idx) => (
       <div
         key={`${label}-${idx}`}
-        className={cn(
-          "group relative flex items-center gap-4 px-6 md:px-7 py-5 mx-2 md:mx-3 rounded-xl border shrink-0 min-w-[15rem] md:min-w-0 transition-colors duration-500",
-          "bg-card/80 backdrop-blur-md border-gold/25 shadow-luxe"
-        )}
+        className="group relative px-6 md:px-7 py-5 mx-2 md:mx-3 rounded-xl border shrink-0 min-w-[15rem] md:min-w-0 transition-colors duration-500 bg-card/80 backdrop-blur-md border-gold/25 shadow-luxe flex-row gap-[16px] flex items-center justify-start"
       >
         <div className="shrink-0 w-11 h-11 md:w-12 md:h-12 rounded-full flex items-center justify-center border bg-gold/10 border-gold/30">
           <Icon className="w-5 h-5 text-gold" strokeWidth={1.5} />
         </div>
         <div className="min-w-0">
           <p className="font-serif text-xl md:text-2xl leading-none whitespace-nowrap text-foreground">{value}</p>
-          <p className="mt-1.5 text-[11px] md:text-xs uppercase tracking-luxe whitespace-nowrap text-muted-foreground">{label}</p>
+          <p className="tracking-luxe uppercase text-muted-foreground mt-1 text-[9px] md:text-[10px] text-slate-300">{label}</p>
         </div>
         <span className="absolute top-2 right-2 w-1 h-1 rounded-full bg-gold/60" />
       </div>
