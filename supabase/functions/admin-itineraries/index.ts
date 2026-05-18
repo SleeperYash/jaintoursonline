@@ -447,6 +447,191 @@ Deno.serve(async (req) => {
       return json({ ok: true });
     }
 
+    // ---------- DEALS ----------
+    if (action === "deal_list") {
+      const { data, error } = await supabase
+        .from("deals")
+        .select("*")
+        .order("sort_order", { ascending: true })
+        .order("created_at", { ascending: false });
+      if (error) return json({ error: error.message }, 500);
+      return json({ ok: true, deals: data ?? [] });
+    }
+
+    if (action === "deal_create" || action === "deal_update") {
+      const {
+        id,
+        destination_name,
+        duration,
+        price,
+        price_label,
+        inc_hotel,
+        inc_breakfast,
+        inc_sightseeing,
+        inc_transport,
+        active,
+        sort_order,
+        file_base64,
+        file_name,
+        content_type,
+        remove_image,
+      } = body ?? {};
+
+      let image_path: string | null | undefined = undefined;
+      let oldPathToRemove: string | null = null;
+
+      if (file_base64 && file_name && content_type) {
+        if (!ALLOWED_IMAGE_TYPES.has(String(content_type).toLowerCase())) {
+          return json({ error: "Only JPG, PNG, WEBP or AVIF images allowed" }, 400);
+        }
+        const bin = atob(file_base64);
+        const bytes = new Uint8Array(bin.length);
+        for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+        if (bytes.byteLength > 5 * 1024 * 1024) return json({ error: "Max 5MB per image" }, 400);
+        const safe = String(file_name).replace(/[^a-zA-Z0-9._-]/g, "_");
+        image_path = `deals/${Date.now()}-${safe}`;
+        const { error: upErr } = await supabase.storage
+          .from("itineraries")
+          .upload(image_path, bytes, { contentType: String(content_type), upsert: false });
+        if (upErr) return json({ error: upErr.message }, 500);
+      }
+
+      if (action === "deal_create") {
+        if (!destination_name || !duration || price === undefined || price === null) {
+          return json({ error: "Missing fields" }, 400);
+        }
+        const { data, error: dbErr } = await supabase
+          .from("deals")
+          .insert({
+            destination_name: String(destination_name).trim(),
+            duration: String(duration).trim(),
+            price: Number(price),
+            price_label: price_label ? String(price_label).trim() : undefined,
+            inc_hotel: inc_hotel !== false,
+            inc_breakfast: inc_breakfast !== false,
+            inc_sightseeing: inc_sightseeing !== false,
+            inc_transport: inc_transport !== false,
+            active: active !== false,
+            sort_order: Number(sort_order) || 0,
+            image_path: image_path ?? null,
+          })
+          .select()
+          .single();
+        if (dbErr) {
+          if (image_path) await supabase.storage.from("itineraries").remove([image_path]);
+          return json({ error: dbErr.message }, 500);
+        }
+        return json({ ok: true, deal: data });
+      } else {
+        if (!id) return json({ error: "Missing id" }, 400);
+        const { data: existing } = await supabase
+          .from("deals")
+          .select("image_path")
+          .eq("id", id)
+          .maybeSingle();
+        const updates: Record<string, unknown> = {};
+        if (destination_name !== undefined) updates.destination_name = String(destination_name).trim();
+        if (duration !== undefined) updates.duration = String(duration).trim();
+        if (price !== undefined) updates.price = Number(price);
+        if (price_label !== undefined) updates.price_label = String(price_label).trim();
+        if (inc_hotel !== undefined) updates.inc_hotel = !!inc_hotel;
+        if (inc_breakfast !== undefined) updates.inc_breakfast = !!inc_breakfast;
+        if (inc_sightseeing !== undefined) updates.inc_sightseeing = !!inc_sightseeing;
+        if (inc_transport !== undefined) updates.inc_transport = !!inc_transport;
+        if (active !== undefined) updates.active = !!active;
+        if (sort_order !== undefined) updates.sort_order = Number(sort_order) || 0;
+        if (image_path !== undefined) {
+          updates.image_path = image_path;
+          if (existing?.image_path) oldPathToRemove = existing.image_path;
+        } else if (remove_image && existing?.image_path) {
+          updates.image_path = null;
+          oldPathToRemove = existing.image_path;
+        }
+        const { data, error: updErr } = await supabase
+          .from("deals")
+          .update(updates)
+          .eq("id", id)
+          .select()
+          .single();
+        if (updErr) return json({ error: updErr.message }, 500);
+        if (oldPathToRemove) await supabase.storage.from("itineraries").remove([oldPathToRemove]);
+        return json({ ok: true, deal: data });
+      }
+    }
+
+    if (action === "deal_delete") {
+      const { id } = body ?? {};
+      if (!id) return json({ error: "Missing id" }, 400);
+      const { data: existing } = await supabase
+        .from("deals")
+        .select("image_path")
+        .eq("id", id)
+        .maybeSingle();
+      const { error: delErr } = await supabase.from("deals").delete().eq("id", id);
+      if (delErr) return json({ error: delErr.message }, 500);
+      if (existing?.image_path) await supabase.storage.from("itineraries").remove([existing.image_path]);
+      return json({ ok: true });
+    }
+
+    // ---------- STAMP PHOTOS ----------
+    if (action === "stamp_upload") {
+      const { stamp_key, file_base64, file_name, content_type } = body ?? {};
+      if (!stamp_key || !file_base64 || !file_name || !content_type) {
+        return json({ error: "Missing fields" }, 400);
+      }
+      if (!ALLOWED_IMAGE_TYPES.has(String(content_type).toLowerCase())) {
+        return json({ error: "Only JPG, PNG, WEBP or AVIF images allowed" }, 400);
+      }
+      const bin = atob(file_base64);
+      const bytes = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      if (bytes.byteLength > 5 * 1024 * 1024) return json({ error: "Max 5MB per image" }, 400);
+
+      const safe = String(file_name).replace(/[^a-zA-Z0-9._-]/g, "_");
+      const path = `stamps/${stamp_key}/${Date.now()}-${safe}`;
+      const { error: upErr } = await supabase.storage
+        .from("itineraries")
+        .upload(path, bytes, { contentType: String(content_type), upsert: false });
+      if (upErr) return json({ error: upErr.message }, 500);
+
+      const { data: existing } = await supabase
+        .from("stamp_photos")
+        .select("image_path")
+        .eq("stamp_key", stamp_key)
+        .maybeSingle();
+
+      const { data, error: updErr } = await supabase
+        .from("stamp_photos")
+        .upsert({ stamp_key, image_path: path, updated_at: new Date().toISOString() })
+        .select()
+        .single();
+      if (updErr) {
+        await supabase.storage.from("itineraries").remove([path]);
+        return json({ error: updErr.message }, 500);
+      }
+      if (existing?.image_path) {
+        await supabase.storage.from("itineraries").remove([existing.image_path]);
+      }
+      return json({ ok: true, stamp: data });
+    }
+
+    if (action === "stamp_clear") {
+      const { stamp_key } = body ?? {};
+      if (!stamp_key) return json({ error: "Missing stamp_key" }, 400);
+      const { data: existing } = await supabase
+        .from("stamp_photos")
+        .select("image_path")
+        .eq("stamp_key", stamp_key)
+        .maybeSingle();
+      const { error: updErr } = await supabase
+        .from("stamp_photos")
+        .update({ image_path: null })
+        .eq("stamp_key", stamp_key);
+      if (updErr) return json({ error: updErr.message }, 500);
+      if (existing?.image_path) await supabase.storage.from("itineraries").remove([existing.image_path]);
+      return json({ ok: true });
+    }
+
     return json({ error: "Unknown action" }, 400);
   } catch (err) {
     return json({ error: err instanceof Error ? err.message : "Unknown error" }, 500);
