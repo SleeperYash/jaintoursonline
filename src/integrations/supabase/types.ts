@@ -107,6 +107,57 @@ export type Database = {
         }
         Relationships: []
       }
+      deals: {
+        Row: {
+          active: boolean
+          created_at: string
+          destination_name: string
+          duration: string
+          id: string
+          image_path: string | null
+          inc_breakfast: boolean
+          inc_hotel: boolean
+          inc_sightseeing: boolean
+          inc_transport: boolean
+          price: number
+          price_label: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          destination_name: string
+          duration: string
+          id?: string
+          image_path?: string | null
+          inc_breakfast?: boolean
+          inc_hotel?: boolean
+          inc_sightseeing?: boolean
+          inc_transport?: boolean
+          price: number
+          price_label?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          destination_name?: string
+          duration?: string
+          id?: string
+          image_path?: string | null
+          inc_breakfast?: boolean
+          inc_hotel?: boolean
+          inc_sightseeing?: boolean
+          inc_transport?: boolean
+          price?: number
+          price_label?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       destination_images: {
         Row: {
           content_type: string | null
@@ -221,6 +272,24 @@ export type Database = {
           title?: string
           updated_at?: string
           uploaded_by?: string | null
+        }
+        Relationships: []
+      }
+      stamp_photos: {
+        Row: {
+          image_path: string | null
+          stamp_key: string
+          updated_at: string
+        }
+        Insert: {
+          image_path?: string | null
+          stamp_key: string
+          updated_at?: string
+        }
+        Update: {
+          image_path?: string | null
+          stamp_key?: string
+          updated_at?: string
         }
         Relationships: []
       }
