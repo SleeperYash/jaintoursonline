@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, Star } from "lucide-react";
 import { BRAND } from "@/lib/brand";
-import heroBg from "@/assets/hero-tropical-plane.jpg";
+import heroBg from "@/assets/hero-tropical-beach.jpg";
 
 const HeroLuxe = () => {
   return (
@@ -10,11 +10,11 @@ const HeroLuxe = () => {
       <div className="absolute inset-0">
         <img
           src={heroBg}
-          alt="Aerial view of an airplane over a tropical island — luxury travel"
-          className="w-full h-full object-cover opacity-70 animate-[ken-burns_20s_ease-in-out_infinite_alternate]"
+          alt="Tropical beach at sunset with palm trees and turquoise water — luxury travel"
+          className="w-full h-full object-cover object-[70%_center] sm:object-center animate-[ken-burns_20s_ease-in-out_infinite_alternate]"
           loading="eager"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/55 via-background/40 to-background" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/35 to-black/55" />
         <div
           className="absolute inset-0 opacity-30"
           style={{
