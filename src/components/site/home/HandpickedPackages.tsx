@@ -29,14 +29,14 @@ const HandpickedPackages = () => {
   }, [tab]);
 
   return (
-    <section className="py-20 md:py-28 bg-background">
+    <section className="py-20 md:py-28 bg-background pt-[112px]">
       <div className="container">
         <div className="text-center max-w-2xl mx-auto mb-10">
-          <p className="text-xs tracking-luxe uppercase text-gold mb-3">Quietly Curated</p>
+          <p className="text-xs tracking-luxe uppercase text-gold mb-3 font-semibold">Quietly Curated</p>
           <h2 className="font-serif text-3xl md:text-5xl text-foreground leading-tight">
             Handpicked <span className="italic text-gold">Holiday Packages</span>
           </h2>
-          <p className="mt-4 text-sm text-muted-foreground font-light">
+          <p className="mt-4 text-sm text-muted-foreground font-light text-zinc-800">
             Every destination we offer — designed end-to-end by our travel curators.
           </p>
         </div>

@@ -16,7 +16,7 @@ const FeaturedDestinations = () => {
       <div className="container">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-16">
           <div>
-            <p className="text-xs tracking-luxe uppercase text-gold mb-3">Featured</p>
+            <p className="tracking-luxe uppercase text-gold mb-3 text-sm font-semibold">Featured</p>
             <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl text-foreground leading-tight">
               Signature Experiences
             </h2>

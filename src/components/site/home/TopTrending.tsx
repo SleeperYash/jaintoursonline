@@ -14,11 +14,11 @@ const TopTrending = () => {
     .filter(Boolean) as typeof destinations;
 
   return (
-    <section className="py-20 md:py-28 bg-background">
+    <section className="py-20 md:py-28 bg-background pt-[112px]">
       <div className="container">
         <div className="flex items-end justify-between gap-6 mb-10 md:mb-14">
           <div>
-            <p className="inline-flex items-center gap-2 text-xs tracking-luxe uppercase text-gold mb-3">
+            <p className="inline-flex items-center gap-2 tracking-luxe uppercase text-gold mb-3 text-sm font-semibold">
               <TrendingUp className="w-3.5 h-3.5" /> Trending Now
             </p>
             <h2 className="font-serif text-3xl md:text-5xl text-foreground leading-tight">
