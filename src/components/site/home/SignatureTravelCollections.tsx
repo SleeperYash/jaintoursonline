@@ -213,19 +213,7 @@ const SignatureTravelCollections = () => {
           </div>
 
           {/* RIGHT — 4×2 stamp grid */}
-          <div
-            className="grid gap-3.5"
-            style={{ gridTemplateColumns: "repeat(2, 1fr)" }}
-          >
-            <style>{`
-              @media (min-width: 768px) {
-                .stamp-grid-md { grid-template-columns: repeat(4, 1fr) !important; }
-              }
-            `}</style>
-            <div
-              className="stamp-grid-md contents"
-              style={{ display: "contents" }}
-            />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 content-start">
             {STAMP_SLOTS.map((slot) => {
               const img = photos[slot.key] ?? null;
               return (
