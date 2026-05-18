@@ -982,6 +982,11 @@ const ManageDestinationDialog = ({
                   )}
                 </div>
               </TabsContent>
+
+              {/* DEALS TAB */}
+              <TabsContent value="deals" className="mt-4">
+                <DealsAdminPanel callAdmin={callAdmin} />
+              </TabsContent>
             </Tabs>
           )}
         </DialogContent>
