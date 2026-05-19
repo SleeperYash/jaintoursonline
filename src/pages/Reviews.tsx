@@ -49,7 +49,7 @@ const Reviews = () => {
         <div className="grid lg:grid-cols-3 gap-12 items-center bg-card border border-gold/15 rounded-2xl p-10 md:p-14 shadow-luxe">
           <div className="text-center lg:text-left lg:border-r lg:border-border/60 lg:pr-10">
             <p className="font-serif text-7xl md:text-8xl text-gold leading-none">{BRAND.rating}</p>
-            <div className="flex justify-center lg:justify-start gap-1 text-gold mt-4">
+            <div className="flex justify-center lg:justify-start gap-1 text-rating-star mt-4">
               {Array.from({ length: 5 }).map((_, i) => (
                 <Star key={i} className="w-5 h-5 fill-current" />
               ))}
@@ -173,7 +173,7 @@ const ReviewWall = ({ items }: { items: ReviewWallItem[] }) => {
             className="break-inside-avoid mb-6 bg-card border border-gold/10 rounded-xl p-7 hover:border-gold/30 transition-colors relative"
           >
             <Quote className="absolute top-5 right-5 w-7 h-7 text-gold/15" />
-            <div className="flex gap-1 text-gold mb-4">
+            <div className="flex gap-1 text-rating-star mb-4">
               {Array.from({ length: r.rating }).map((_, i) => (
                 <Star key={i} className="w-3.5 h-3.5 fill-current" />
               ))}

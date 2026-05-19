@@ -15,7 +15,7 @@ export const GoogleRatingBadge = ({ rating = 4.9, count = 142 }: { rating?: numb
     <span className="text-xs font-medium text-foreground tabular-nums">{rating.toFixed(1)}</span>
     <div className="flex gap-0.5">
       {Array.from({ length: 5 }).map((_, i) => (
-        <Star key={i} className="w-2.5 h-2.5 fill-gold text-gold" />
+        <Star key={i} className="w-2.5 h-2.5 fill-rating-star text-rating-star" />
       ))}
     </div>
     <span className="text-[10px] text-muted-foreground tracking-wide">({count})</span>
