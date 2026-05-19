@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -12,8 +12,8 @@
 @layer base {
   :root {
     /* Light theme — sky-blue primary, navy text, white surfaces */
-    --background: 0 0% 100%;             /* #FFFFFF */
-    --foreground: 222 47% 11%;           /* #0F172A navy */
+    --background: 0 0% 100%; /* #FFFFFF */
+    --foreground: 222 47% 11%; /* #0F172A navy */
 
     --card: 0 0% 100%;
     --card-foreground: 222 47% 11%;
@@ -21,14 +21,14 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
 
-    --primary: 199 89% 48%;              /* #0EA5E9 sky */
+    --primary: 199 89% 48%; /* #00296B sky */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96%;            /* #F1F5F9 */
+    --secondary: 210 40% 96%; /* #F1F5F9 */
     --secondary-foreground: 222 47% 11%;
 
-    --muted: 214 32% 97%;                /* #F5F7FA */
-    --muted-foreground: 215 16% 47%;     /* #64748B slate */
+    --muted: 214 32% 97%; /* #F5F7FA */
+    --muted-foreground: 215 16% 47%; /* #64748B slate */
 
     --accent: 199 89% 48%;
     --accent-foreground: 0 0% 100%;
@@ -36,17 +36,17 @@
     --destructive: 0 70% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 214 32% 91%;               /* #E2E8F0 */
+    --border: 214 32% 91%; /* #E2E8F0 */
     --input: 214 32% 91%;
     --ring: 199 89% 48%;
 
     --radius: 0.5rem;
 
     /* Brand-specific tokens — primary accent now sky blue */
-    --gold: 199 89% 48%;                 /* primary accent → sky */
-    --gold-deep: 200 98% 39%;            /* hover darker #0284C7 */
-    --emerald-deep: 214 32% 97%;         /* alt section bg #F5F7FA */
-    --ink: 222 47% 11%;                  /* footer dark navy */
+    --gold: 199 89% 48%; /* primary accent → sky */
+    --gold-deep: 200 98% 39%; /* hover darker #0284C7 */
+    --emerald-deep: 214 32% 97%; /* alt section bg #F5F7FA */
+    --ink: 222 47% 11%; /* footer dark navy */
 
     /* Category accents unified to sky */
     --accent-domestic: 199 89% 48%;
@@ -54,7 +54,12 @@
     --accent-international: 199 89% 48%;
     --accent-international-soft: 204 100% 97%;
 
-    --gradient-hero: linear-gradient(180deg, hsl(222 47% 11% / 0.2) 0%, hsl(222 47% 11% / 0.55) 60%, hsl(222 47% 11% / 0.85) 100%);
+    --gradient-hero: linear-gradient(
+      180deg,
+      hsl(222 47% 11% / 0.2) 0%,
+      hsl(222 47% 11% / 0.55) 60%,
+      hsl(222 47% 11% / 0.85) 100%
+    );
     --gradient-gold: linear-gradient(135deg, hsl(199 89% 48%), hsl(200 98% 39%));
     --shadow-luxe: 0 2px 8px hsl(222 47% 11% / 0.06);
     --shadow-gold: 0 15px 45px -15px hsl(199 89% 48% / 0.35);
@@ -93,32 +98,61 @@
 }
 
 @layer base {
-  * { @apply border-border; }
-  html { scroll-behavior: smooth; }
+  * {
+    @apply border-border;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: "Inter", system-ui, sans-serif;
     font-weight: 400;
     -webkit-font-smoothing: antialiased;
   }
-  h1, h2, h3, h4, h5 {
-    font-family: 'Cormorant Garamond', 'Times New Roman', serif;
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    font-family: "Cormorant Garamond", "Times New Roman", serif;
     font-weight: 500;
     letter-spacing: -0.01em;
   }
-  ::selection { background: hsl(var(--primary) / 0.3); color: hsl(var(--foreground)); }
+  ::selection {
+    background: hsl(var(--primary) / 0.3);
+    color: hsl(var(--foreground));
+  }
 }
 
 @layer utilities {
-  .font-serif { font-family: 'Cormorant Garamond', serif; }
-  .text-gold { color: hsl(var(--gold)); }
-  .bg-gold { background-color: hsl(var(--gold)); }
-  .border-gold { border-color: hsl(var(--gold)); }
-  .gradient-gold { background: var(--gradient-gold); }
-  .gradient-hero { background: var(--gradient-hero); }
-  .shadow-luxe { box-shadow: var(--shadow-luxe); }
-  .shadow-gold { box-shadow: var(--shadow-gold); }
-  .tracking-luxe { letter-spacing: 0.25em; }
+  .font-serif {
+    font-family: "Cormorant Garamond", serif;
+  }
+  .text-gold {
+    color: hsl(var(--gold));
+  }
+  .bg-gold {
+    background-color: hsl(var(--gold));
+  }
+  .border-gold {
+    border-color: hsl(var(--gold));
+  }
+  .gradient-gold {
+    background: var(--gradient-gold);
+  }
+  .gradient-hero {
+    background: var(--gradient-hero);
+  }
+  .shadow-luxe {
+    box-shadow: var(--shadow-luxe);
+  }
+  .shadow-gold {
+    box-shadow: var(--shadow-gold);
+  }
+  .tracking-luxe {
+    letter-spacing: 0.25em;
+  }
 
   .gold-underline {
     @apply relative after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-px after:bg-gold after:transition-all after:duration-500 hover:after:w-full;
@@ -126,7 +160,9 @@
   .reveal {
     opacity: 0;
     transform: translateY(24px);
-    transition: opacity 0.9s ease-out, transform 0.9s ease-out;
+    transition:
+      opacity 0.9s ease-out,
+      transform 0.9s ease-out;
   }
   .reveal.in {
     opacity: 1;
@@ -134,14 +170,30 @@
   }
 
   /* Category accent helpers */
-  .accent-domestic { color: hsl(var(--accent-domestic)); }
-  .bg-accent-domestic { background-color: hsl(var(--accent-domestic)); }
-  .bg-accent-domestic-soft { background-color: hsl(var(--accent-domestic-soft)); }
-  .border-accent-domestic { border-color: hsl(var(--accent-domestic)); }
-  .accent-international { color: hsl(var(--accent-international)); }
-  .bg-accent-international { background-color: hsl(var(--accent-international)); }
-  .bg-accent-international-soft { background-color: hsl(var(--accent-international-soft)); }
-  .border-accent-international { border-color: hsl(var(--accent-international)); }
+  .accent-domestic {
+    color: hsl(var(--accent-domestic));
+  }
+  .bg-accent-domestic {
+    background-color: hsl(var(--accent-domestic));
+  }
+  .bg-accent-domestic-soft {
+    background-color: hsl(var(--accent-domestic-soft));
+  }
+  .border-accent-domestic {
+    border-color: hsl(var(--accent-domestic));
+  }
+  .accent-international {
+    color: hsl(var(--accent-international));
+  }
+  .bg-accent-international {
+    background-color: hsl(var(--accent-international));
+  }
+  .bg-accent-international-soft {
+    background-color: hsl(var(--accent-international-soft));
+  }
+  .border-accent-international {
+    border-color: hsl(var(--accent-international));
+  }
 
   /* Glass panel for floating overlays on top of the 3D globe */
   .glass-panel {
@@ -154,7 +206,9 @@
   }
 
   /* Marquee pause-on-hover */
-  .pause-on-hover:hover { animation-play-state: paused; }
+  .pause-on-hover:hover {
+    animation-play-state: paused;
+  }
 
   /* Subtle film grain overlay */
   .bg-grain {
@@ -168,7 +222,7 @@
     background-size: 22px 22px;
     background-position: 0 0;
     -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
-            mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
   }
 
   /* Starfield backdrop for the globe section */
@@ -187,7 +241,9 @@
   }
 
   /* Hide horizontal scrollbar on the destination strip */
-  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 
   /* Globe sphere — soft outer glow */
   .globe-sphere {
@@ -207,6 +263,11 @@
   .animate-ping-gold {
     animation: none !important;
   }
-  .globe-texture { transition: none !important; }
-  .reveal { opacity: 1 !important; transform: none !important; }
+  .globe-texture {
+    transition: none !important;
+  }
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }
