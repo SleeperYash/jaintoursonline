@@ -9,10 +9,9 @@ import {
 import { useDestinationCovers } from "@/hooks/useDestinationCovers";
 import { useReveal } from "@/hooks/useReveal";
 
-type Tab = "all" | "domestic" | "international";
+type Tab = "domestic" | "international";
 
 const tabs: { key: Tab; label: string; icon: typeof Globe }[] = [
-  { key: "all", label: "All", icon: Globe },
   { key: "domestic", label: "Domestic", icon: MapPin },
   { key: "international", label: "International", icon: Plane },
 ];
@@ -20,12 +19,11 @@ const tabs: { key: Tab; label: string; icon: typeof Globe }[] = [
 const HandpickedPackages = () => {
   const ref = useReveal<HTMLDivElement>();
   const { covers } = useDestinationCovers();
-  const [tab, setTab] = useState<Tab>("all");
+  const [tab, setTab] = useState<Tab>("domestic");
 
   const list = useMemo(() => {
-    if (tab === "domestic") return domesticDestinations;
     if (tab === "international") return internationalDestinations;
-    return destinations;
+    return domesticDestinations;
   }, [tab]);
 
   return (
