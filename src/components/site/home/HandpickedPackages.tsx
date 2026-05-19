@@ -50,7 +50,7 @@ const HandpickedPackages = () => {
                 role="tab"
                 aria-selected={active}
                 onClick={() => setTab(key)}
-                className={`inline-flex items-center gap-2 px-4 sm:px-5 py-2 text-[11px] uppercase tracking-luxe border rounded-full transition-all duration-300 ${
+               className={`inline-flex items-center gap-2 px-4 sm:px-5 py-2 text-xs uppercase tracking-luxe border rounded-none transition-all duration-300 ${
                   active
                     ? "bg-gold/15 border-gold text-gold"
                     : "bg-transparent border-border text-muted-foreground hover:border-gold/60 hover:text-foreground"

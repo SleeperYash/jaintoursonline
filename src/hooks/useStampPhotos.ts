@@ -26,7 +26,7 @@ export const STAMP_SLOTS: StampSlot[] = [
   { key: "kashmir", label: "KASHMIR", borderColor: "#5C7FA3" },
   { key: "himalayas", label: "HIMALAYAS", borderColor: "#2C6B6B" },
   { key: "andaman", label: "ANDAMAN", borderColor: "#00897B" },
-  { key: "north-east-india", label: "NORTH EAST INDIA", borderColor: "#558B2F" },
+   { key: "north-east-india", label: "LEH LADAKH", borderColor: "#558B2F" },
 ];
 
 export const useStampPhotos = () => {
