@@ -29,6 +29,7 @@ export default {
         popover: { DEFAULT: "hsl(var(--popover))", foreground: "hsl(var(--popover-foreground))" },
         card: { DEFAULT: "hsl(var(--card))", foreground: "hsl(var(--card-foreground))" },
         gold: { DEFAULT: "hsl(var(--gold))", deep: "hsl(var(--gold-deep))" },
+        "rating-star": "hsl(var(--rating-star))",
         emerald: { deep: "hsl(var(--emerald-deep))" },
         ink: "hsl(var(--ink))",
         sidebar: {

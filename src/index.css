@@ -42,9 +42,10 @@
 
     --radius: 0.5rem;
 
-    /* Brand-specific tokens — stars/ratings use yellow */
-    --gold: 48 96% 53%; /* #FACC15 yellow for stars */
-    --gold-deep: 45 93% 47%; /* deeper yellow */
+    /* Brand-specific tokens — imperial blue accents, yellow only for ratings */
+    --gold: 217 100% 21%; /* #00296B imperial blue */
+    --gold-deep: 217 100% 14%; /* deeper imperial blue */
+    --rating-star: 48 96% 53%; /* #FACC15 yellow for stars */
     --emerald-deep: 214 32% 97%; /* alt section bg #F5F7FA */
     --ink: 222 47% 11%; /* footer dark navy */
 
@@ -137,6 +138,12 @@
   }
   .border-gold {
     border-color: hsl(var(--gold));
+  }
+  .text-rating-star {
+    color: hsl(var(--rating-star));
+  }
+  .fill-rating-star {
+    fill: hsl(var(--rating-star));
   }
   .gradient-gold {
     background: var(--gradient-gold);
