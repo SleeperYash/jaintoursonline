@@ -90,7 +90,7 @@ const Destinations = () => {
               role="tab"
               aria-selected={filter === key}
               onClick={() => setFilter(key)}
-              className={`inline-flex items-center gap-2 px-4 sm:px-5 py-2 text-[11px] uppercase tracking-luxe border rounded-full transition-all duration-300 ${pillClasses(key)}`}
+               className={`inline-flex items-center gap-2 px-4 sm:px-5 py-2 text-xs uppercase tracking-luxe border rounded-none transition-all duration-300 ${pillClasses(key)}`}
             >
               <Icon className="w-3.5 h-3.5" />
               {label}

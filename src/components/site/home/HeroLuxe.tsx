@@ -11,7 +11,7 @@ const HeroLuxe = () => {
         <img
           src={heroBg}
           alt="Tropical beach at sunset with palm trees and turquoise water — luxury travel"
-          className="w-full h-full object-cover object-[70%_center] sm:object-center animate-[ken-burns_20s_ease-in-out_infinite_alternate]"
+           className="w-full h-full object-fill object-[70%_center] sm:object-center animate-[ken-burns_20s_ease-in-out_infinite_alternate]"
           loading="eager"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/35 to-black/55" />
@@ -38,7 +38,7 @@ const HeroLuxe = () => {
           <span className="text-gold italic font-medium">Crafted in Gold.</span>
         </h1>
 
-        <p className="mt-8 max-w-2xl mx-auto text-base md:text-lg text-muted-foreground leading-relaxed font-medium shadow-md text-orange-200">
+         <p className="mt-8 max-w-2xl mx-auto text-base md:text-lg text-muted-foreground leading-relaxed font-medium shadow-md text-slate-50">
           From Mumbai to the world — <br /> curated holidays, seamless bookings, and unforgettable journeys tailored just for you.
         </p>
 
