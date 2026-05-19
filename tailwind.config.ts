@@ -67,7 +67,7 @@ export default {
         "fade-in-slow": "fade-in-slow 1.6s ease-out",
         "scale-in": "scale-in 1s ease-out",
         "ken-burns": "ken-burns 12s ease-out infinite alternate",
-        "marquee-x": "marquee-x 45s linear infinite",
+        "marquee-x": "marquee-x 20s linear infinite",
         "word-rise": "word-rise 900ms ease-out forwards",
         "bounce-slow": "bounce-slow 2.4s ease-in-out infinite",
         "orb-drift": "orb-drift 14s ease-in-out infinite",
