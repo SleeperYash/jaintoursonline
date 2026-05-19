@@ -947,7 +947,7 @@ const ManageDestinationDialog = ({
                               </p>
                               <div className="flex gap-0.5">
                                 {Array.from({ length: r.rating }).map((_, k) => (
-                                  <Star key={k} className="w-3 h-3 fill-gold text-gold" />
+                                  <Star key={k} className="w-3 h-3 fill-rating-star text-rating-star" />
                                 ))}
                               </div>
                             </div>
