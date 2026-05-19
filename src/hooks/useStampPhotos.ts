@@ -16,17 +16,18 @@ export type StampSlot = {
   key: StampKey;
   label: string;
   borderColor: string;
+  slug: string;
 };
 
 export const STAMP_SLOTS: StampSlot[] = [
-  { key: "malaysia", label: "MALAYSIA", borderColor: "#D4860B" },
-   { key: "singapore", label: "FRANCE", borderColor: "#1A6FA8" },
-  { key: "thailand", label: "THAILAND", borderColor: "#C0392B" },
-  { key: "sri-lanka", label: "SRI LANKA", borderColor: "#2E7D32" },
-  { key: "kashmir", label: "KASHMIR", borderColor: "#5C7FA3" },
-  { key: "himalayas", label: "HIMALAYAS", borderColor: "#2C6B6B" },
-  { key: "andaman", label: "ANDAMAN", borderColor: "#00897B" },
-   { key: "north-east-india", label: "LEH LADAKH", borderColor: "#558B2F" },
+  { key: "malaysia", label: "MALAYSIA", borderColor: "#D4860B", slug: "singapore-malaysia" },
+  { key: "singapore", label: "FRANCE", borderColor: "#1A6FA8", slug: "france" },
+  { key: "thailand", label: "THAILAND", borderColor: "#C0392B", slug: "thailand" },
+  { key: "sri-lanka", label: "SRI LANKA", borderColor: "#2E7D32", slug: "sri-lanka" },
+  { key: "kashmir", label: "KASHMIR", borderColor: "#5C7FA3", slug: "kashmir" },
+  { key: "himalayas", label: "HIMALAYAS", borderColor: "#2C6B6B", slug: "himachal" },
+  { key: "andaman", label: "ANDAMAN", borderColor: "#00897B", slug: "andaman" },
+  { key: "north-east-india", label: "LEH LADAKH", borderColor: "#558B2F", slug: "leh-ladakh" },
 ];
 
 export const useStampPhotos = () => {
