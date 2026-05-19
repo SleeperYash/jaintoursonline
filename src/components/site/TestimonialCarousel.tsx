@@ -33,7 +33,7 @@ const TestimonialCarousel = () => {
             }`}
             aria-hidden={idx !== i}
           >
-            <div className="flex gap-1 text-gold mb-6">
+            <div className="flex gap-1 text-rating-star mb-6">
               {Array.from({ length: r.rating }).map((_, k) => (
                 <Star key={k} className="w-4 h-4 fill-current" />
               ))}

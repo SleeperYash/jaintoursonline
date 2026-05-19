@@ -27,10 +27,10 @@ const Counter = ({ stat }: { stat: Stat }) => {
       ref={ref as React.RefObject<HTMLDivElement>}
       className="bg-background border border-gold/30 p-8 md:p-10 flex flex-col gap-4 transition-colors hover:border-gold"
     >
-      <Icon className="w-6 h-6 text-gold" strokeWidth={1.25} />
+      <Icon className={`w-6 h-6 ${stat.label === "Average Rating" ? "text-rating-star" : "text-gold"}`} strokeWidth={1.25} />
       <p className="font-serif text-5xl md:text-6xl text-foreground tabular-nums">
         {display}
-        <span className="text-gold">{stat.suffix}</span>
+        <span className={stat.label === "Average Rating" ? "text-rating-star" : "text-gold"}>{stat.suffix}</span>
       </p>
       <p className="text-xs tracking-luxe uppercase text-muted-foreground">{stat.label}</p>
     </div>

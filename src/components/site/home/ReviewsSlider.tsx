@@ -50,7 +50,7 @@ const ReviewsSlider = () => {
               >
                 <div className="flex items-center gap-1.5 mb-5">
                   {Array.from({ length: r.rating }).map((_, k) => (
-                    <Star key={k} className="w-4 h-4 fill-gold text-gold" />
+                    <Star key={k} className="w-4 h-4 fill-rating-star text-rating-star" />
                   ))}
                 </div>
                 <p className="font-serif text-xl md:text-2xl text-foreground/95 leading-relaxed italic">

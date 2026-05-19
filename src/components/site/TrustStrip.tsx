@@ -12,7 +12,7 @@ const Row = () => (
   <>
     {items.map(({ icon: Icon, label }, idx) => (
       <div key={`${label}-${idx}`} className="flex items-center gap-3 px-8 shrink-0">
-        <Icon className="w-4 h-4 text-gold" strokeWidth={1.5} />
+        <Icon className={`w-4 h-4 ${Icon === Star ? "text-rating-star" : "text-gold"}`} strokeWidth={1.5} />
         <span className="text-xs tracking-luxe uppercase text-foreground/80 whitespace-nowrap">{label}</span>
         <span className="ml-8 text-gold/40">·</span>
       </div>
@@ -32,7 +32,7 @@ const TrustStrip = () => {
       <div className="hidden md:flex container items-center justify-between">
         {items.map(({ icon: Icon, label }) => (
           <div key={label} className="flex items-center gap-3">
-            <Icon className="w-4 h-4 text-gold" strokeWidth={1.5} />
+            <Icon className={`w-4 h-4 ${Icon === Star ? "text-rating-star" : "text-gold"}`} strokeWidth={1.5} />
             <span className="text-xs tracking-luxe uppercase text-foreground/80">{label}</span>
           </div>
         ))}

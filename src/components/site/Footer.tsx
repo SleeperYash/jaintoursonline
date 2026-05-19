@@ -64,7 +64,7 @@ const Footer = () => {
               <YouTubeIcon />
             </a>
           </div>
-          <div className="mt-5 flex items-center gap-2 text-gold">
+          <div className="mt-5 flex items-center gap-2 text-rating-star">
             {Array.from({ length: 5 }).map((_, i) => (
               <Star key={i} className="w-4 h-4 fill-current" />
             ))}

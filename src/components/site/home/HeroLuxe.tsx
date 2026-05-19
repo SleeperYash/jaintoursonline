@@ -27,7 +27,7 @@ const HeroLuxe = () => {
       {/* Content */}
       <div className="relative z-10 container text-center px-6 py-32 animate-fade-in">
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-gold/40 bg-background/40 backdrop-blur-sm mb-10 bg-slate-50">
-          <Star className="w-3.5 h-3.5 fill-gold text-gold" />
+          <Star className="w-3.5 h-3.5 fill-rating-star text-rating-star" />
           <span className="text-xs tracking-wide text-foreground/90">
             {BRAND.rating} · Reviews
           </span>
