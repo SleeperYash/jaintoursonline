@@ -11,7 +11,7 @@
 
 @layer base {
   :root {
-    /* Light theme — sky-blue primary, navy text, white surfaces */
+    /* Light theme — imperial blue primary, navy text, white surfaces */
     --background: 0 0% 100%; /* #FFFFFF */
     --foreground: 222 47% 11%; /* #0F172A navy */
 
@@ -42,7 +42,7 @@
 
     --radius: 0.5rem;
 
-    /* Brand-specific tokens — primary accent now sky blue */
+    /* Brand-specific tokens — primary accent now imperial blue */
     --gold: 199 89% 48%; /* primary accent → sky */
     --gold-deep: 200 98% 39%; /* hover darker #0284C7 */
     --emerald-deep: 214 32% 97%; /* alt section bg #F5F7FA */
