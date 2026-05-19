@@ -20,7 +20,7 @@ export type StampSlot = {
 
 export const STAMP_SLOTS: StampSlot[] = [
   { key: "malaysia", label: "MALAYSIA", borderColor: "#D4860B" },
-  { key: "singapore", label: "SINGAPORE", borderColor: "#1A6FA8" },
+   { key: "singapore", label: "FRANCE", borderColor: "#1A6FA8" },
   { key: "thailand", label: "THAILAND", borderColor: "#C0392B" },
   { key: "sri-lanka", label: "SRI LANKA", borderColor: "#2E7D32" },
   { key: "kashmir", label: "KASHMIR", borderColor: "#5C7FA3" },
