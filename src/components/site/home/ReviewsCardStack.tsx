@@ -136,7 +136,7 @@ const ReviewsCardStack = () => {
                   <div className="absolute inset-x-0 bottom-0 p-6 md:p-8">
                     <div className="flex gap-1 mb-3">
                       {Array.from({ length: r.rating }).map((_, k) => (
-                        <Star key={k} className="w-3.5 h-3.5 fill-gold text-gold" />
+                        <Star key={k} className="w-3.5 h-3.5 fill-rating-star text-rating-star" />
                       ))}
                     </div>
                     <blockquote className="font-serif text-lg md:text-xl lg:text-2xl text-foreground leading-snug italic text-slate-300">
