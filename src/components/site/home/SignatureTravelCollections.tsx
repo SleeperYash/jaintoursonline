@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight, Hotel, Coffee, Camera, Bus } from "lucide-react";
 import { useDeals } from "@/hooks/useDeals";
 import { useStampPhotos, STAMP_SLOTS } from "@/hooks/useStampPhotos";
@@ -16,6 +17,7 @@ const SignatureTravelCollections = () => {
   const { deals } = useDeals({ activeOnly: true });
   const { photos } = useStampPhotos();
   const [idx, setIdx] = useState(0);
+  const navigate = useNavigate();
 
   const slides = useMemo(() => deals, [deals]);
 
@@ -35,11 +37,8 @@ const SignatureTravelCollections = () => {
   const prev = () => setIdx((i) => (i - 1 + slides.length) % slides.length);
   const next = () => setIdx((i) => (i + 1) % slides.length);
 
-  const handleStampClick = (label: string) => {
-    const i = slides.findIndex(
-      (d) => d.destination_name.toLowerCase() === label.toLowerCase(),
-    );
-    if (i >= 0) setIdx(i);
+  const handleStampClick = (slug: string) => {
+    navigate(`/destinations/${slug}`);
   };
 
   return (
@@ -220,7 +219,7 @@ const SignatureTravelCollections = () => {
                 <button
                   key={slot.key}
                   type="button"
-                  onClick={() => handleStampClick(slot.label)}
+                  onClick={() => handleStampClick(slot.slug)}
                   className="group relative block transition-all duration-[250ms] hover:scale-[1.06] hover:rotate-1"
                   style={{
                     aspectRatio: "160 / 200",
