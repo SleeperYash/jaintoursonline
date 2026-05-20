@@ -75,7 +75,7 @@ const Footer = () => {
         </div>
 
         <div>
-          <h4 className="uppercase tracking-luxe text-gold mb-6 text-sky-300 text-sm">Explore</h4>
+          <h4 className="uppercase tracking-luxe text-gold mb-6 text-sm text-sky-300">Explore</h4>
           <ul className="space-y-3 text-sm text-muted-foreground">
             
             <li><Link to="/destinations" className="hover:text-foreground transition text-slate-300">Destinations</Link></li>
@@ -97,7 +97,7 @@ const Footer = () => {
         </div>
 
         <div>
-          <h4 className="uppercase tracking-luxe text-gold mb-6 text-sky-300 text-sm">Reach Us</h4>
+          <h4 className="uppercase tracking-luxe text-gold mb-6 text-sm text-sky-300">Reach Us</h4>
           <ul className="space-y-4 text-sm text-muted-foreground">
             <li className="flex gap-3">
               <MapPin className="w-4 h-4 mt-0.5 text-gold shrink-0 text-sky-300" />
@@ -129,7 +129,7 @@ const Footer = () => {
 
       <div className="border-t border-border/60">
         <div className="container py-6 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-muted-foreground">
-          <p>© {new Date().getFullYear()} {BRAND.name}. All rights reserved.</p>
+          <p className="text-slate-300">© {new Date().getFullYear()} {BRAND.name}. All rights reserved.</p>
           <div className="flex items-center gap-5">
             <ManageDestinationDialog
               allowSwitcher
