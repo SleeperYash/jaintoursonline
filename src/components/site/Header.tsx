@@ -60,7 +60,7 @@ const Header = () => {
           </div>
           <div className="flex flex-col leading-none">
             <span className="font-serif text-lg md:text-xl tracking-wide text-foreground">
-              Jain <span className="text-gold italic">Tours & Travels</span>
+              Jain <span className="text-gold italic font-bold">Tours & Travels</span>
             </span>
             <span className="tracking-luxe uppercase text-muted-foreground mt-1 text-[9px] md:text-[10px]">
               Mumbai ·
@@ -77,14 +77,14 @@ const Header = () => {
               end={l.to === "/"}
               className={({ isActive }) =>
                 cn(
-                  "relative px-4 py-2 text-[11px] uppercase tracking-luxe transition-colors group",
+                  "relative px-4 py-2 text-[11px] uppercase tracking-luxe transition-colors group font-medium",
                   isActive ? "text-gold" : "text-foreground/75 hover:text-foreground"
                 )
               }
             >
               {({ isActive }) => (
                 <>
-                  <span>{l.label}</span>
+                  <span className="font-semibold">{l.label}</span>
                   <span
                     className={cn(
                       "absolute left-4 right-4 -bottom-0.5 h-px bg-gold transition-all duration-500 origin-left",
