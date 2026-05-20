@@ -7,6 +7,7 @@ import HandpickedPackages from "@/components/site/home/HandpickedPackages";
 import HowItWorks from "@/components/site/home/HowItWorks";
 import ReviewsCardStack from "@/components/site/home/ReviewsCardStack";
 import InquiryBand from "@/components/site/InquiryBand";
+import { MotionReveal } from "@/components/site/MotionReveal";
 import { useSeo } from "@/hooks/useSeo";
 
 const Index = () => {
@@ -20,13 +21,13 @@ const Index = () => {
   return (
     <SiteLayout>
       <HeroLuxe />
-      <HeroTrustBadges />
-      <TopTrending />
-      <SignatureTravelCollections />
-      <HandpickedPackages />
-      <HowItWorks />
-      <ReviewsCardStack />
-      <InquiryBand />
+      <MotionReveal><HeroTrustBadges /></MotionReveal>
+      <MotionReveal><TopTrending /></MotionReveal>
+      <MotionReveal><SignatureTravelCollections /></MotionReveal>
+      <MotionReveal><HandpickedPackages /></MotionReveal>
+      <MotionReveal><HowItWorks /></MotionReveal>
+      <MotionReveal><ReviewsCardStack /></MotionReveal>
+      <MotionReveal><InquiryBand /></MotionReveal>
     </SiteLayout>
   );
 };

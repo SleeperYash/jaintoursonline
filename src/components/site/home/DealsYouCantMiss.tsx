@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Flame, ArrowUpRight } from "lucide-react";
+import { motion } from "framer-motion";
 import { packages } from "@/data/packages";
 import { useDestinationCovers } from "@/hooks/useDestinationCovers";
 import { destinations } from "@/data/destinations";
@@ -27,20 +28,36 @@ const DealsYouCantMiss = () => {
           </p>
         </div>
 
-        <div
+        <motion.div
           ref={ref}
           className="reveal grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-7"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.15 }}
+          variants={{
+            hidden: {},
+            visible: { transition: { staggerChildren: 0.1 } },
+          }}
         >
           {deals.map((p, i) => {
             const d = destinations.find((x) => x.slug === p.destinationSlug);
             const img = covers[p.destinationSlug] ?? p.image;
             return (
-              <Link
+              <motion.div
                 key={p.id}
-                to={`/destinations/${p.destinationSlug}`}
-                className="group relative block overflow-hidden rounded-2xl border border-border/60 bg-card hover:border-gold/60 hover:-translate-y-1.5 hover:shadow-gold transition-all duration-500"
-                style={{ animationDelay: `${i * 70}ms` }}
+                variants={{
+                  hidden: { opacity: 0, y: 30 },
+                  visible: {
+                    opacity: 1,
+                    y: 0,
+                    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+                  },
+                }}
               >
+                <Link
+                  to={`/destinations/${p.destinationSlug}`}
+                  className="group relative block overflow-hidden rounded-2xl border border-border/60 bg-card hover:border-gold/60 hover:-translate-y-1.5 hover:shadow-gold transition-all duration-500"
+                >
                 <div className="aspect-[16/10] overflow-hidden relative">
                   <img
                     src={img}
@@ -73,10 +90,11 @@ const DealsYouCantMiss = () => {
                     </span>
                   </div>
                 </div>
-              </Link>
+                </Link>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowUpRight, Globe, MapPin, Plane } from "lucide-react";
+import { motion } from "framer-motion";
 import {
   domesticDestinations,
   internationalDestinations,
@@ -62,18 +63,29 @@ const HandpickedPackages = () => {
         </div>
 
         {/* Single-row horizontal carousel (all viewports) */}
-        <div
+        <motion.div
           ref={ref}
           key={tab}
           className="-mx-4 px-4 flex gap-3 sm:gap-4 overflow-x-auto snap-x snap-mandatory pb-4 scrollbar-hide animate-in fade-in duration-500"
           style={{ scrollbarWidth: "none" }}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.15 }}
+          variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.07 } } }}
         >
           {list.map((d) => (
-            <Link
+            <motion.div
               key={d.slug}
-              to={`/destinations/${d.slug}`}
-              className="group relative shrink-0 w-[140px] sm:w-[160px] md:w-[180px] snap-start rounded-xl overflow-hidden border border-border/60 hover:border-gold/60 aspect-[3/4] bg-card transition-all duration-500 hover:-translate-y-1 hover:shadow-gold"
+              className="shrink-0"
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
+              }}
             >
+              <Link
+                to={`/destinations/${d.slug}`}
+                className="group relative block w-[140px] sm:w-[160px] md:w-[180px] snap-start rounded-xl overflow-hidden border border-border/60 hover:border-gold/60 aspect-[3/4] bg-card transition-all duration-500 hover:-translate-y-1 hover:shadow-gold"
+              >
               <img
                 src={covers[d.slug] ?? d.image}
                 alt={d.name}
@@ -86,9 +98,10 @@ const HandpickedPackages = () => {
                   {d.name}
                 </h3>
               </div>
-            </Link>
+              </Link>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
