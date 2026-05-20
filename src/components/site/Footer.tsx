@@ -32,7 +32,7 @@ const YouTubeIcon = () => (
 const Footer = () => {
   return (
     <footer className="border-t border-border/60 bg-ink mt-32">
-      <div className="container py-20 grid gap-12 md:grid-cols-2 lg:grid-cols-4">
+      <div className="container py-20 grid gap-12 md:grid-cols-2 lg:grid-cols-4 pt-[60px]">
         <div>
           <Link to="/" className="block" aria-label={BRAND.name}>
             <img
@@ -41,7 +41,7 @@ const Footer = () => {
               className="w-56 md:w-64 h-auto rounded-lg bg-white p-3 shadow-luxe"
             />
           </Link>
-          <p className="mt-6 text-sm text-muted-foreground leading-relaxed font-light">
+          <p className="mt-6 text-sm text-muted-foreground leading-relaxed font-light text-slate-300">
             Curating extraordinary journeys for discerning travellers across India and the world.
           </p>
           <div className="mt-5 flex items-center gap-3">
@@ -68,59 +68,59 @@ const Footer = () => {
             {Array.from({ length: 5 }).map((_, i) => (
               <Star key={i} className="w-4 h-4 fill-current" />
             ))}
-            <span className="text-xs text-muted-foreground ml-2">
+            <span className="text-xs text-muted-foreground ml-2 text-slate-300">
               {BRAND.rating} · {BRAND.reviewCount} reviews
             </span>
           </div>
         </div>
 
         <div>
-          <h4 className="text-xs uppercase tracking-luxe text-gold mb-6">Explore</h4>
+          <h4 className="uppercase tracking-luxe text-gold mb-6 text-sky-300 text-sm">Explore</h4>
           <ul className="space-y-3 text-sm text-muted-foreground">
             
-            <li><Link to="/destinations" className="hover:text-foreground transition">Destinations</Link></li>
-            <li><Link to="/services" className="hover:text-foreground transition">Services</Link></li>
-            <li><Link to="/reviews" className="hover:text-foreground transition">Reviews</Link></li>
-            <li><Link to="/about" className="hover:text-foreground transition">About</Link></li>
+            <li><Link to="/destinations" className="hover:text-foreground transition text-slate-300">Destinations</Link></li>
+            <li><Link to="/services" className="hover:text-foreground transition text-slate-300">Services</Link></li>
+            <li><Link to="/reviews" className="hover:text-foreground transition text-slate-300">Reviews</Link></li>
+            <li><Link to="/about" className="hover:text-foreground transition text-slate-300">About</Link></li>
           </ul>
         </div>
 
         <div>
-          <h4 className="text-xs uppercase tracking-luxe text-gold mb-6">Services</h4>
+          <h4 className="uppercase tracking-luxe text-gold mb-6 text-sm text-sky-300">Services</h4>
           <ul className="space-y-3 text-sm text-muted-foreground">
-            <li>International & Domestic Holidays</li>
-            <li>Honeymoon Packages</li>
-            <li>Cruise Bookings</li>
-            <li>Corporate Travel</li>
-            <li>Visa & Travel Insurance</li>
+            <li className="text-slate-300">International & Domestic Holidays</li>
+            <li className="text-slate-300">Honeymoon Packages</li>
+            <li className="text-slate-300">Cruise Bookings</li>
+            <li className="text-slate-300">Corporate Travel</li>
+            <li className="text-slate-300">Visa & Travel Insurance</li>
           </ul>
         </div>
 
         <div>
-          <h4 className="text-xs uppercase tracking-luxe text-gold mb-6">Reach Us</h4>
+          <h4 className="uppercase tracking-luxe text-gold mb-6 text-sky-300 text-sm">Reach Us</h4>
           <ul className="space-y-4 text-sm text-muted-foreground">
             <li className="flex gap-3">
-              <MapPin className="w-4 h-4 mt-0.5 text-gold shrink-0" />
-              <span className="leading-relaxed">{BRAND.address}</span>
+              <MapPin className="w-4 h-4 mt-0.5 text-gold shrink-0 text-sky-300" />
+              <span className="leading-relaxed text-slate-300">{BRAND.address}</span>
             </li>
             <li className="flex gap-3">
-              <Phone className="w-4 h-4 mt-0.5 text-gold shrink-0" />
-              <a href={`tel:${BRAND.phoneDigits}`} className="hover:text-foreground">{BRAND.phoneDisplay}</a>
+              <Phone className="w-4 h-4 mt-0.5 text-gold shrink-0 border-sky-300 text-sky-300" />
+              <a href={`tel:${BRAND.phoneDigits}`} className="hover:text-foreground text-slate-300">{BRAND.phoneDisplay}</a>
             </li>
             <li className="flex gap-3">
-              <Mail className="w-4 h-4 mt-0.5 text-gold shrink-0" />
-              <a href={`mailto:${BRAND.email}`} className="hover:text-foreground">{BRAND.email}</a>
+              <Mail className="w-4 h-4 mt-0.5 text-gold shrink-0 text-sky-300" />
+              <a href={`mailto:${BRAND.email}`} className="hover:text-foreground text-slate-300">{BRAND.email}</a>
             </li>
             <li className="flex gap-3">
-              <Clock className="w-4 h-4 mt-0.5 text-gold shrink-0" />
-              <span>{BRAND.hours}</span>
+              <Clock className="w-4 h-4 mt-0.5 text-gold shrink-0 text-sky-300" />
+              <span className="text-slate-300">{BRAND.hours}</span>
             </li>
           </ul>
           <a
             href={waLink()}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-6 inline-flex items-center px-5 py-2.5 border border-gold/50 text-gold text-[11px] uppercase tracking-luxe hover:bg-gold hover:text-primary-foreground transition"
+            className="mt-6 inline-flex items-center px-5 py-2.5 border border-gold/50 text-gold text-[11px] uppercase tracking-luxe hover:bg-gold hover:text-primary-foreground transition text-slate-300 border-sky-300"
           >
             WhatsApp Us
           </a>
@@ -136,7 +136,7 @@ const Footer = () => {
               triggerLabel="Manage"
               triggerClassName="text-[10px] uppercase tracking-luxe text-foreground/30 hover:text-gold inline-flex items-center gap-1.5 transition-colors"
             />
-            <p className="tracking-wide">Crafted with care in Mumbai · India</p>
+            <p className="tracking-wide text-slate-300">Crafted with care in Mumbai · India</p>
           </div>
         </div>
       </div>
