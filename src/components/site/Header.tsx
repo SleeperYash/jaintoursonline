@@ -20,7 +20,7 @@ const Header = () => {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
+    const onScroll = () => setScrolled(window.scrollY > 50);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -33,10 +33,8 @@ const Header = () => {
   return (
     <header
       className={cn(
-        "fixed top-0 inset-x-0 z-50 transition-all duration-500",
-        solid
-          ? "bg-background/85 backdrop-blur-xl border-b border-gold/10 shadow-[0_8px_30px_-12px_hsl(220_60%_4%/0.4)]"
-          : "bg-transparent"
+        "fixed top-0 left-0 right-0 z-50 backdrop-blur-md border border-white/20 transition-all duration-500",
+        solid ? "bg-white/25" : "bg-white/10"
       )}
     >
       {/* Hairline gold accent on scroll */}
