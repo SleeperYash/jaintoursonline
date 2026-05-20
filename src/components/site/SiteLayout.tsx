@@ -3,7 +3,6 @@ import Header from "./Header";
 import Footer from "./Footer";
 import FloatingContacts from "./FloatingContacts";
 import PremiumLoader from "./PremiumLoader";
-import ChatWidget from "./ChatWidget";
 
 const SiteLayout = ({ children }: { children: ReactNode }) => {
   return (
@@ -13,7 +12,6 @@ const SiteLayout = ({ children }: { children: ReactNode }) => {
       <main>{children}</main>
       <Footer />
       <FloatingContacts />
-      <ChatWidget />
     </div>
   );
 };
