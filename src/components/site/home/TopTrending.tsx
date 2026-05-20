@@ -1,11 +1,24 @@
 import { Link } from "react-router-dom";
-import { ArrowUpRight, TrendingUp } from "lucide-react";
+import { ArrowUpRight, TrendingUp, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { destinations } from "@/data/destinations";
 import { useDestinationCovers } from "@/hooks/useDestinationCovers";
 import { useReveal } from "@/hooks/useReveal";
 
 const TRENDING = ["dubai", "maldives", "bali", "kashmir", "switzerland", "thailand", "kerala", "japan"];
+
+const PRICES: Record<string, number> = {
+  dubai: 54999,
+  maldives: 89999,
+  bali: 49999,
+  kashmir: 29999,
+  switzerland: 149999,
+  thailand: 39999,
+  kerala: 19999,
+  japan: 124999,
+};
+
+const formatINR = (n: number) => `₹${n.toLocaleString("en-IN")}`;
 
 const TopTrending = () => {
   const ref = useReveal<HTMLDivElement>();
@@ -52,7 +65,7 @@ const TopTrending = () => {
             >
               <Link
                 to={`/destinations/${d.slug}`}
-                className="group relative block w-[140px] sm:w-[160px] md:w-[180px] snap-start rounded-xl overflow-hidden border border-border/60 hover:border-gold/60 aspect-[3/4] bg-card transition-all duration-500 hover:-translate-y-1 hover:shadow-gold"
+                className="group relative block w-52 h-80 snap-start rounded-3xl overflow-hidden border border-border/60 hover:border-gold/60 bg-card transition-all duration-500 hover:-translate-y-1 hover:shadow-gold"
               >
               <img
                 src={covers[d.slug] ?? d.image}
@@ -60,11 +73,22 @@ const TopTrending = () => {
                 loading="lazy"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/25 to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 p-2.5">
-                <h3 className="font-serif text-sm md:text-base text-white leading-tight text-center font-semibold [text-shadow:_0_1px_4px_rgb(0_0_0_/_0.6)]">
+              <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/10 to-transparent" />
+              <div className="absolute inset-x-3 bottom-3 backdrop-blur-md bg-white/10 border border-white/20 rounded-2xl px-3 py-3 text-white">
+                <h3 className="font-serif text-sm leading-tight text-center font-semibold [text-shadow:_0_1px_4px_rgb(0_0_0_/_0.6)]">
                   {d.name}
                 </h3>
+                <div className="my-2 h-px bg-white/25" />
+                <div className="flex items-end justify-between gap-2">
+                  <div className="leading-tight">
+                    <p className="text-[9px] uppercase tracking-luxe text-white/70">Starting from</p>
+                    <p className="font-serif text-base font-semibold">{formatINR(PRICES[d.slug] ?? 49999)}</p>
+                    <p className="text-[9px] text-white/70">per person</p>
+                  </div>
+                  <span className="shrink-0 w-8 h-8 rounded-full bg-gold text-primary-foreground flex items-center justify-center group-hover:translate-x-0.5 transition-transform">
+                    <ArrowRight className="w-4 h-4" />
+                  </span>
+                </div>
               </div>
               </Link>
             </motion.div>
