@@ -5,17 +5,17 @@ import { destinations } from "@/data/destinations";
 import { useDestinationCovers } from "@/hooks/useDestinationCovers";
 import { useReveal } from "@/hooks/useReveal";
 
-const TRENDING = ["dubai", "maldives", "bali", "kashmir", "switzerland", "thailand", "kerala", "japan"];
+const TRENDING = ["dubai", "maldives", "bali", "kashmir", "georgia", "thailand", "kerala", "hongkong"];
 
 const PRICES: Record<string, number> = {
   dubai: 54999,
   maldives: 89999,
   bali: 49999,
   kashmir: 29999,
-  switzerland: 149999,
+  georgia: 69999,
   thailand: 39999,
   kerala: 19999,
-  japan: 124999,
+  hongkong: 59999,
 };
 
 const formatINR = (n: number) => `₹${n.toLocaleString("en-IN")}`;
