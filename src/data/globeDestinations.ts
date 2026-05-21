@@ -36,13 +36,13 @@ const COORDS: Record<string, { lat: number; lng: number }> = {
   "singapore": { lat: 1.35, lng: 103.82 },
   "dubai": { lat: 25.20, lng: 55.27 },
   "europe": { lat: 46.20, lng: 6.14 },
-  "switzerland": { lat: 46.82, lng: 8.23 },
   "japan": { lat: 35.68, lng: 139.69 },
   "vietnam": { lat: 14.06, lng: 108.28 },
   "bhutan": { lat: 27.51, lng: 90.43 },
-  "turkey": { lat: 38.96, lng: 35.24 },
   "egypt": { lat: 26.82, lng: 30.80 },
   "mauritius": { lat: -20.35, lng: 57.55 },
+  "georgia": { lat: 42.32, lng: 43.36 },
+  "hongkong": { lat: 22.32, lng: 114.17 },
 };
 
 // Curated headline list — order matters for the strip
@@ -55,10 +55,10 @@ const FEATURED_SLUGS = [
   "maldives",
   "bali",
   "dubai",
-  "switzerland",
+  "georgia",
   "japan",
   "thailand",
-  "bhutan",
+  "hongkong",
 ];
 
 export const globeDestinations: GlobeDestination[] = FEATURED_SLUGS
