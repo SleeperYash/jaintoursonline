@@ -5,13 +5,8 @@ import { useDeals } from "@/hooks/useDeals";
 import { useStampPhotos, STAMP_SLOTS } from "@/hooks/useStampPhotos";
 import { adminPublicUrl } from "@/hooks/useAdminAuth";
 
-const STAMP_PERFORATION = {
-  background:
-    "radial-gradient(circle at 50% 0, transparent 6px, #FAFAF5 6px) top, radial-gradient(circle at 50% 100%, transparent 6px, #FAFAF5 6px) bottom, radial-gradient(circle at 0 50%, transparent 6px, #FAFAF5 6px) left, radial-gradient(circle at 100% 50%, transparent 6px, #FAFAF5 6px) right",
-  backgroundSize: "14px 8px, 14px 8px, 8px 14px, 8px 14px",
-  backgroundRepeat: "repeat-x, repeat-x, repeat-y, repeat-y",
-  backgroundColor: "#FAFAF5",
-} as const;
+// Scattered polaroid tilt — gives the grid an editorial scrapbook feel
+const TILTS = [-3, 2, -1.5, 2.5, 1.5, -2.5, 3, -2];
 
 const SignatureTravelCollections = () => {
   const { deals } = useDeals({ activeOnly: true });
@@ -212,65 +207,74 @@ const SignatureTravelCollections = () => {
           </div>
 
           {/* RIGHT — 4×2 stamp grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 content-start">
-            {STAMP_SLOTS.map((slot) => {
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5 content-start">
+            {STAMP_SLOTS.map((slot, i) => {
               const img = photos[slot.key] ?? null;
+              const tilt = TILTS[i % TILTS.length];
               return (
                 <button
                   key={slot.key}
                   type="button"
                   onClick={() => handleStampClick(slot.slug)}
-                  className="group relative block transition-all duration-[250ms] hover:scale-[1.06] hover:rotate-1"
+                  className="group relative block transition-all duration-500 ease-out hover:!rotate-0 hover:-translate-y-1.5 hover:scale-[1.04]"
                   style={{
-                    aspectRatio: "160 / 200",
-                    padding: "8px",
-                    borderRadius: "4px",
-                    boxShadow: "2px 4px 12px rgba(0,0,0,0.15)",
-                    ...STAMP_PERFORATION,
+                    aspectRatio: "160 / 210",
+                    padding: "10px 10px 34px",
+                    borderRadius: "2px",
+                    background: "linear-gradient(180deg, #FBF9F2 0%, #F2EEE3 100%)",
+                    boxShadow:
+                      "0 1px 0 rgba(255,255,255,0.6) inset, 0 14px 28px -12px rgba(10,10,30,0.55), 0 4px 10px -4px rgba(10,10,30,0.35)",
+                    transform: `rotate(${tilt}deg)`,
                   }}
                 >
-                  <div
-                    className="relative w-full h-full overflow-hidden"
+                  {/* tape strip */}
+                  <span
+                    aria-hidden
+                    className="absolute -top-2 left-1/2 -translate-x-1/2 w-10 h-4 opacity-70 group-hover:opacity-90 transition-opacity"
                     style={{
-                      border: `4px solid ${slot.borderColor}`,
+                      background:
+                        "linear-gradient(180deg, rgba(212,178,90,0.55), rgba(212,178,90,0.25))",
+                      boxShadow: "0 1px 2px rgba(0,0,0,0.15)",
                     }}
-                  >
+                  />
+                  <div className="relative w-full h-full overflow-hidden rounded-[1px]">
                     {img ? (
                       <img
                         src={img}
                         alt={slot.label}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-110"
                       />
                     ) : (
                       <div
-                        className="w-full h-full flex items-center justify-center text-[10px] uppercase tracking-widest"
+                        className="w-full h-full flex items-center justify-center text-[10px] uppercase tracking-widest text-stone-500 font-bold"
                         style={{
-                          background: `linear-gradient(135deg, ${slot.borderColor}22, ${slot.borderColor}55)`,
-                          color: slot.borderColor,
-                          fontWeight: 700,
+                          background:
+                            "linear-gradient(135deg, rgba(0,41,107,0.06), rgba(212,178,90,0.18))",
                         }}
                       >
                         Upload Photo
                       </div>
                     )}
+                    {/* subtle film vignette */}
                     <div
-                      className="absolute inset-x-0 bottom-0"
+                      aria-hidden
+                      className="pointer-events-none absolute inset-0"
                       style={{
-                        background: "linear-gradient(to top, rgba(0,0,0,0.75), transparent)",
-                        height: "45%",
+                        boxShadow: "inset 0 0 24px rgba(0,0,0,0.35)",
                       }}
                     />
-                    <p
-                      className="absolute inset-x-0 bottom-1.5 text-center text-white"
-                      style={{
-                        fontSize: "13px",
-                        fontWeight: 700,
-                        letterSpacing: "1.5px",
-                      }}
-                    >
-                      {slot.label}
-                    </p>
                   </div>
+                  {/* Polaroid caption */}
+                  <p
+                    className="absolute left-0 right-0 bottom-2 text-center text-stone-700"
+                    style={{
+                      fontFamily: "'Caveat', 'Segoe Script', cursive",
+                      fontSize: "15px",
+                      letterSpacing: "0.5px",
+                    }}
+                  >
+                    {slot.label.toLowerCase()}
+                  </p>
                 </button>
               );
             })}
