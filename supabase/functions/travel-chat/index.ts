@@ -19,7 +19,7 @@ type Msg = { role: "user" | "assistant" | "system" | "tool"; content: string; to
 const DESTINATIONS = [
   "Andaman","Tamil Nadu","Goa","Gujarat","Himachal Pradesh","Kashmir","Spiti","Leh-Ladakh",
   "Madhya Pradesh","North East","Kerala","Rajasthan","Uttarakhand","Char Dham","Delhi",
-  "Europe","Switzerland","Italy","France","Turkey","Japan","Mauritius","Australia","Dubai",
+  "Europe","Georgia","Hong Kong","Japan","Mauritius","Australia","Dubai",
   "Thailand","Singapore-Malaysia","Bali","Vietnam","Maldives","Bhutan","Sri Lanka",
 ];
 
