@@ -15,7 +15,7 @@ const PageTransition = ({ children }: { children: ReactNode }) => {
     return () => mq.removeEventListener("change", handler);
   }, []);
 
-  const duration = mobile ? 1.5 : 1.5;
+  const duration = mobile ? 0.3 : 0.5;
   const ease: [number, number, number, number] = mobile
     ? [0.25, 0.46, 0.45, 0.94]
     : [0.22, 1, 0.36, 1];
