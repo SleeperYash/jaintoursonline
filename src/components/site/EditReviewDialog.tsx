@@ -62,7 +62,7 @@ const EditReviewDialog = ({ review, onClose, onSaved }: Props) => {
     const f = e.target.files?.[0];
     e.target.value = "";
     if (!f) return;
-    if (!f.type.startsWith("image/")) {
+    if (!f.type.startsWith("image/") || !ACCEPT_IMG.split(",").includes(f.type)) {
       toast({ title: "Image must be JPG/PNG/WEBP/AVIF", variant: "destructive" });
       return;
     }
@@ -98,6 +98,14 @@ const EditReviewDialog = ({ review, onClose, onSaved }: Props) => {
         date_label: date.trim() || null,
       };
       if (file) {
+        if (!file.type.startsWith("image/") || !ACCEPT_IMG.split(",").includes(file.type)) {
+          toast({ title: "Image must be JPG/PNG/WEBP/AVIF", variant: "destructive" });
+          return;
+        }
+        if (file.size > 10 * 1024 * 1024) {
+          toast({ title: "Image too large (max 10MB)", variant: "destructive" });
+          return;
+        }
         payload.file_base64 = await fileToBase64(file);
         payload.file_name = file.name;
         payload.content_type = file.type;
