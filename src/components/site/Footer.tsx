@@ -31,7 +31,7 @@ const YouTubeIcon = () => (
 
 const Footer = () => {
   return (
-    <footer className="border-t border-border/60 bg-ink mt-32">
+    <footer id="contact" className="border-t border-border/60 bg-ink mt-32">
       <div className="container py-20 grid gap-12 md:grid-cols-2 lg:grid-cols-4 pt-[60px]">
         <div>
           <Link to="/" className="block" aria-label={BRAND.name}>

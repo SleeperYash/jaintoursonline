@@ -1,36 +1,91 @@
-import { Link } from "react-router-dom";
-import { Phone } from "lucide-react";
-import { BRAND } from "@/lib/brand";
 import { useReveal } from "@/hooks/useReveal";
+import { MapPin } from "lucide-react";
 
 const InquiryBand = () => {
   const ref = useReveal<HTMLDivElement>();
+
+  const scrollToContact = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const contactSection = document.getElementById("contact") || document.querySelector("footer");
+    contactSection?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
-    <section className="relative py-24 md:py-32 bg-emerald-deep overflow-hidden pb-[25px] pt-[25px]">
-      <div className="absolute inset-0 opacity-[0.04] pointer-events-none"
-           style={{ backgroundImage: "radial-gradient(circle at 20% 20%, hsl(var(--gold)) 0%, transparent 40%)" }} />
-      <div ref={ref} className="reveal container text-center max-w-3xl">
-        <p className="text-xs tracking-luxe uppercase text-gold mb-5">Begin the journey</p>
-        <h2 className="font-serif text-4xl md:text-6xl text-foreground leading-tight">
-          Let us craft something <span className="italic text-gold">unforgettable.</span>
-        </h2>
-        <p className="mt-6 text-muted-foreground font-light leading-relaxed">
-          Share a few details about your dream trip — our travel curator will reply within hours,
-          with a quietly bespoke proposal.
-        </p>
-        <div className="mt-10 flex flex-wrap justify-center gap-4">
-          <Link
-            to="/contact"
-            className="inline-flex items-center px-8 py-4 bg-gold text-primary-foreground text-xs uppercase tracking-luxe hover:bg-gold/90 transition shadow-gold"
-          >
-            Start an Enquiry
-          </Link>
-          <a
-            href={`tel:${BRAND.phoneDigits}`}
-            className="inline-flex items-center gap-2 px-8 py-4 border border-foreground/30 text-foreground text-xs uppercase tracking-luxe hover:border-gold hover:text-gold transition"
-          >
-            <Phone className="w-4 h-4" /> {BRAND.phoneDisplay}
-          </a>
+    <section 
+      className="py-12 md:py-20 overflow-hidden" 
+      style={{ background: "linear-gradient(135deg, #e8f4fd 0%, #f0f8ff 50%, #ffffff 100%)" }}
+    >
+      <div ref={ref} className="reveal container">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+          
+          {/* Left Side: Polaroid Photos */}
+          <div className="relative flex justify-center items-center mx-auto w-full max-w-[400px] lg:max-w-none h-[340px] md:h-[480px]">
+            {/* Big Photo (Paris) */}
+            <div 
+              className="absolute z-10 w-[65%] md:w-[60%] lg:w-[280px] bg-white p-2.5 pb-10 md:p-3.5 md:pb-12 shadow-xl rounded-sm border border-black/5"
+              style={{ transform: "rotate(-6deg) translateX(-10%)" }}
+            >
+              <div className="relative">
+                <img 
+                  src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&q=80&w=800" 
+                  alt="Paris" 
+                  className="w-full h-[180px] md:h-[280px] object-cover rounded-[2px]"
+                />
+                {/* Location Pill */}
+                <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-sm text-foreground text-[10px] md:text-xs font-medium px-2.5 py-1 rounded-full flex items-center gap-1 shadow-sm">
+                  <MapPin className="w-3 h-3" />
+                  Paris
+                </div>
+              </div>
+            </div>
+
+            {/* Small Photo (Rome) */}
+            <div 
+              className="absolute z-20 w-[55%] md:w-[50%] lg:w-[240px] bg-white p-2.5 pb-10 md:p-3.5 md:pb-12 shadow-2xl rounded-sm border border-black/5"
+              style={{ transform: "rotate(4deg) translate(30%, 30%)" }}
+            >
+              <img 
+                src="https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&q=80&w=600" 
+                alt="Rome" 
+                className="w-full h-[140px] md:h-[220px] object-cover rounded-[2px]"
+              />
+            </div>
+          </div>
+
+          {/* Right Side: Text & Stats */}
+          <div className="flex flex-col text-center lg:text-left mt-8 lg:mt-0">
+            <h2 className="font-serif text-3xl md:text-5xl lg:text-6xl text-foreground leading-tight font-bold mb-4">
+              Where Will You Go Next? <br className="hidden md:block" />Let's Plan It.
+            </h2>
+            <p className="text-muted-foreground text-sm md:text-base mb-8 max-w-lg mx-auto lg:mx-0">
+              Pick a place, pack your bags, and leave the planning to us — your next adventure is just a click away!
+            </p>
+            
+            <div className="mb-12">
+              <button 
+                onClick={scrollToContact}
+                className="inline-flex items-center justify-center px-8 py-4 bg-ink text-white rounded-full text-[11px] md:text-xs uppercase tracking-luxe font-medium hover:bg-ink/90 transition-colors shadow-lg"
+              >
+                Start an Enquiry
+              </button>
+            </div>
+
+            {/* Stats */}
+            <div className="grid grid-cols-3 gap-2 md:gap-4 border-t border-border/40 pt-8">
+              <div>
+                <div className="text-2xl md:text-4xl font-bold text-foreground mb-1">100K+</div>
+                <div className="text-[10px] md:text-xs text-muted-foreground font-medium uppercase tracking-wider">Happy Travellers & Counting</div>
+              </div>
+              <div>
+                <div className="text-2xl md:text-4xl font-bold text-foreground mb-1">500+</div>
+                <div className="text-[10px] md:text-xs text-muted-foreground font-medium uppercase tracking-wider">Total Tour Destinations</div>
+              </div>
+              <div>
+                <div className="text-2xl md:text-4xl font-bold text-foreground mb-1">4.8</div>
+                <div className="text-[10px] md:text-xs text-muted-foreground font-medium uppercase tracking-wider">Rated By Travellers</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
