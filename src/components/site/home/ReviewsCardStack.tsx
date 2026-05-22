@@ -1,53 +1,56 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { Star, MapPin, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
-import { clientReviews } from "@/data/clientPhotos";
-import { GoogleRatingBadge, VerifiedTag } from "@/components/site/reviews/GoogleBadge";
-import { useReveal } from "@/hooks/useReveal";
+import React, { useEffect, useState, useCallback } from "react";
+import { Star, MapPin, ChevronLeft, ChevronRight } from "lucide-react";
 import { useClientReviews } from "@/hooks/useClientReviews";
-
-const AUTO_MS = 6000;
+import { clientReviews } from "@/data/clientPhotos";
+import { GoogleRatingBadge } from "@/components/site/reviews/GoogleBadge";
+import useEmblaCarousel from "embla-carousel-react";
+import { useReveal } from "@/hooks/useReveal";
+import { cn } from "@/lib/utils";
 
 const ReviewsCardStack = () => {
   const ref = useReveal<HTMLDivElement>();
-  const [i, setI] = useState(0);
-  const [paused, setPaused] = useState(false);
-  const touchX = useRef<number | null>(null);
   const { display: dbReviews } = useClientReviews();
-  const items = useMemo(
-    () => (dbReviews.length > 0 ? dbReviews : clientReviews),
-    [dbReviews],
-  );
-  const n = items.length;
+  
+  const items = dbReviews.length > 0 ? dbReviews : clientReviews;
+
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    align: "center",
+    loop: true,
+    skipSnaps: false,
+  });
+
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+
+  const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
+  const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
+  const scrollTo = useCallback((index: number) => emblaApi && emblaApi.scrollTo(index), [emblaApi]);
+
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    setSelectedIndex(emblaApi.selectedScrollSnap());
+  }, [emblaApi]);
 
   useEffect(() => {
-    if (paused) return;
-    const t = setInterval(() => setI((p) => (p + 1) % n), AUTO_MS);
-    return () => clearInterval(t);
-  }, [paused, n]);
+    if (!emblaApi) return;
+    onSelect();
+    emblaApi.on("select", onSelect);
+    emblaApi.on("reInit", onSelect);
+  }, [emblaApi, onSelect]);
 
-  const go = (dir: number) => setI((p) => (p + dir + n) % n);
-
-  const onTouchStart = (e: React.TouchEvent) => (touchX.current = e.touches[0].clientX);
-  const onTouchEnd = (e: React.TouchEvent) => {
-    if (touchX.current == null) return;
-    const dx = e.changedTouches[0].clientX - touchX.current;
-    if (Math.abs(dx) > 50) go(dx < 0 ? 1 : -1);
-    touchX.current = null;
-  };
-
-  // Position relative to active for stacked layout
-  const posOf = (idx: number) => {
-    const d = ((idx - i) % n + n) % n;
-    if (d > n / 2) return d - n;
-    return d;
-  };
+  // Auto-rotate every 4 seconds
+  useEffect(() => {
+    if (!emblaApi || isPaused) return;
+    const interval = setInterval(() => {
+      emblaApi.scrollNext();
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [emblaApi, isPaused]);
 
   return (
-    <section
+    <section 
       id="reviews"
-      className="relative py-24 md:py-32 overflow-hidden bg-background"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
+      className="relative py-24 md:py-32 bg-background overflow-hidden"
     >
       {/* Ambient backdrop */}
       <div
@@ -56,149 +59,138 @@ const ReviewsCardStack = () => {
       />
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
 
-      <div className="container relative">
-        <div className="text-center max-w-2xl mx-auto mb-14">
+      <div className="container relative z-10 mb-14">
+        <div className="text-center max-w-2xl mx-auto reveal">
           <div className="flex justify-center mb-5">
             <GoogleRatingBadge rating={4.9} count={142} />
           </div>
-          <p className="text-xs tracking-luxe uppercase text-gold mb-3 font-semibold">Real Travellers · Real Moments</p>
+          <p className="text-xs tracking-luxe uppercase text-gold mb-3 font-semibold">
+            Real Travellers · Real Moments
+          </p>
           <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl text-foreground leading-tight">
             Postcards from <span className="italic text-gold">our guests</span>
           </h2>
           <div className="mt-6 h-px w-16 bg-gold mx-auto" />
         </div>
+      </div>
 
-        <div
-          ref={ref}
-          className="reveal relative h-[560px] md:h-[600px] [perspective:1600px]"
-          onTouchStart={onTouchStart}
-          onTouchEnd={onTouchEnd}
-        >
-          {items.map((r, idx) => {
-            const pos = posOf(idx);
-            const abs = Math.abs(pos);
-            const visible = abs <= 2;
-            const translateX = pos * 58; // % of card width
-            const scale = 1 - abs * 0.08;
-            const rotateY = pos * -8;
-            const z = 40 - abs * 10;
-            const opacity = abs > 2 ? 0 : abs === 2 ? 0.35 : abs === 1 ? 0.7 : 1;
-
-            return (
-              <article
-                key={idx}
-                aria-hidden={pos !== 0}
-                className="absolute top-0 left-1/2 w-[88%] sm:w-[78%] md:w-[62%] lg:w-[52%] h-full transition-all duration-700 ease-[cubic-bezier(0.65,0,0.35,1)]"
-                style={{
-                  transform: `translate(-50%, 0) translateX(${translateX}%) scale(${scale}) rotateY(${rotateY}deg)`,
-                  zIndex: z,
-                  opacity,
-                  pointerEvents: pos === 0 ? "auto" : "none",
-                  visibility: visible ? "visible" : "hidden",
-                }}
-              >
-                <div className="relative h-full rounded-2xl overflow-hidden shadow-luxe border border-gold/20 bg-card group">
-                  {r.image ? (
-                    <img
-                      src={r.image}
-                      alt={`${r.name} in ${r.destination}`}
-                      loading={idx < 3 ? "eager" : "lazy"}
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2000ms] ease-out group-hover:scale-105"
-                    />
-                  ) : (
-                    <div
-                      className="absolute inset-0"
-                      style={{
-                        background:
-                          "linear-gradient(135deg, hsl(var(--gold) / 0.18) 0%, hsl(220 50% 10%) 60%)",
-                      }}
-                    />
-                  )}
-                  {/* Gradient overlay */}
-                  <div
-                    className="absolute inset-0"
-                    style={{
-                      background:
-                        "linear-gradient(180deg, hsl(220 50% 8% / 0.15) 0%, hsl(220 50% 8% / 0.55) 50%, hsl(220 50% 6% / 0.95) 100%)",
-                    }}
-                  />
-
-                  {/* Top badges */}
-                  <div className="absolute top-5 left-5 right-5 flex justify-between items-start gap-3">
-                    <div className="flex items-center gap-1.5 bg-background/70 backdrop-blur-md border border-gold/20 rounded-full px-3 py-1.5">
-                      <MapPin className="w-3 h-3 text-gold" />
-                      <span className="text-[11px] text-foreground tracking-wide">{r.destination}</span>
-                    </div>
-                    {r.verified && <VerifiedTag />}
-                  </div>
-
-                  {/* Content */}
-                  <div className="absolute inset-x-0 bottom-0 p-6 md:p-8">
-                    <div className="flex gap-1 mb-3">
-                      {Array.from({ length: r.rating }).map((_, k) => (
-                        <Star key={k} className="w-3.5 h-3.5 fill-rating-star text-rating-star" />
-                      ))}
-                    </div>
-                    <blockquote className="font-serif text-lg md:text-xl lg:text-2xl text-foreground leading-snug italic text-slate-300">
-                      "{r.text}"
-                    </blockquote>
-                    <div className="mt-5 flex items-center justify-between gap-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-gold/15 border border-gold/40 flex items-center justify-center text-gold text-xs font-medium">
-                          {r.initials}
+      <div 
+        ref={ref} 
+        className="reveal relative w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8"
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+        onTouchStart={() => setIsPaused(true)}
+        onTouchEnd={() => setIsPaused(false)}
+      >
+        <div className="overflow-hidden" ref={emblaRef}>
+          <div className="flex -ml-4 py-8">
+            {items.map((review, index) => {
+              const isActive = index === selectedIndex;
+              return (
+                <div 
+                  key={index}
+                  className="flex-[0_0_100%] md:flex-[0_0_66.666%] lg:flex-[0_0_35%] pl-4 transition-all duration-500 ease-out"
+                >
+                  <div 
+                    className={cn(
+                      "h-full flex flex-col bg-white rounded-2xl overflow-hidden transition-all duration-500",
+                      isActive 
+                        ? "shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] scale-100 opacity-100 relative z-10" 
+                        : "shadow-sm scale-[0.92] opacity-50 z-0 cursor-pointer"
+                    )}
+                    onClick={() => !isActive && scrollTo(index)}
+                  >
+                    {/* Top Image */}
+                    <div className="relative h-48 sm:h-56 md:h-64 w-full bg-slate-100 shrink-0">
+                      {review.image ? (
+                        <img 
+                          src={review.image} 
+                          alt={review.destination || "Destination"} 
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-slate-200 flex items-center justify-center">
+                          <MapPin className="w-8 h-8 text-slate-400" />
                         </div>
-                        <div>
-                          <p className="text-sm text-foreground font-medium text-slate-300">{r.name}</p>
-                          <p className="text-[10px] text-muted-foreground tracking-wide uppercase">
-                            Google · {r.date}
-                          </p>
+                      )}
+                      
+                      {/* Location Badge */}
+                      {review.destination && (
+                        <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm border border-white/50">
+                          <MapPin className="w-3.5 h-3.5 text-slate-800" />
+                          <span className="text-[11px] font-medium text-slate-800 tracking-wide">
+                            {review.destination}
+                          </span>
                         </div>
+                      )}
+                    </div>
+
+                    {/* Content */}
+                    <div className="p-6 md:p-8 flex flex-col flex-grow bg-white">
+                      {/* Stars */}
+                      <div className="flex gap-1 mb-4 shrink-0">
+                        {Array.from({ length: review.rating || 5 }).map((_, i) => (
+                          <Star key={i} className="w-4 h-4 fill-[#F59E0B] text-[#F59E0B]" />
+                        ))}
+                      </div>
+
+                      {/* Quote */}
+                      <blockquote className="font-serif text-lg md:text-xl text-slate-700 leading-relaxed italic mb-6 flex-grow">
+                        "{review.text}"
+                      </blockquote>
+
+                      {/* Reviewer Name */}
+                      <div className="mt-auto pt-4 border-t border-slate-100 shrink-0 flex items-center justify-between">
+                        <span className="font-medium text-slate-900">
+                          {review.name}
+                        </span>
+                        {/* Optional Date if available */}
+                        {review.date && (
+                          <span className="text-[10px] text-slate-400 uppercase tracking-wider font-medium">
+                            {review.date}
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>
                 </div>
-              </article>
-            );
-          })}
-
-          {/* Controls */}
-          <button
-            onClick={() => go(-1)}
-            aria-label="Previous review"
-            className="absolute left-2 md:left-6 top-1/2 -translate-y-1/2 z-50 w-11 h-11 rounded-full glass-panel flex items-center justify-center text-gold hover:bg-gold hover:text-primary-foreground transition-all"
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </button>
-          <button
-            onClick={() => go(1)}
-            aria-label="Next review"
-            className="absolute right-2 md:right-6 top-1/2 -translate-y-1/2 z-50 w-11 h-11 rounded-full glass-panel flex items-center justify-center text-gold hover:bg-gold hover:text-primary-foreground transition-all"
-          >
-            <ChevronRight className="w-5 h-5" />
-          </button>
+              );
+            })}
+          </div>
         </div>
 
-        {/* Dots + pause */}
-        <div className="mt-10 flex items-center justify-center gap-3">
-          <button
-            onClick={() => setPaused((p) => !p)}
-            aria-label={paused ? "Play" : "Pause"}
-            className="text-muted-foreground hover:text-gold transition-colors"
-          >
-            {paused ? <Play className="w-3.5 h-3.5" /> : <Pause className="w-3.5 h-3.5" />}
-          </button>
-          <div className="flex gap-1.5">
-            {items.map((_, idx) => (
-              <button
-                key={idx}
-                onClick={() => setI(idx)}
-                aria-label={`Go to review ${idx + 1}`}
-                className={`h-1.5 rounded-full transition-all ${
-                  idx === i ? "w-8 bg-gold" : "w-1.5 bg-foreground/25 hover:bg-foreground/50"
-                }`}
-              />
-            ))}
-          </div>
+        {/* Desktop Navigation Arrows */}
+        <button
+          onClick={scrollPrev}
+          className="hidden lg:flex absolute left-4 xl:left-8 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 backdrop-blur-md rounded-full items-center justify-center text-slate-800 shadow-[0_8px_16px_-6px_rgba(0,0,0,0.1)] border border-white hover:bg-white hover:scale-105 transition-all z-20"
+          aria-label="Previous review"
+        >
+          <ChevronLeft className="w-6 h-6" />
+        </button>
+        <button
+          onClick={scrollNext}
+          className="hidden lg:flex absolute right-4 xl:right-8 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 backdrop-blur-md rounded-full items-center justify-center text-slate-800 shadow-[0_8px_16px_-6px_rgba(0,0,0,0.1)] border border-white hover:bg-white hover:scale-105 transition-all z-20"
+          aria-label="Next review"
+        >
+          <ChevronRight className="w-6 h-6" />
+        </button>
+
+        {/* Dot Indicators */}
+        <div className="flex justify-center gap-2 mt-8 z-20 relative">
+          {items.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => scrollTo(index)}
+              className={cn(
+                "h-1.5 rounded-full transition-all duration-300",
+                index === selectedIndex 
+                  ? "w-8 bg-gold" 
+                  : "w-2 bg-slate-300 hover:bg-slate-400"
+              )}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
         </div>
       </div>
     </section>
