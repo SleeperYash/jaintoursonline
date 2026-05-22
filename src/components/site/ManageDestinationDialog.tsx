@@ -1019,6 +1019,7 @@ const ManageDestinationDialog = ({
 
       <EditReviewDialog
         review={editingReview}
+        callAdmin={callAdmin}
         onClose={() => setEditingReview(null)}
         onSaved={refetchReviews}
       />
