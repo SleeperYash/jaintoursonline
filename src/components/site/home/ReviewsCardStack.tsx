@@ -60,7 +60,7 @@ const ReviewsCardStack = () => {
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
 
       <div className="container relative z-10 mb-14">
-        <div className="text-center max-w-2xl mx-auto reveal">
+        <div className="text-center max-w-2xl mx-auto">
           <div className="flex justify-center mb-5">
             <GoogleRatingBadge rating={4.9} count={142} />
           </div>
