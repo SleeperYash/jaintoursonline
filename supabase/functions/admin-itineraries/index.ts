@@ -22,6 +22,25 @@ const ALLOWED_IMAGE_TYPES = new Set([
   "image/avif",
 ]);
 
+const decodeBase64File = (fileBase64: unknown) => {
+  if (typeof fileBase64 !== "string" || !fileBase64.trim()) {
+    throw new Error("Missing image data");
+  }
+  const raw = fileBase64.includes(",") ? fileBase64.split(",").pop() ?? "" : fileBase64;
+  const bin = atob(raw);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return bytes;
+};
+
+const safeFileName = (fileName: unknown) =>
+  String(fileName || "photo.jpg").replace(/[^a-zA-Z0-9._-]/g, "_");
+
+const normalizeImageType = (contentType: unknown) => {
+  const type = String(contentType || "").toLowerCase();
+  return type === "image/jpg" ? "image/jpeg" : type;
+};
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   if (req.method !== "POST") return json({ error: "Method not allowed" }, 405);
