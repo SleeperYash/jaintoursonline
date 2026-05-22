@@ -4,16 +4,18 @@ import { useReveal } from "@/hooks/useReveal";
 import { BRAND } from "@/lib/brand";
 import { Link } from "react-router-dom";
 import {
-  ShieldCheck,
-  MapPin,
-  Headphones,
-  Wallet,
+  Smile,
+  Bookmark,
   Users,
-  Star,
-  Plane,
-  Check,
-  Linkedin,
-  Instagram,
+  ClipboardList,
+  Contact,
+  IndianRupee,
+  Coffee,
+  Globe,
+  CheckCircle2,
+  CircleDashed,
+  Gem,
+  Handshake,
 } from "lucide-react";
 
 const FOUNDED = 2008;
@@ -21,52 +23,66 @@ const YEARS = new Date().getFullYear() - FOUNDED;
 
 const heroImg =
   "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&q=80&w=1920";
-const introImg =
-  "https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&q=80&w=1000";
-const missionImg =
-  "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=1400";
-const ctaImg =
-  "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=1920";
+const whoImg =
+  "https://images.unsplash.com/photo-1523580494863-6f3031224c94?auto=format&fit=crop&q=80&w=1200";
 
-const team = [
-  {
-    name: "Rajesh Jain",
-    role: "Founder & Director",
-    bio: "15+ years in travel. Personally oversees every major package to ensure quality.",
-    photo:
-      "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=600",
-  },
-  {
-    name: "Priya Sharma",
-    role: "Head of International Tours",
-    bio: "Specialist in Europe and Southeast Asia. Loves crafting first-time international experiences.",
-    photo:
-      "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=600",
-  },
-  {
-    name: "Amit Desai",
-    role: "Customer Experience Lead",
-    bio: "Your point of contact from booking to landing. Known for going the extra mile.",
-    photo:
-      "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=600",
-  },
+const whatWeDoImgs = [
+  "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&q=80&w=600", // Paris
+  "https://images.unsplash.com/photo-1539037116277-4db20889f2d4?auto=format&fit=crop&q=80&w=600", // Spain
+  "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&q=80&w=600", // Bali
+  "https://images.unsplash.com/photo-1539650116574-75c0c6d73a0e?auto=format&fit=crop&q=80&w=600", // Egypt
+  "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&q=80&w=600", // London
+  "https://images.unsplash.com/photo-1545569341-9eb8b30979d9?auto=format&fit=crop&q=80&w=600", // Japan
+  "https://images.unsplash.com/photo-1552733407-5d5c46c3bb3b?auto=format&fit=crop&q=80&w=600", // Vietnam
+  "https://images.unsplash.com/photo-1431274172761-fca41d930114?auto=format&fit=crop&q=80&w=600", // Louvre
+  "https://images.unsplash.com/photo-1555993539-1732b0258235?auto=format&fit=crop&q=80&w=600", // Greece
 ];
 
-const whyCards = [
-  { icon: ShieldCheck, title: "100% Trusted", text: "Verified packages, transparent pricing, and zero hidden charges — always." },
-  { icon: MapPin, title: "Expert Local Knowledge", text: "Our team has personally explored every destination we offer. No guesswork, ever." },
-  { icon: Headphones, title: "24/7 Support", text: "From the moment you book to the moment you're back home, we're always reachable." },
-  { icon: Wallet, title: "Best Value Guaranteed", text: "Competitive pricing without compromising on quality. We believe great travel shouldn't break the bank." },
-  { icon: Users, title: "Personalised Itineraries", text: "Every trip is tailored to your group, preferences, and pace — not a copy-paste package." },
-  { icon: Star, title: "4.9★ Rated on Google", text: "Hundreds of happy travellers have shared their experiences — and we're proud of every review." },
+const believeImgs = [
+  "https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&q=80&w=600",
+  "https://images.unsplash.com/photo-1517760444937-f6397edcbbcd?auto=format&fit=crop&q=80&w=600",
+  "https://images.unsplash.com/photo-1530789253388-582c481c54b0?auto=format&fit=crop&q=80&w=600",
+  "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&q=80&w=600",
+  "https://images.unsplash.com/photo-1504457047772-27faf1c00561?auto=format&fit=crop&q=80&w=600",
+  "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&q=80&w=600",
+  "https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&q=80&w=600",
+  "https://images.unsplash.com/photo-1493558103817-58b2924bce98?auto=format&fit=crop&q=80&w=600",
 ];
 
-const timeline = [
-  { year: "2008", title: "The Beginning", text: "Jain Tours & Travels was founded in Mumbai with a simple vision: to make quality travel accessible to every Indian family. We started with domestic tours and a small but dedicated team." },
-  { year: "2013", title: "Growing Our Reach", text: "We expanded into international tours, adding Southeast Asia, Europe, and the Middle East to our portfolio. Our client base grew through word of mouth and genuine care for every traveller." },
-  { year: "2019", title: "Digital Transformation", text: "We embraced technology to serve our customers better — from online booking to AI-powered trip planning, making travel planning easier and more personalised than ever." },
-  { year: "Today", title: "Trusted by Mumbai", text: "Today, Jain Tours & Travels stands as one of Mumbai's most reliable travel partners — offering curated packages, expert guidance, and end-to-end travel support for every kind of traveller." },
-];
+const SectionHeading = ({ children }: { children: React.ReactNode }) => (
+  <div className="text-center mb-12 md:mb-16">
+    <h2 className="font-serif text-[26px] md:text-[36px] tracking-[0.18em] text-ink inline-block">
+      {children}
+    </h2>
+    <div className="mt-3 mx-auto h-[3px] w-[120px] bg-primary" />
+  </div>
+);
+
+const SubHeading = ({ children }: { children: React.ReactNode }) => (
+  <h3 className="font-serif text-[22px] md:text-[30px] tracking-[0.15em] text-ink mb-6">
+    {children}
+  </h3>
+);
+
+const IconStat = ({
+  Icon,
+  title,
+  sub,
+}: {
+  Icon: typeof Smile;
+  title: string;
+  sub: string;
+}) => (
+  <div className="flex items-start gap-3">
+    <span className="shrink-0 w-9 h-9 rounded-full bg-primary text-primary-foreground flex items-center justify-center">
+      <Icon className="w-5 h-5" strokeWidth={2} />
+    </span>
+    <div className="leading-snug">
+      <div className="text-[15px] md:text-[16px] font-medium text-ink">{title}</div>
+      <div className="text-[15px] md:text-[16px] text-ink/80">{sub}</div>
+    </div>
+  </div>
+);
 
 const Reveal = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => {
   const ref = useReveal<HTMLDivElement>();
@@ -82,272 +98,176 @@ const About = () => {
 
   return (
     <SiteLayout>
-      {/* SECTION 1 — HERO */}
+      {/* HERO */}
       <section
-        className="relative w-full h-[280px] md:h-[420px] flex items-center justify-center overflow-hidden"
+        className="relative w-full h-[240px] md:h-[360px] flex items-center justify-center overflow-hidden"
         style={{
-          backgroundImage: `linear-gradient(to bottom, hsl(217 60% 12% / 0.45) 0%, hsl(217 60% 12% / 0.75) 100%), url('${heroImg}')`,
+          backgroundImage: `linear-gradient(to bottom, hsl(217 60% 12% / 0.5), hsl(217 60% 12% / 0.75)), url('${heroImg}')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
       >
-        <Reveal className="text-center px-6 max-w-2xl">
-          <p className="text-[12px] font-medium uppercase text-white/80 mb-4" style={{ letterSpacing: "0.2em" }}>
-            Our Story
-          </p>
-          <h1 className="font-serif text-[32px] md:text-[52px] leading-tight text-white">
-            About {BRAND.name}
+        <Reveal className="text-center px-6">
+          <h1 className="font-serif text-[32px] md:text-[48px] text-white tracking-[0.15em]">
+            ABOUT {BRAND.name.toUpperCase()}
           </h1>
-          <p className="mt-4 text-[15px] md:text-[18px] font-light text-white/80 max-w-[560px] mx-auto">
-            Mumbai's trusted travel partner since {FOUNDED} — crafting journeys that last a lifetime.
-          </p>
-          <p className="mt-5 text-[13px] text-white/60">
-            <Link to="/" className="hover:text-white transition-colors">Home</Link>
+          <p className="mt-3 text-[13px] text-white/70">
+            <Link to="/" className="hover:text-white">Home</Link>
             <span className="mx-2">/</span>
-            <span className="text-white/80">About Us</span>
+            <span className="text-white">About Us</span>
           </p>
         </Reveal>
       </section>
 
-      {/* SECTION 2 — INTRO SPLIT */}
-      <section className="py-[50px] md:py-[90px] px-5 md:px-0">
-        <div className="container grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          <Reveal className="relative">
-            <div className="relative aspect-[4/5] overflow-hidden rounded-2xl">
-              <img src={introImg} alt="Our team crafting journeys" className="w-full h-full object-cover" loading="lazy" />
-              <div className="absolute top-4 right-4 bg-primary text-primary-foreground text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-full">
-                Est. {FOUNDED}
-              </div>
-            </div>
-            <div
-              className="absolute bottom-0 left-0 bg-white rounded-xl shadow-xl px-4 py-3 flex items-center gap-2"
-              style={{ transform: "translate(-20px, 20px)" }}
-            >
-              <Plane className="w-5 h-5 text-primary" />
-              <div className="text-sm font-semibold text-foreground">500+ Happy Travellers</div>
-            </div>
-          </Reveal>
+      {/* SECTION 1 — ABOUT US / WHO WE ARE */}
+      <section className="bg-background py-16 md:py-24 px-5">
+        <div className="container max-w-6xl">
+          <Reveal><SectionHeading>ABOUT US</SectionHeading></Reveal>
 
-          <Reveal>
-            <p className="text-[11px] font-medium uppercase text-primary mb-3" style={{ letterSpacing: "0.2em" }}>
-              Who We Are
-            </p>
-            <h2 className="font-serif text-[26px] md:text-[38px] leading-tight text-foreground">
-              Crafting Unforgettable Journeys from the Heart of Mumbai
-            </h2>
-            <div className="mt-6 space-y-5 text-[16px] text-muted-foreground" style={{ lineHeight: 1.8 }}>
-              <p>
-                {BRAND.name} is a Mumbai-based travel company passionate about creating seamless, memorable experiences for every traveller — whether you're exploring the snowy peaks of Kashmir, the golden beaches of Goa, or the iconic streets of Europe.
-              </p>
-              <p>
-                Founded with a simple belief — that every journey should feel personal — we have grown into one of Mumbai's most trusted travel partners, serving families, couples, solo travellers, and corporate groups across India and the world.
-              </p>
-              <p>Every itinerary we design is built around you: your budget, your interests, your pace.</p>
-            </div>
-            <Link
-              to="/destinations"
-              className="mt-8 inline-flex items-center px-6 py-3 bg-primary text-primary-foreground rounded-full text-sm font-semibold hover:bg-primary/90 transition-colors shadow-lg"
-            >
-              Explore Our Packages
-            </Link>
-          </Reveal>
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+            <Reveal>
+              <SubHeading>WHO WE ARE?</SubHeading>
+              <div className="space-y-5 text-[15px] md:text-[16px] text-ink/85" style={{ lineHeight: 1.85 }}>
+                <p>
+                  Founded in {FOUNDED} and proudly completing {YEARS} incredible years,{" "}
+                  <strong className="text-ink">{BRAND.name}</strong> is based in Mumbai and driven by a passionate
+                  team of travel enthusiasts. Our mission has always been simple — to make travel
+                  planning, booking, and organizing effortless for every traveller.
+                </p>
+                <p>
+                  With thoughtfully curated group tours, seamless booking experiences, and a focus on
+                  comfort and trust, we help our guests explore the world without hassle. Backed by
+                  innovation, genuine care, and years of industry expertise,{" "}
+                  <strong className="text-ink">{BRAND.name}</strong> is your trusted companion in creating
+                  unforgettable journeys — easy, joyful, and truly memorable.
+                </p>
+              </div>
+
+              <div className="mt-10 grid grid-cols-2 gap-x-6 gap-y-6">
+                <IconStat Icon={Smile} title="500+" sub="Happy Families" />
+                <IconStat Icon={Bookmark} title={`${YEARS}+ Years`} sub="of experience" />
+                <IconStat Icon={Users} title="50+ Team" sub="of Professionals" />
+                <IconStat Icon={ClipboardList} title="100+ Superb" sub="Itineraries" />
+              </div>
+            </Reveal>
+
+            <Reveal className="lg:pt-2">
+              <div className="overflow-hidden rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
+                <img src={whoImg} alt={`${BRAND.name} team`} className="w-full h-[360px] md:h-[460px] object-cover" loading="lazy" />
+              </div>
+            </Reveal>
+          </div>
         </div>
       </section>
 
-      {/* SECTION 3 — STATS */}
-      <section className="bg-primary py-[50px]">
-        <Reveal className="container">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-y-8 text-center">
+      {/* SECTION 2 — WHAT WE DO */}
+      <section className="bg-background py-16 md:py-24 px-5 border-t border-border/60">
+        <div className="container max-w-6xl">
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+            <Reveal>
+              <div className="grid grid-cols-3 gap-3 md:gap-4">
+                {whatWeDoImgs.map((src, i) => (
+                  <div key={i} className="aspect-square overflow-hidden rounded-xl">
+                    <img src={src} alt="" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" loading="lazy" />
+                  </div>
+                ))}
+              </div>
+            </Reveal>
+
+            <Reveal>
+              <SubHeading>WHAT WE DO?</SubHeading>
+              <div className="space-y-5 text-[15px] md:text-[16px] text-ink/85" style={{ lineHeight: 1.85 }}>
+                <p>
+                  {BRAND.name} is your one-stop travel partner, proudly crafting memorable vacations
+                  for thousands of families since {FOUNDED}.
+                </p>
+                <p>
+                  We specialize in all-inclusive group tours guided by experienced in-house tour
+                  managers, ensuring a smooth and enjoyable experience every step of the way. For
+                  those seeking personalised getaways, we also offer tailor-made holidays based on
+                  individual preferences, themes, and travel styles.
+                </p>
+                <p>
+                  Our signature touch includes delicious vegetarian and Jain-friendly meals, along
+                  with a variety of international cuisines to suit every palate.
+                </p>
+                <p>
+                  Whether you're planning a honeymoon, self-drive adventure, or need help with
+                  flights, visas, cruises, or hotel bookings — {BRAND.name} has you covered with
+                  reliable, end-to-end services.
+                </p>
+              </div>
+
+              <div className="mt-10 grid grid-cols-2 gap-x-6 gap-y-6">
+                <IconStat Icon={Contact} title="Expert in-house" sub="tour managers" />
+                <IconStat Icon={IndianRupee} title="Budget-friendly" sub="travel packages" />
+                <IconStat Icon={Coffee} title="Pure vegetarian" sub="& Jain meals" />
+                <IconStat Icon={Globe} title="All-inclusive" sub="global tours" />
+              </div>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 3 — WHAT WE BELIEVE */}
+      <section className="bg-background py-16 md:py-24 px-5 border-t border-border/60">
+        <div className="container max-w-6xl">
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+            <Reveal>
+              <SubHeading>WHAT WE BELIEVE?</SubHeading>
+              <div className="space-y-5 text-[15px] md:text-[16px] text-ink/85" style={{ lineHeight: 1.85 }}>
+                <p>
+                  At {BRAND.name}, we believe that travel inspires growth, and great journeys create
+                  lasting value. For us, it's more than a business — it's a passion rooted in care,
+                  trust, and meaningful connections.
+                </p>
+                <p>
+                  As a family-run company, we prioritize transparency, personalized service, and
+                  delivering quality travel experiences to every guest. Our loyal customers are our
+                  proudest ambassadors, and our dedicated team is the heart of everything we do.
+                </p>
+              </div>
+
+              <div className="mt-10 grid grid-cols-2 gap-x-6 gap-y-6">
+                <IconStat Icon={CheckCircle2} title="Trust-driven" sub="service" />
+                <IconStat Icon={CircleDashed} title="Transparent" sub="pricing" />
+                <IconStat Icon={Gem} title="Quality-crafted" sub="tours" />
+                <IconStat Icon={Handshake} title="End-to-end" sub="support" />
+              </div>
+            </Reveal>
+
+            <Reveal>
+              <div className="grid grid-cols-3 gap-3 md:gap-4">
+                {believeImgs.map((src, i) => (
+                  <div key={i} className="aspect-square overflow-hidden rounded-xl">
+                    <img src={src} alt="" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" loading="lazy" />
+                  </div>
+                ))}
+              </div>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 4 — OUR STRENGTH */}
+      <section className="bg-secondary py-16 md:py-24 px-5">
+        <div className="container max-w-6xl">
+          <Reveal><SectionHeading>OUR STRENGTH</SectionHeading></Reveal>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-y-10 gap-x-6 text-center">
             {[
-              { n: "500+", l: "Happy Travellers" },
-              { n: "10+", l: "Years of Experience" },
-              { n: "100+", l: "Destinations Covered" },
-              { n: "4.9★", l: "Google Rating" },
-            ].map((s, i) => (
-              <div key={s.l} className={`relative ${i > 0 ? "md:border-l md:border-white/20" : ""}`}>
-                <div className="font-serif text-[36px] md:text-[48px] font-bold text-white leading-none">{s.n}</div>
-                <div className="mt-3 text-[14px] text-white/75 uppercase" style={{ letterSpacing: "0.1em" }}>{s.l}</div>
-              </div>
-            ))}
-          </div>
-        </Reveal>
-      </section>
-
-      {/* SECTION 4 — TIMELINE */}
-      <section className="bg-secondary py-[50px] md:py-[90px] px-5 md:px-0">
-        <div className="container">
-          <Reveal className="text-center max-w-2xl mx-auto">
-            <p className="text-[11px] font-medium uppercase text-primary mb-3" style={{ letterSpacing: "0.2em" }}>
-              Our Journey
-            </p>
-            <h2 className="font-serif text-[28px] md:text-[40px] leading-tight text-foreground">
-              How We Started & Where We're Going
-            </h2>
-            <div className="mt-4 mx-auto h-[2px] w-10 bg-primary" />
-          </Reveal>
-
-          <div className="relative mt-16 max-w-4xl mx-auto">
-            {/* Spine */}
-            <div className="absolute top-0 bottom-0 left-4 md:left-1/2 w-[2px] bg-primary md:-translate-x-1/2" />
-
-            <div className="space-y-10">
-              {timeline.map((item, i) => {
-                const isLeft = i % 2 === 0;
-                return (
-                  <Reveal key={item.title} className="relative md:grid md:grid-cols-2 md:gap-12 items-center">
-                    {/* Dot */}
-                    <div className="absolute left-4 md:left-1/2 top-6 w-[14px] h-[14px] rounded-full bg-primary border-2 border-white -translate-x-1/2 z-10" />
-
-                    <div className={`pl-12 md:pl-0 ${isLeft ? "md:pr-8 md:text-right" : "md:col-start-2 md:pl-8"}`}>
-                      <div className="bg-white rounded-xl px-7 py-6 shadow-[0_4px_24px_rgba(0,0,0,0.07)]">
-                        <span className="inline-block bg-primary text-primary-foreground text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-3">
-                          {item.year}
-                        </span>
-                        <h3 className="font-serif text-[20px] text-foreground">{item.title}</h3>
-                        <p className="mt-2 text-[15px] text-muted-foreground" style={{ lineHeight: 1.7 }}>{item.text}</p>
-                      </div>
-                    </div>
-                  </Reveal>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* SECTION 5 — WHY CHOOSE US */}
-      <section className="bg-background py-[50px] md:py-[90px] px-5 md:px-0">
-        <div className="container">
-          <Reveal className="text-center max-w-2xl mx-auto">
-            <p className="text-[11px] font-medium uppercase text-primary mb-3" style={{ letterSpacing: "0.2em" }}>
-              Why Jain Tours
-            </p>
-            <h2 className="font-serif text-[28px] md:text-[40px] leading-tight text-foreground">
-              What Makes Us Different
-            </h2>
-          </Reveal>
-
-          <div className="mt-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {whyCards.map(({ icon: Icon, title, text }) => (
-              <Reveal key={title}>
-                <div className="group h-full bg-white border border-border rounded-xl p-7 md:p-8 shadow-[0_2px_16px_rgba(0,0,0,0.05)] hover:border-primary hover:shadow-[0_8px_32px_rgba(0,0,0,0.10)] hover:-translate-y-1 transition-all duration-300">
-                  <Icon className="w-9 h-9 text-primary mb-5" strokeWidth={1.5} />
-                  <h3 className="font-serif text-[20px] text-foreground">{title}</h3>
-                  <p className="mt-2 text-[15px] text-muted-foreground" style={{ lineHeight: 1.7 }}>{text}</p>
-                </div>
+              { n: "15+", l: "Offices Pan India" },
+              { n: "500+", l: "Happy Families" },
+              { n: "100+", l: "Superb Itineraries" },
+              { n: "50+", l: "Team of Professionals" },
+            ].map((s) => (
+              <Reveal key={s.l}>
+                <div className="font-serif text-[40px] md:text-[56px] font-bold text-ink leading-none">{s.n}</div>
+                <div className="mt-3 text-[14px] md:text-[15px] text-ink/75">{s.l}</div>
               </Reveal>
             ))}
           </div>
         </div>
-      </section>
-
-      {/* SECTION 6 — TEAM */}
-      <section className="bg-secondary py-[50px] md:py-[90px] px-5 md:px-0">
-        <div className="container">
-          <Reveal className="text-center max-w-2xl mx-auto">
-            <p className="text-[11px] font-medium uppercase text-primary mb-3" style={{ letterSpacing: "0.2em" }}>
-              The People Behind Your Journey
-            </p>
-            <h2 className="font-serif text-[28px] md:text-[40px] leading-tight text-foreground">Meet Our Team</h2>
-            <p className="mt-3 text-base text-muted-foreground">
-              Passionate travellers who turn your dreams into itineraries.
-            </p>
-          </Reveal>
-
-          <div className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-6">
-            {team.map((m) => (
-              <Reveal key={m.name}>
-                <div className="bg-white rounded-2xl overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.07)] h-full">
-                  <div className="aspect-square overflow-hidden">
-                    <img src={m.photo} alt={m.name} className="w-full h-full object-cover" loading="lazy" />
-                  </div>
-                  <div className="p-5">
-                    <h3 className="font-serif text-[18px] font-semibold text-foreground">{m.name}</h3>
-                    <p className="mt-1 text-[13px] font-medium uppercase text-primary" style={{ letterSpacing: "0.08em" }}>
-                      {m.role}
-                    </p>
-                    <p className="mt-3 text-[14px] text-muted-foreground" style={{ lineHeight: 1.6 }}>{m.bio}</p>
-                    <div className="mt-4 flex items-center gap-3">
-                      <a href="#" aria-label="LinkedIn" className="text-primary hover:opacity-70 transition-opacity">
-                        <Linkedin className="w-[18px] h-[18px]" />
-                      </a>
-                      <a href="#" aria-label="Instagram" className="text-primary hover:opacity-70 transition-opacity">
-                        <Instagram className="w-[18px] h-[18px]" />
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* SECTION 7 — MISSION & VALUES */}
-      <section className="grid lg:grid-cols-2">
-        <div className="min-h-[320px] lg:min-h-[520px]">
-          <img src={missionImg} alt="Our mission" className="w-full h-full object-cover" loading="lazy" />
-        </div>
-        <div className="bg-ink text-white px-6 py-16 md:px-16 md:py-20 flex items-center">
-          <Reveal>
-            <p className="text-[11px] font-medium uppercase text-white/70 mb-3" style={{ letterSpacing: "0.2em" }}>
-              Our Mission
-            </p>
-            <h2 className="font-serif text-[28px] md:text-[36px] leading-tight text-white">
-              Travel That Feels Personal
-            </h2>
-            <p className="mt-5 text-[15px] md:text-base text-white/80" style={{ lineHeight: 1.8 }}>
-              We exist to make every traveller feel seen, heard, and cared for — from the first enquiry to the final goodbye at the airport. Travel is not a transaction for us. It's a relationship.
-            </p>
-            <div className="mt-6 h-[2px] w-[50px] bg-white" />
-            <ul className="mt-6 space-y-3">
-              {[
-                "Honesty in every transaction",
-                "Quality without compromise",
-                "Personalised attention always",
-                "Experiences over itineraries",
-              ].map((v) => (
-                <li key={v} className="flex items-center gap-3 text-[16px] font-medium text-white">
-                  <Check className="w-5 h-5 text-primary shrink-0" strokeWidth={2.5} />
-                  {v}
-                </li>
-              ))}
-            </ul>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* SECTION 8 — CTA BANNER */}
-      <section
-        className="relative py-20 px-5 text-center"
-        style={{
-          backgroundImage: `linear-gradient(hsl(217 100% 14% / 0.78), hsl(217 100% 14% / 0.78)), url('${ctaImg}')`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      >
-        <Reveal className="max-w-2xl mx-auto">
-          <h2 className="font-serif text-[28px] md:text-[42px] leading-tight text-white">
-            Ready to Start Your Next Journey?
-          </h2>
-          <p className="mt-4 text-[16px] md:text-[18px] font-light text-white/80">
-            Let us handle everything while you focus on making memories.
-          </p>
-          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              to="/destinations"
-              className="inline-flex items-center justify-center px-7 py-3.5 bg-white text-primary rounded-full text-sm font-semibold hover:bg-white/90 transition-colors"
-            >
-              View Our Packages
-            </Link>
-            <Link
-              to="/contact"
-              className="inline-flex items-center justify-center px-7 py-3.5 border border-white text-white rounded-full text-sm font-semibold hover:bg-white/10 transition-colors"
-            >
-              Contact Us
-            </Link>
-          </div>
-        </Reveal>
       </section>
     </SiteLayout>
   );
