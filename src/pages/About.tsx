@@ -73,7 +73,7 @@ const IconStat = ({
   title: string;
   sub: string;
 }) => (
-  <div className="flex items-start gap-3">
+  <div className="items-start justify-start flex flex-row gap-[12px]">
     <span className="shrink-0 w-9 h-9 rounded-full bg-primary text-primary-foreground flex items-center justify-center">
       <Icon className="w-5 h-5" strokeWidth={2} />
     </span>
@@ -130,8 +130,7 @@ const About = () => {
               <div className="space-y-5 text-[15px] md:text-[16px] text-ink/85" style={{ lineHeight: 1.85 }}>
                 <p>
                   Founded in {FOUNDED} and proudly completing {YEARS} incredible years,{" "}
-                  <strong className="text-ink">{BRAND.name}</strong> is based in Mumbai and driven by a passionate
-                  team of travel enthusiasts. Our mission has always been simple — to make travel
+                  <strong className="text-ink">{BRAND.name}</strong> is based in Mumbai and driven by Mr. Dinesh Punamia. Our mission has always been simple — to make travel
                   planning, booking, and organizing effortless for every traveller.
                 </p>
                 <p>
@@ -153,7 +152,7 @@ const About = () => {
 
             <Reveal className="lg:pt-2">
               <div className="overflow-hidden rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
-                <img src={whoImg} alt={`${BRAND.name} team`} className="w-full h-[360px] md:h-[460px] object-cover" loading="lazy" />
+                <img src={whoImg} alt={`${BRAND.name} team`} className="w-full h-[360px] md:h-[460px] object-cover border-8" loading="lazy" />
               </div>
             </Reveal>
           </div>
