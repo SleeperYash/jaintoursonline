@@ -1,14 +1,9 @@
 import { useReveal } from "@/hooks/useReveal";
 import { MapPin } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const InquiryBand = () => {
   const ref = useReveal<HTMLDivElement>();
-
-  const scrollToContact = (e: React.MouseEvent) => {
-    e.preventDefault();
-    const contactSection = document.getElementById("contact") || document.querySelector("footer");
-    contactSection?.scrollIntoView({ behavior: "smooth" });
-  };
 
   return (
     <section 
@@ -62,12 +57,12 @@ const InquiryBand = () => {
             </p>
             
             <div className="mb-12">
-              <button 
-                onClick={scrollToContact}
+              <Link
+                to="/contact"
                 className="inline-flex items-center justify-center px-8 py-4 bg-ink text-white rounded-full text-[11px] md:text-xs uppercase tracking-luxe font-medium hover:bg-ink/90 transition-colors shadow-lg"
               >
                 Start an Enquiry
-              </button>
+              </Link>
             </div>
 
             {/* Stats */}
