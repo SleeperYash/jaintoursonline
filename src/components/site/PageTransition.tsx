@@ -1,15 +1,37 @@
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 
-const PageTransition = ({ children }: { children: ReactNode }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 16 }}
-    animate={{ opacity: 1, y: 0 }}
-    exit={{ opacity: 0, y: -12 }}
-    transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-  >
-    {children}
-  </motion.div>
-);
+const isMobile = () => window.matchMedia("(max-width: 768px)").matches;
+
+const PageTransition = ({ children }: { children: ReactNode }) => {
+  const [mobile, setMobile] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 768px)");
+    const handler = () => setMobile(mq.matches);
+    handler();
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
+  const duration = mobile ? 0.3 : 0.5;
+  const ease: [number, number, number, number] = mobile
+    ? [0.25, 0.46, 0.45, 0.94]
+    : [0.22, 1, 0.36, 1];
+  const yOffset = mobile ? 8 : 16;
+  const exitYOffset = mobile ? -8 : -12;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: yOffset }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: exitYOffset }}
+      transition={{ duration, ease }}
+    >
+      {children}
+    </motion.div>
+  );
+};
 
 export default PageTransition;
