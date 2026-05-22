@@ -64,13 +64,13 @@ const ReviewsCardStack = () => {
           <div className="flex justify-center mb-5">
             <GoogleRatingBadge rating={4.9} count={142} />
           </div>
-          <p className="text-xs tracking-luxe uppercase text-gold mb-3 font-semibold">
+          <p className="text-[11px] md:text-xs tracking-[0.2em] uppercase text-ink mb-4 font-bold">
             Real Travellers · Real Moments
           </p>
-          <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl text-foreground leading-tight">
-            Postcards from <span className="italic text-gold">our guests</span>
+          <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl text-ink leading-tight">
+            Postcards from <span className="italic">our guests</span>
           </h2>
-          <div className="mt-6 h-px w-16 bg-gold mx-auto" />
+          <div className="mt-8 h-[2px] w-12 bg-ink/70 mx-auto" />
         </div>
       </div>
 
