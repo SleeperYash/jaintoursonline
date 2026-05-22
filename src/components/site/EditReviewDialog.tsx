@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Save, Crop as CropIcon, X, Image as ImageIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { fileToBase64, adminPublicUrl, useAdminAuth } from "@/hooks/useAdminAuth";
+import { fileToBase64, adminPublicUrl } from "@/hooks/useAdminAuth";
 import type { DbClientReview } from "@/hooks/useClientReviews";
 import ReviewPhotoEditor from "./ReviewPhotoEditor";
 
@@ -20,13 +20,13 @@ const ACCEPT_IMG = "image/jpeg,image/jpg,image/png,image/webp,image/avif";
 
 type Props = {
   review: DbClientReview | null;
+  callAdmin: (action: string, payload?: Record<string, unknown>) => Promise<unknown>;
   onClose: () => void;
   onSaved: () => void;
 };
 
-const EditReviewDialog = ({ review, onClose, onSaved }: Props) => {
+const EditReviewDialog = ({ review, callAdmin, onClose, onSaved }: Props) => {
   const { toast } = useToast();
-  const { callAdmin } = useAdminAuth();
   const [name, setName] = useState("");
   const [destination, setDestination] = useState("");
   const [text, setText] = useState("");
@@ -62,7 +62,7 @@ const EditReviewDialog = ({ review, onClose, onSaved }: Props) => {
     const f = e.target.files?.[0];
     e.target.value = "";
     if (!f) return;
-    if (!f.type.startsWith("image/")) {
+    if (!f.type.startsWith("image/") || !ACCEPT_IMG.split(",").includes(f.type)) {
       toast({ title: "Image must be JPG/PNG/WEBP/AVIF", variant: "destructive" });
       return;
     }
@@ -98,6 +98,14 @@ const EditReviewDialog = ({ review, onClose, onSaved }: Props) => {
         date_label: date.trim() || null,
       };
       if (file) {
+        if (!file.type.startsWith("image/") || !ACCEPT_IMG.split(",").includes(file.type)) {
+          toast({ title: "Image must be JPG/PNG/WEBP/AVIF", variant: "destructive" });
+          return;
+        }
+        if (file.size > 10 * 1024 * 1024) {
+          toast({ title: "Image too large (max 10MB)", variant: "destructive" });
+          return;
+        }
         payload.file_base64 = await fileToBase64(file);
         payload.file_name = file.name;
         payload.content_type = file.type;

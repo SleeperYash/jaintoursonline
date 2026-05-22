@@ -843,6 +843,10 @@ const ManageDestinationDialog = ({
                         onChange={(e) => {
                           const f = e.target.files?.[0] ?? null;
                           e.target.value = "";
+                          if (f && (!f.type.startsWith("image/") || !ACCEPT_IMG.split(",").includes(f.type))) {
+                            toast({ title: "Image must be JPG/PNG/WEBP/AVIF", variant: "destructive" });
+                            return;
+                          }
                           if (f && f.size > 10 * 1024 * 1024) {
                             toast({ title: "Image too large (max 10MB)", variant: "destructive" });
                             return;
@@ -1015,6 +1019,7 @@ const ManageDestinationDialog = ({
 
       <EditReviewDialog
         review={editingReview}
+        callAdmin={callAdmin}
         onClose={() => setEditingReview(null)}
         onSaved={refetchReviews}
       />
