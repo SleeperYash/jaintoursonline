@@ -36,7 +36,7 @@ Deno.serve(async (req) => {
   const provided = req.headers.get("x-admin-password") ?? "";
   if (provided !== ADMIN_PASSWORD) {
     await new Promise((r) => setTimeout(r, 600));
-    return json({ error: "Invalid password" }, 401);
+    return json({ ok: false, error: "Invalid password" });
   }
 
   const supabase = createClient(SUPABASE_URL, SERVICE_ROLE);

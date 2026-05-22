@@ -41,6 +41,12 @@ export const useAdminAuth = () => {
         body: JSON.stringify({ action, ...payload }),
       });
       const data = await res.json().catch(() => ({}));
+      if (data?.ok === false) {
+        sessionStorage.removeItem(ADMIN_KEY);
+        setPwd("");
+        setAuthed(false);
+        throw new Error(data?.error ?? "Request failed");
+      }
       if (!res.ok) {
         if (res.status === 401) {
           sessionStorage.removeItem(ADMIN_KEY);
@@ -62,6 +68,7 @@ export const useAdminAuth = () => {
         body: JSON.stringify({ action: "verify" }),
       });
       const data = await res.json().catch(() => ({}));
+      if (data?.ok === false) throw new Error(data?.error ?? "Invalid password");
       if (!res.ok) throw new Error(data?.error ?? "Invalid password");
       sessionStorage.setItem(ADMIN_KEY, candidatePwd);
       setPwd(candidatePwd);
