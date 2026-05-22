@@ -59,7 +59,7 @@ const SectionHeading = ({ children }: { children: React.ReactNode }) => (
 );
 
 const SubHeading = ({ children }: { children: React.ReactNode }) => (
-  <h3 className="font-serif text-[22px] md:text-[30px] tracking-[0.15em] text-ink mb-6">
+  <h3 className="font-serif text-[22px] tracking-[0.15em] text-ink mb-6 md:text-sm">
     {children}
   </h3>
 );
@@ -78,8 +78,8 @@ const IconStat = ({
       <Icon className="w-5 h-5" strokeWidth={2} />
     </span>
     <div className="leading-snug">
-      <div className="text-[15px] md:text-[16px] font-medium text-ink">{title}</div>
-      <div className="text-[15px] md:text-[16px] text-ink/80">{sub}</div>
+      <div className="text-[15px] font-medium text-ink md:text-xs">{title}</div>
+      <div className="text-[15px] text-ink/80 md:text-xs">{sub}</div>
     </div>
   </div>
 );
