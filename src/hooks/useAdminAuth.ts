@@ -74,7 +74,7 @@ export const useAdminAuth = () => {
 
   const callAdmin = useCallback(
     async (action: string, payload: Record<string, unknown> = {}, overridePwd?: string) => {
-      const usePwd = overridePwd ?? getSavedAdminPassword() || pwd;
+      const usePwd = overridePwd ?? (getSavedAdminPassword() || pwd);
       if (!usePwd) {
         clearAdminPassword();
         setAuthed(false);
