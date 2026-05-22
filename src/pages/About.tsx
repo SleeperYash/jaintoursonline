@@ -18,7 +18,7 @@ import {
   Handshake,
 } from "lucide-react";
 
-const FOUNDED = 2008;
+const FOUNDED = 1996;
 const YEARS = new Date().getFullYear() - FOUNDED;
 
 const heroImg =
@@ -144,8 +144,8 @@ const About = () => {
               </div>
 
               <div className="mt-10 grid grid-cols-2 gap-x-6 gap-y-6">
-                <IconStat Icon={Smile} title="500+" sub="Happy Families" />
                 <IconStat Icon={Bookmark} title={`${YEARS}+ Years`} sub="of experience" />
+                <IconStat Icon={Smile} title="5000+" sub="Happy Families" />
                 <IconStat Icon={Users} title="50+ Team" sub="of Professionals" />
                 <IconStat Icon={ClipboardList} title="100+ Superb" sub="Itineraries" />
               </div>
@@ -256,8 +256,8 @@ const About = () => {
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-y-10 gap-x-6 text-center">
             {[
-              { n: "15+", l: "Offices Pan India" },
-              { n: "500+", l: "Happy Families" },
+              { n: `${YEARS}+`, l: "Years Experience" },
+              { n: "5000+", l: "Happy Families" },
               { n: "100+", l: "Superb Itineraries" },
               { n: "50+", l: "Team of Professionals" },
             ].map((s) => (
