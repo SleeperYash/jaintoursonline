@@ -12,7 +12,7 @@ const InquiryBand = () => {
 
   return (
     <section 
-      className="py-12 md:py-20 overflow-hidden" 
+      className="py-12 md:py-20 overflow-hidden pt-[50px]" 
       style={{ background: "linear-gradient(135deg, #e8f4fd 0%, #f0f8ff 50%, #ffffff 100%)" }}
     >
       <div ref={ref} className="reveal container">
@@ -73,15 +73,15 @@ const InquiryBand = () => {
             {/* Stats */}
             <div className="grid grid-cols-3 gap-2 md:gap-4 border-t border-border/40 pt-8">
               <div>
-                <div className="text-2xl md:text-4xl font-bold text-foreground mb-1">100K+</div>
+                <div className="text-2xl md:text-4xl font-bold text-foreground mb-1">10K+</div>
                 <div className="text-[10px] md:text-xs text-muted-foreground font-medium uppercase tracking-wider">Happy Travellers & Counting</div>
               </div>
               <div>
-                <div className="text-2xl md:text-4xl font-bold text-foreground mb-1">500+</div>
-                <div className="text-[10px] md:text-xs text-muted-foreground font-medium uppercase tracking-wider">Total Tour Destinations</div>
+                <div className="text-2xl md:text-4xl font-bold text-foreground mb-1">30+</div>
+                <div className="text-[10px] md:text-xs text-muted-foreground font-medium uppercase tracking-wider">Years Experience</div>
               </div>
               <div>
-                <div className="text-2xl md:text-4xl font-bold text-foreground mb-1">4.8</div>
+                <div className="text-2xl md:text-4xl font-bold text-foreground mb-1">4.9⭐</div>
                 <div className="text-[10px] md:text-xs text-muted-foreground font-medium uppercase tracking-wider">Rated By Travellers</div>
               </div>
             </div>
