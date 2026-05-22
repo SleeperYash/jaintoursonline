@@ -342,19 +342,18 @@ Deno.serve(async (req) => {
       if (!name || !text) return json({ error: "Missing name or text" }, 400);
       let image_path: string | null = null;
       if (file_base64 && file_name && content_type) {
-        if (!ALLOWED_IMAGE_TYPES.has(String(content_type).toLowerCase())) {
+        const imageType = normalizeImageType(content_type);
+        if (!ALLOWED_IMAGE_TYPES.has(imageType)) {
           return json({ error: "Only JPG, PNG, WEBP or AVIF images allowed" }, 400);
         }
-        const bin = atob(file_base64);
-        const bytes = new Uint8Array(bin.length);
-        for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+        const bytes = decodeBase64File(file_base64);
         if (bytes.byteLength > 10 * 1024 * 1024) return json({ error: "Max 10MB per image" }, 400);
-        const safe = String(file_name).replace(/[^a-zA-Z0-9._-]/g, "_");
+        const safe = safeFileName(file_name);
         image_path = `reviews/${Date.now()}-${safe}`;
         const { error: upErr } = await supabase.storage
           .from("itineraries")
-          .upload(image_path, bytes, { contentType: String(content_type), upsert: false });
-        if (upErr) return json({ error: upErr.message }, 500);
+          .upload(image_path, bytes, { contentType: imageType, upsert: true });
+        if (upErr) return json({ error: `Image upload failed: ${upErr.message}` }, 500);
       }
       const { data: maxRow } = await supabase
         .from("client_reviews")
