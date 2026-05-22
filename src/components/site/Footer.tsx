@@ -75,7 +75,7 @@ const Footer = () => {
         </div>
 
         <div>
-          <h4 className="uppercase tracking-luxe text-gold mb-6 text-sm text-sky-300">Explore</h4>
+          <h4 className="uppercase tracking-luxe text-gold mb-6 text-sm text-sky-200">Explore</h4>
           <ul className="space-y-3 text-sm text-muted-foreground">
             
             <li><Link to="/destinations" className="hover:text-foreground transition text-slate-300">Destinations</Link></li>
@@ -86,7 +86,7 @@ const Footer = () => {
         </div>
 
         <div>
-          <h4 className="uppercase tracking-luxe text-gold mb-6 text-sm text-sky-300">Services</h4>
+          <h4 className="uppercase tracking-luxe text-gold mb-6 text-sm text-sky-200">Services</h4>
           <ul className="space-y-3 text-sm text-muted-foreground">
             <li className="text-slate-300">International & Domestic Holidays</li>
             <li className="text-slate-300">Honeymoon Packages</li>
@@ -97,22 +97,22 @@ const Footer = () => {
         </div>
 
         <div>
-          <h4 className="uppercase tracking-luxe text-gold mb-6 text-sm text-sky-300">Reach Us</h4>
+          <h4 className="uppercase tracking-luxe text-gold mb-6 text-sm text-sky-200">Reach Us</h4>
           <ul className="space-y-4 text-sm text-muted-foreground">
             <li className="flex gap-3">
-              <MapPin className="w-4 h-4 mt-0.5 text-gold shrink-0 text-sky-300" />
+              <MapPin className="w-4 h-4 mt-0.5 text-gold shrink-0 text-sky-200" />
               <span className="leading-relaxed text-slate-300">{BRAND.address}</span>
             </li>
             <li className="flex gap-3">
-              <Phone className="w-4 h-4 mt-0.5 text-gold shrink-0 border-sky-300 text-sky-300" />
+              <Phone className="w-4 h-4 mt-0.5 text-gold shrink-0 border-sky-300 text-sky-200" />
               <a href={`tel:${BRAND.phoneDigits}`} className="hover:text-foreground text-slate-300">{BRAND.phoneDisplay}</a>
             </li>
             <li className="flex gap-3">
-              <Mail className="w-4 h-4 mt-0.5 text-gold shrink-0 text-sky-300" />
+              <Mail className="w-4 h-4 mt-0.5 text-gold shrink-0 text-sky-200" />
               <a href={`mailto:${BRAND.email}`} className="hover:text-foreground text-slate-300">{BRAND.email}</a>
             </li>
             <li className="flex gap-3">
-              <Clock className="w-4 h-4 mt-0.5 text-gold shrink-0 text-sky-300" />
+              <Clock className="w-4 h-4 mt-0.5 text-gold shrink-0 text-sky-200" />
               <span className="text-slate-300">{BRAND.hours}</span>
             </li>
           </ul>
@@ -120,7 +120,7 @@ const Footer = () => {
             href={waLink()}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-6 inline-flex items-center px-5 py-2.5 border border-gold/50 text-gold text-[11px] uppercase tracking-luxe hover:bg-gold hover:text-primary-foreground transition text-slate-300 border-sky-300"
+            className="mt-6 inline-flex items-center px-5 py-2.5 border border-gold/50 text-gold text-[11px] uppercase tracking-luxe hover:bg-gold hover:text-primary-foreground transition border-sky-300 text-sky-200"
           >
             WhatsApp Us
           </a>
