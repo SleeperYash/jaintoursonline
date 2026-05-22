@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Save, Crop as CropIcon, X, Image as ImageIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { fileToBase64, adminPublicUrl, useAdminAuth } from "@/hooks/useAdminAuth";
+import { fileToBase64, adminPublicUrl } from "@/hooks/useAdminAuth";
 import type { DbClientReview } from "@/hooks/useClientReviews";
 import ReviewPhotoEditor from "./ReviewPhotoEditor";
 
@@ -20,13 +20,13 @@ const ACCEPT_IMG = "image/jpeg,image/jpg,image/png,image/webp,image/avif";
 
 type Props = {
   review: DbClientReview | null;
+  callAdmin: (action: string, payload?: Record<string, unknown>) => Promise<unknown>;
   onClose: () => void;
   onSaved: () => void;
 };
 
-const EditReviewDialog = ({ review, onClose, onSaved }: Props) => {
+const EditReviewDialog = ({ review, callAdmin, onClose, onSaved }: Props) => {
   const { toast } = useToast();
-  const { callAdmin } = useAdminAuth();
   const [name, setName] = useState("");
   const [destination, setDestination] = useState("");
   const [text, setText] = useState("");
