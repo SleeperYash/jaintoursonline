@@ -31,7 +31,7 @@ export const useAdminAuth = () => {
 
   const callAdmin = useCallback(
     async (action: string, payload: Record<string, unknown> = {}, overridePwd?: string) => {
-      const usePwd = overridePwd ?? pwd;
+      const usePwd = overridePwd ?? sessionStorage.getItem(ADMIN_KEY) ?? pwd;
       const res = await fetch(`${SUPABASE_URL}/functions/v1/admin-itineraries`, {
         method: "POST",
         headers: {
