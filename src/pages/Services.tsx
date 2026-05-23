@@ -1,5 +1,5 @@
 import SiteLayout from "@/components/site/SiteLayout";
-import SectionTitle from "@/components/site/SectionTitle";
+import PageHero from "@/components/site/PageHero";
 import InquiryBand from "@/components/site/InquiryBand";
 import { serviceGroups } from "@/data/services";
 import { useSeo } from "@/hooks/useSeo";
@@ -15,15 +15,9 @@ const Services = () => {
 
   return (
     <SiteLayout>
-      <header className="pt-40 pb-20 container">
-        <SectionTitle
-          eyebrow="What we do"
-          title="A complete travel atelier."
-          description="From the first idea to the door-to-door return — every detail of your journey, orchestrated by one team."
-        />
-      </header>
+      <PageHero title="OUR SERVICES" crumb="Services" />
 
-      <section className="container pb-24 space-y-20">
+      <section className="container py-16 md:py-24 space-y-20">
         {serviceGroups.map((group) => (
           <ServiceGroup key={group.title} group={group} />
         ))}
