@@ -93,16 +93,16 @@ const TopTrending = () => {
         </motion.div>
 
         {/* Unique themed CTA button below carousel */}
-        <div className="mt-12 flex justify-center">
+        <div className="mt-8 md:mt-12 flex justify-center">
           <Link
             to="/destinations"
-            className="group relative inline-flex items-center gap-3 px-8 py-4 overflow-hidden border border-gold/60 bg-transparent text-gold uppercase tracking-luxe text-xs font-semibold transition-all duration-500 hover:text-primary-foreground"
+            className="group relative inline-flex items-center gap-2 md:gap-3 px-5 py-2.5 md:px-8 md:py-4 overflow-hidden border border-gold/60 bg-transparent text-gold uppercase tracking-luxe text-[10px] md:text-xs font-semibold transition-all duration-500 hover:text-primary-foreground"
           >
             <span className="absolute inset-0 bg-gradient-to-r from-gold to-[hsl(var(--gold-deep))] translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out" />
-            <span className="absolute left-0 top-0 h-px w-8 bg-gold group-hover:w-full transition-all duration-700" />
-            <span className="absolute right-0 bottom-0 h-px w-8 bg-gold group-hover:w-full transition-all duration-700" />
+            <span className="absolute left-0 top-0 h-px w-6 md:w-8 bg-gold group-hover:w-full transition-all duration-700" />
+            <span className="absolute right-0 bottom-0 h-px w-6 md:w-8 bg-gold group-hover:w-full transition-all duration-700" />
             <span className="relative">View All Destinations</span>
-            <ArrowUpRight className="relative w-4 h-4 group-hover:rotate-45 transition-transform duration-500" />
+            <ArrowUpRight className="relative w-3 h-3 md:w-4 md:h-4 group-hover:rotate-45 transition-transform duration-500" />
           </Link>
         </div>
       </div>
