@@ -1,12 +1,11 @@
 import SiteLayout from "@/components/site/SiteLayout";
 import InquiryBand from "@/components/site/InquiryBand";
 import { reviews, ratingDistribution } from "@/data/reviews";
-import { clientReviews } from "@/data/clientPhotos";
 import { BRAND } from "@/lib/brand";
 import { useSeo } from "@/hooks/useSeo";
 import { useReveal } from "@/hooks/useReveal";
-import { useClientReviews, type DisplayReview } from "@/hooks/useClientReviews";
-import { Star, ExternalLink, MapPin, Quote } from "lucide-react";
+import { useClientReviews } from "@/hooks/useClientReviews";
+import { Star, ExternalLink, Quote } from "lucide-react";
 import { GoogleRatingBadge, VerifiedTag } from "@/components/site/reviews/GoogleBadge";
 import ReviewsCardStack from "@/components/site/home/ReviewsCardStack";
 
@@ -20,7 +19,6 @@ const Reviews = () => {
   });
 
   const total = ratingDistribution.reduce((s, r) => s + r.count, 0);
-  const galleryReviews = dbReviews.filter((r) => r.image);
   const wallReviews = dbReviews.length > 0 ? dbReviews : reviews;
 
   return (
@@ -77,9 +75,6 @@ const Reviews = () => {
 
       {/* Featured carousel — same as homepage */}
       <ReviewsCardStack />
-
-      {/* Photo gallery wall */}
-      <PhotoGallery items={galleryReviews.length > 0 ? galleryReviews : clientReviews} />
 
       {/* Text-only reviews wall */}
       <ReviewWall items={wallReviews} />
