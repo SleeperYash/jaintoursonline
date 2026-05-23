@@ -18,7 +18,7 @@ export const GoogleRatingBadge = ({ rating = 4.9, count = 142 }: { rating?: numb
         <Star key={i} className="w-2.5 h-2.5 fill-rating-star text-rating-star" />
       ))}
     </div>
-    <span className="text-[10px] text-muted-foreground tracking-wide">({count})</span>
+    <span className="text-[10px] text-muted-foreground tracking-wide text-slate-100">({count})</span>
   </div>
 );
 
