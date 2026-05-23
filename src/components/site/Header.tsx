@@ -28,7 +28,7 @@ const Header = () => {
 
   useEffect(() => setOpen(false), [pathname]);
 
-  const solid = scrolled || open || pathname !== "/";
+  const solid = scrolled || open;
 
   return (
     <header
