@@ -1,5 +1,6 @@
 import { useState } from "react";
 import SiteLayout from "@/components/site/SiteLayout";
+import PageHero from "@/components/site/PageHero";
 import InquiryBand from "@/components/site/InquiryBand";
 import { domesticDestinations, internationalDestinations, type Destination } from "@/data/destinations";
 import { useSeo } from "@/hooks/useSeo";
@@ -78,7 +79,8 @@ const Destinations = () => {
 
   return (
     <SiteLayout>
-      <div className="pb-6 container pt-[100px]">
+      <PageHero title="DESTINATIONS" crumb="Destinations" />
+      <div className="pb-6 container pt-12 md:pt-16">
         <p className="tracking-luxe uppercase text-gold text-center text-base font-serif font-semibold bg-inherit">Curated Worldwide</p>
       </div>
 
