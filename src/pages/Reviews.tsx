@@ -1,4 +1,5 @@
 import SiteLayout from "@/components/site/SiteLayout";
+import PageHero from "@/components/site/PageHero";
 import InquiryBand from "@/components/site/InquiryBand";
 import { reviews, ratingDistribution } from "@/data/reviews";
 import { BRAND } from "@/lib/brand";
@@ -23,27 +24,13 @@ const Reviews = () => {
 
   return (
     <SiteLayout>
-      {/* Hero */}
-      <header className="relative pt-40 pb-16 overflow-hidden">
-        <div
-          className="absolute inset-0 opacity-[0.05] pointer-events-none"
-          style={{ background: "radial-gradient(ellipse at 50% 0%, hsl(var(--gold)) 0%, transparent 60%)" }}
-        />
-        <div className="container relative text-center">
-          <div className="flex justify-center mb-6">
-            <GoogleRatingBadge rating={BRAND.rating} count={BRAND.reviewCount} />
-          </div>
-          <p className="text-xs tracking-luxe uppercase text-gold mb-4">Guest Words · Real Trips</p>
-          <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl text-foreground leading-tight">
-            Quietly spoken.<br />
-            <span className="italic text-gold">Honestly meant.</span>
-          </h1>
-          <div className="mt-8 h-px w-20 bg-gold mx-auto" />
-        </div>
-      </header>
+      <PageHero title="GUEST REVIEWS" crumb="Reviews" />
+      <div className="container pt-12 md:pt-16 flex justify-center">
+        <GoogleRatingBadge rating={BRAND.rating} count={BRAND.reviewCount} />
+      </div>
 
       {/* Rating summary */}
-      <section className="container pb-16">
+      <section className="container py-12">
         <div className="grid lg:grid-cols-3 gap-12 items-center bg-card border border-gold/15 rounded-2xl p-10 md:p-14 shadow-luxe">
           <div className="text-center lg:text-left lg:border-r lg:border-border/60 lg:pr-10">
             <p className="font-serif text-7xl md:text-8xl text-gold leading-none">{BRAND.rating}</p>
