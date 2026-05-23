@@ -64,7 +64,7 @@ const ReviewsSlider = () => {
                     className="w-12 h-12 rounded-full object-cover border border-gold/40"
                   />
                   <div>
-                    <p className="text-sm text-foreground font-medium text-slate-300">{r.name}</p>
+                    <p className="text-sm text-foreground font-medium">{r.name}</p>
                     <p className="text-xs text-muted-foreground">{r.date} · Google</p>
                   </div>
                 </div>
