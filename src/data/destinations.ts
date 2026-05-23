@@ -166,12 +166,12 @@ export const destinations: Destination[] = [
     ["Cherrapunji root bridges", "Kaziranga rhino safari", "Tawang Monastery", "Majuli river island", "Dawki crystal river"],
     ["1591018653692-e6d6b7e5f7e9", "1623674388651-2ec732bd71d8", "1626621341517-bbf3d9990a23", "1605649487212-47bdab064df7", "1610019883449-9d1e4ec8b1e8", "1626621341382-8aa6c54e3cdd"]),
 
-  mk("kerala", "Kerala", "Domestic", "India",
-    "A backwater lullaby.",
-    "Glide through Alleppey's emerald canals on a private houseboat, then unwind in colonial Cochin and Munnar's spice gardens.",
-    "5 – 7 Nights",
-    ["Alleppey houseboat", "Munnar tea estates", "Fort Kochi heritage", "Kathakali evening", "Periyar wildlife"],
-    ["1602216056096-3b40cc0c9944", "1623674388651-2ec732bd71d8", "1582510003544-4d00b7f74220", "1591018653692-e6d6b7e5f7e9", "1626621341517-bbf3d9990a23", "1605649487212-47bdab064df7"]),
+  mk("himachal", "Himachal Pradesh", "Domestic", "India",
+    "Pine valleys and snow-capped silence.",
+    "Shimla's colonial charm, Manali's snow peaks and the unspoilt Tirthan and Parvati valleys.",
+    "5 – 8 Nights",
+    ["Shimla Mall Road", "Solang Valley snow", "Rohtang Pass", "Manikaran hot springs", "Kasol riverside"],
+    ["1626621341517-bbf3d9990a23", "1626621341382-8aa6c54e3cdd", "1567606404875-8b6e4f6f9c0e", "1585143025676-7c1ad6e1b6a5", "1623674388651-2ec732bd71d8", "1591018653692-e6d6b7e5f7e9"]),
 
   mk("rajasthan", "Rajasthan", "Domestic", "India",
     "Forts in saffron, palaces in pearl.",
