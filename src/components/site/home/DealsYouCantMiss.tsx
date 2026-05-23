@@ -23,7 +23,7 @@ const DealsYouCantMiss = () => {
           <h2 className="font-serif text-3xl md:text-5xl text-foreground leading-tight">
             Deals You <span className="italic text-gold">Can't Miss</span>
           </h2>
-          <p className="mt-4 text-sm text-muted-foreground font-light text-zinc-900">
+          <p className="mt-4 text-sm text-muted-foreground font-light">
             Curated packages with all-inclusive premium experiences.
           </p>
         </div>
