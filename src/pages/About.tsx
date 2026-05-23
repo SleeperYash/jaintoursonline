@@ -51,7 +51,7 @@ const believeImgs = [
 
 const SectionHeading = ({ children }: { children: React.ReactNode }) => (
   <div className="text-center mb-12 md:mb-16">
-    <h2 className="font-serif text-[26px] md:text-[36px] tracking-[0.18em] text-ink inline-block">
+    <h2 className="font-serif text-[26px] md:text-[36px] tracking-[0.18em] text-foreground inline-block">
       {children}
     </h2>
     <div className="mt-3 mx-auto h-[3px] w-[120px] bg-primary" />
@@ -59,7 +59,7 @@ const SectionHeading = ({ children }: { children: React.ReactNode }) => (
 );
 
 const SubHeading = ({ children }: { children: React.ReactNode }) => (
-  <h3 className="font-serif text-[22px] tracking-[0.15em] text-ink mb-6 md:text-sm">
+  <h3 className="font-serif text-[22px] tracking-[0.15em] text-foreground mb-6 md:text-sm">
     {children}
   </h3>
 );
@@ -78,8 +78,8 @@ const IconStat = ({
       <Icon className="w-5 h-5" strokeWidth={2} />
     </span>
     <div className="leading-snug">
-      <div className="text-[15px] font-medium text-ink md:text-xs">{title}</div>
-      <div className="text-[15px] text-ink/80 md:text-xs">{sub}</div>
+      <div className="text-[15px] font-medium text-foreground md:text-xs">{title}</div>
+      <div className="text-[15px] text-foreground/80 md:text-xs">{sub}</div>
     </div>
   </div>
 );
@@ -127,17 +127,17 @@ const About = () => {
           <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
             <Reveal>
               <SubHeading>WHO WE ARE?</SubHeading>
-              <div className="space-y-5 text-[15px] md:text-[16px] text-ink/85" style={{ lineHeight: 1.85 }}>
+              <div className="space-y-5 text-[15px] md:text-[16px] text-foreground/85" style={{ lineHeight: 1.85 }}>
                 <p>
                   Founded in {FOUNDED} and proudly completing {YEARS} incredible years,{" "}
-                  <strong className="text-ink">{BRAND.name}</strong> is based in Mumbai and driven by Mr. Dinesh Punamia. Our mission has always been simple — to make travel
+                  <strong className="text-foreground">{BRAND.name}</strong> is based in Mumbai and driven by Mr. Dinesh Punamia. Our mission has always been simple — to make travel
                   planning, booking, and organizing effortless for every traveller.
                 </p>
                 <p>
                   With thoughtfully curated group tours, seamless booking experiences, and a focus on
                   comfort and trust, we help our guests explore the world without hassle. Backed by
                   innovation, genuine care, and years of industry expertise,{" "}
-                  <strong className="text-ink">{BRAND.name}</strong> is your trusted companion in creating
+                  <strong className="text-foreground">{BRAND.name}</strong> is your trusted companion in creating
                   unforgettable journeys — easy, joyful, and truly memorable.
                 </p>
               </div>
@@ -175,7 +175,7 @@ const About = () => {
 
             <Reveal>
               <SubHeading>WHAT WE DO?</SubHeading>
-              <div className="space-y-5 text-[15px] md:text-[16px] text-ink/85" style={{ lineHeight: 1.85 }}>
+              <div className="space-y-5 text-[15px] md:text-[16px] text-foreground/85" style={{ lineHeight: 1.85 }}>
                 <p>
                   {BRAND.name} is your one-stop travel partner, proudly crafting memorable vacations
                   for thousands of families since {FOUNDED}.
@@ -214,7 +214,7 @@ const About = () => {
           <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
             <Reveal>
               <SubHeading>WHAT WE BELIEVE?</SubHeading>
-              <div className="space-y-5 text-[15px] md:text-[16px] text-ink/85" style={{ lineHeight: 1.85 }}>
+              <div className="space-y-5 text-[15px] md:text-[16px] text-foreground/85" style={{ lineHeight: 1.85 }}>
                 <p>
                   At {BRAND.name}, we believe that travel inspires growth, and great journeys create
                   lasting value. For us, it's more than a business — it's a passion rooted in care,
@@ -261,8 +261,8 @@ const About = () => {
               { n: "50+", l: "Team of Professionals" },
             ].map((s) => (
               <Reveal key={s.l}>
-                <div className="font-serif text-[40px] md:text-[56px] font-bold text-ink leading-none">{s.n}</div>
-                <div className="mt-3 text-[14px] md:text-[15px] text-ink/75">{s.l}</div>
+                <div className="font-serif text-[40px] md:text-[56px] font-bold text-foreground leading-none">{s.n}</div>
+                <div className="mt-3 text-[14px] md:text-[15px] text-foreground/75">{s.l}</div>
               </Reveal>
             ))}
           </div>

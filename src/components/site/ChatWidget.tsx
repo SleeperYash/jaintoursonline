@@ -268,7 +268,7 @@ const PackageCard = ({ pkg, onBook, onPdf }: { pkg: Pkg; onBook: () => void; onP
 
       <div className="border-t border-border pt-3">
         <div className="text-[10px] uppercase tracking-luxe text-muted-foreground">Estimated pricing</div>
-        <div className="font-semibold text-base text-ink">{pkg.estimatedPricePerPerson}</div>
+        <div className="font-semibold text-base text-foreground">{pkg.estimatedPricePerPerson}</div>
         {pkg.totalEstimate && <div className="text-xs text-muted-foreground">Total: {pkg.totalEstimate}</div>}
       </div>
 
