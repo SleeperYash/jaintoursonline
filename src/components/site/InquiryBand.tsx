@@ -14,6 +14,10 @@ const InquiryBand = () => {
           
           {/* Left Side: Polaroid Photos */}
           <div className="relative flex justify-center items-center mx-auto w-full max-w-[400px] lg:max-w-none h-[340px] md:h-[480px]">
+            {/* Gold Glow Behind Photos */}
+            <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none">
+              <div className="w-[70%] h-[70%] rounded-full bg-gold/20 dark:bg-gold/30 blur-[60px] md:blur-[80px]" />
+            </div>
             {/* Big Photo (Paris) */}
             <div 
               className="absolute z-10 w-[65%] md:w-[60%] lg:w-[280px] bg-white dark:bg-card p-2.5 pb-10 md:p-3.5 md:pb-12 shadow-xl rounded-sm border border-black/5 dark:border-gold/20"
