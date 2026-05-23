@@ -16,7 +16,9 @@ const InquiryBand = () => {
           <div className="relative flex justify-center items-center mx-auto w-full max-w-[400px] lg:max-w-none h-[340px] md:h-[480px]">
             {/* Gold Glow Behind Photos */}
             <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none">
-              <div className="w-[70%] h-[70%] rounded-full bg-gold/20 dark:bg-gold/30 blur-[60px] md:blur-[80px]" />
+              <div className="absolute w-[90%] h-[90%] rounded-full bg-gold/60 dark:bg-gold/70 blur-[80px] md:blur-[100px]" />
+              <div className="absolute w-[60%] h-[60%] rounded-full bg-gold/80 dark:bg-gold blur-[50px] md:blur-[70px]" />
+              <div className="absolute w-[40%] h-[40%] rounded-full bg-gold blur-[40px] opacity-90" />
             </div>
             {/* Big Photo (Paris) */}
             <div 
