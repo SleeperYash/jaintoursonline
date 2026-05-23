@@ -4,7 +4,7 @@ import { reviews, ratingDistribution } from "@/data/reviews";
 import { BRAND } from "@/lib/brand";
 import { useSeo } from "@/hooks/useSeo";
 import { useReveal } from "@/hooks/useReveal";
-import { useClientReviews } from "@/hooks/useClientReviews";
+import { useClientReviews, type DisplayReview } from "@/hooks/useClientReviews";
 import { Star, ExternalLink, Quote } from "lucide-react";
 import { GoogleRatingBadge, VerifiedTag } from "@/components/site/reviews/GoogleBadge";
 import ReviewsCardStack from "@/components/site/home/ReviewsCardStack";
@@ -100,7 +100,7 @@ const Reviews = () => {
   );
 };
 
-type ReviewWallItem = typeof reviews[number];
+type ReviewWallItem = DisplayReview | (typeof reviews)[number];
 
 const ReviewWall = ({ items }: { items: ReviewWallItem[] }) => {
   const ref = useReveal<HTMLDivElement>();
