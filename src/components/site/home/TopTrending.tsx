@@ -39,9 +39,6 @@ const TopTrending = () => {
               Top Trending <span className="italic text-gold">Destinations</span>
             </h2>
           </div>
-          <Link to="/destinations" className="hidden md:inline-flex items-center gap-1.5 text-xs uppercase tracking-luxe text-gold hover:gap-3 transition-all">
-            View all <ArrowUpRight className="w-3.5 h-3.5" />
-          </Link>
         </div>
 
         {/* Single-row horizontal carousel (all viewports) */}
@@ -94,6 +91,20 @@ const TopTrending = () => {
             </motion.div>
           ))}
         </motion.div>
+
+        {/* Unique themed CTA button below carousel */}
+        <div className="mt-12 flex justify-center">
+          <Link
+            to="/destinations"
+            className="group relative inline-flex items-center gap-3 px-8 py-4 overflow-hidden border border-gold/60 bg-transparent text-gold uppercase tracking-luxe text-xs font-semibold transition-all duration-500 hover:text-primary-foreground"
+          >
+            <span className="absolute inset-0 bg-gradient-to-r from-gold to-[hsl(var(--gold-deep))] translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out" />
+            <span className="absolute left-0 top-0 h-px w-8 bg-gold group-hover:w-full transition-all duration-700" />
+            <span className="absolute right-0 bottom-0 h-px w-8 bg-gold group-hover:w-full transition-all duration-700" />
+            <span className="relative">View All Destinations</span>
+            <ArrowUpRight className="relative w-4 h-4 group-hover:rotate-45 transition-transform duration-500" />
+          </Link>
+        </div>
       </div>
     </section>
   );
