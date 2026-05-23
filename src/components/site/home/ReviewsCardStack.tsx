@@ -93,7 +93,7 @@ const ReviewsCardStack = () => {
                 >
                   <div 
                     className={cn(
-                      "h-full flex flex-col bg-white rounded-2xl overflow-hidden transition-all duration-500",
+                      "h-full flex flex-col bg-white dark:bg-card rounded-2xl overflow-hidden transition-all duration-500",
                       isActive 
                         ? "shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] scale-100 opacity-100 relative z-10" 
                         : "shadow-sm scale-[0.92] opacity-50 z-0 cursor-pointer"
@@ -101,7 +101,7 @@ const ReviewsCardStack = () => {
                     onClick={() => !isActive && scrollTo(index)}
                   >
                     {/* Top Image */}
-                    <div className="relative h-48 sm:h-56 md:h-64 w-full bg-slate-100 shrink-0">
+                    <div className="relative h-48 sm:h-56 md:h-64 w-full bg-slate-100 dark:bg-muted shrink-0">
                       {review.image ? (
                         <img 
                           src={review.image} 
@@ -110,16 +110,16 @@ const ReviewsCardStack = () => {
                           loading="lazy"
                         />
                       ) : (
-                        <div className="w-full h-full bg-slate-200 flex items-center justify-center">
-                          <MapPin className="w-8 h-8 text-slate-400" />
+                        <div className="w-full h-full bg-slate-200 dark:bg-muted flex items-center justify-center">
+                          <MapPin className="w-8 h-8 text-slate-400 dark:text-muted-foreground" />
                         </div>
                       )}
                       
                       {/* Location Badge */}
                       {review.destination && (
-                        <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm border border-white/50">
-                          <MapPin className="w-3.5 h-3.5 text-slate-800" />
-                          <span className="text-[11px] font-medium text-slate-800 tracking-wide">
+                        <div className="absolute top-4 left-4 bg-white/90 dark:bg-card/90 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm border border-white/50 dark:border-gold/30">
+                          <MapPin className="w-3.5 h-3.5 text-slate-800 dark:text-gold" />
+                          <span className="text-[11px] font-medium text-slate-800 dark:text-foreground tracking-wide">
                             {review.destination}
                           </span>
                         </div>
@@ -127,7 +127,7 @@ const ReviewsCardStack = () => {
                     </div>
 
                     {/* Content */}
-                    <div className="p-6 md:p-8 flex flex-col flex-grow bg-white">
+                    <div className="p-6 md:p-8 flex flex-col flex-grow bg-white dark:bg-card">
                       {/* Stars */}
                       <div className="flex gap-1 mb-4 shrink-0">
                         {Array.from({ length: review.rating || 5 }).map((_, i) => (
@@ -136,18 +136,18 @@ const ReviewsCardStack = () => {
                       </div>
 
                       {/* Quote */}
-                      <blockquote className="font-serif text-lg md:text-xl text-slate-700 leading-relaxed italic mb-6 flex-grow">
+                      <blockquote className="font-serif text-lg md:text-xl text-slate-700 dark:text-foreground/85 leading-relaxed italic mb-6 flex-grow">
                         "{review.text}"
                       </blockquote>
 
                       {/* Reviewer Name */}
-                      <div className="mt-auto pt-4 border-t border-slate-100 shrink-0 flex items-center justify-between">
-                        <span className="font-medium text-slate-900">
+                      <div className="mt-auto pt-4 border-t border-slate-100 dark:border-gold/20 shrink-0 flex items-center justify-between">
+                        <span className="font-medium text-slate-900 dark:text-foreground">
                           {review.name}
                         </span>
                         {/* Optional Date if available */}
                         {review.date && (
-                          <span className="text-[10px] text-slate-400 uppercase tracking-wider font-medium">
+                          <span className="text-[10px] text-slate-400 dark:text-muted-foreground uppercase tracking-wider font-medium">
                             {review.date}
                           </span>
                         )}
@@ -163,14 +163,14 @@ const ReviewsCardStack = () => {
         {/* Desktop Navigation Arrows */}
         <button
           onClick={scrollPrev}
-          className="hidden lg:flex absolute left-4 xl:left-8 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 backdrop-blur-md rounded-full items-center justify-center text-slate-800 shadow-[0_8px_16px_-6px_rgba(0,0,0,0.1)] border border-white hover:bg-white hover:scale-105 transition-all z-20"
+          className="hidden lg:flex absolute left-4 xl:left-8 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 dark:bg-card/80 backdrop-blur-md rounded-full items-center justify-center text-slate-800 dark:text-gold shadow-[0_8px_16px_-6px_rgba(0,0,0,0.1)] border border-white dark:border-gold/40 hover:bg-white dark:hover:bg-card hover:scale-105 transition-all z-20"
           aria-label="Previous review"
         >
           <ChevronLeft className="w-6 h-6" />
         </button>
         <button
           onClick={scrollNext}
-          className="hidden lg:flex absolute right-4 xl:right-8 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 backdrop-blur-md rounded-full items-center justify-center text-slate-800 shadow-[0_8px_16px_-6px_rgba(0,0,0,0.1)] border border-white hover:bg-white hover:scale-105 transition-all z-20"
+          className="hidden lg:flex absolute right-4 xl:right-8 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 dark:bg-card/80 backdrop-blur-md rounded-full items-center justify-center text-slate-800 dark:text-gold shadow-[0_8px_16px_-6px_rgba(0,0,0,0.1)] border border-white dark:border-gold/40 hover:bg-white dark:hover:bg-card hover:scale-105 transition-all z-20"
           aria-label="Next review"
         >
           <ChevronRight className="w-6 h-6" />
@@ -186,7 +186,7 @@ const ReviewsCardStack = () => {
                 "h-1.5 rounded-full transition-all duration-300",
                 index === selectedIndex 
                   ? "w-8 bg-gold" 
-                  : "w-2 bg-slate-300 hover:bg-slate-400"
+                  : "w-2 bg-slate-300 dark:bg-muted hover:bg-slate-400 dark:hover:bg-muted-foreground/50"
               )}
               aria-label={`Go to slide ${index + 1}`}
             />
