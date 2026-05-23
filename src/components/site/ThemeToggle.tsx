@@ -35,11 +35,12 @@ const ThemeToggle = ({ className }: { className?: string }) => {
       onClick={toggle}
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
       className={cn(
-        "inline-flex items-center justify-center w-10 h-10 rounded-full border border-gold/30 text-gold hover:border-gold hover:shadow-gold transition-all duration-300",
+        "relative inline-flex items-center justify-center w-10 h-10 rounded-full border-2 border-gold bg-gold/15 text-gold shadow-gold ring-2 ring-gold/30 ring-offset-2 ring-offset-background hover:bg-gold/25 hover:scale-110 transition-all duration-300",
         className
       )}
     >
       {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+      <span className="absolute inset-0 rounded-full bg-gold/20 animate-ping opacity-40 pointer-events-none" />
     </button>
   );
 };
