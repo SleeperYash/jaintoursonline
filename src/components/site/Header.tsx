@@ -4,6 +4,7 @@ import { Menu, X, Phone } from "lucide-react";
 import { BRAND } from "@/lib/brand";
 import { cn } from "@/lib/utils";
 import jainLogo from "@/assets/jain-tours-logo.png";
+import ThemeToggle from "./ThemeToggle";
 
 const links = [
   { to: "/", label: "Home" },
@@ -121,18 +122,22 @@ const Header = () => {
             <span className="relative z-10">Plan Journey</span>
             <span className="absolute inset-0 bg-gradient-to-r from-gold-deep to-gold opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
           </Link>
+          <ThemeToggle />
         </div>
 
-        {/* Mobile toggle */}
-        <button
-          className="lg:hidden text-foreground relative w-11 h-11 flex items-center justify-center"
-          onClick={() => setOpen((v) => !v)}
-          aria-label="Toggle menu"
-          aria-expanded={open}
-        >
-          <Menu className={cn("absolute w-5 h-5 transition-all duration-300", open ? "opacity-0 rotate-90" : "opacity-100 rotate-0")} />
-          <X className={cn("absolute w-5 h-5 transition-all duration-300", open ? "opacity-100 rotate-0" : "opacity-0 -rotate-90")} />
-        </button>
+        {/* Mobile: theme toggle + hamburger */}
+        <div className="lg:hidden flex items-center gap-2">
+          <ThemeToggle className="w-9 h-9" />
+          <button
+            className="text-foreground relative w-11 h-11 flex items-center justify-center"
+            onClick={() => setOpen((v) => !v)}
+            aria-label="Toggle menu"
+            aria-expanded={open}
+          >
+            <Menu className={cn("absolute w-5 h-5 transition-all duration-300", open ? "opacity-0 rotate-90" : "opacity-100 rotate-0")} />
+            <X className={cn("absolute w-5 h-5 transition-all duration-300", open ? "opacity-100 rotate-0" : "opacity-0 -rotate-90")} />
+          </button>
+        </div>
       </div>
 
       {/* Mobile drawer */}
