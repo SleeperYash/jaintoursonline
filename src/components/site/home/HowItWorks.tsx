@@ -86,7 +86,7 @@ const HowItWorks = () => {
                   </span>
                 </div>
                 <h3 className="font-serif text-lg text-foreground mt-4 font-extralight">{title}</h3>
-                <p className="mt-2 text-xs text-muted-foreground font-light leading-relaxed max-w-[220px] mx-auto text-zinc-800">
+                <p className="mt-2 text-xs text-muted-foreground font-light leading-relaxed max-w-[220px] mx-auto text-slate-100">
                   {desc}
                 </p>
               </li>
