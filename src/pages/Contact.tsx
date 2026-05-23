@@ -1,5 +1,5 @@
 import SiteLayout from "@/components/site/SiteLayout";
-import SectionTitle from "@/components/site/SectionTitle";
+import PageHero from "@/components/site/PageHero";
 import InquiryForm from "@/components/site/InquiryForm";
 import { BRAND, waLink } from "@/lib/brand";
 import { useSeo } from "@/hooks/useSeo";
@@ -25,15 +25,9 @@ const Contact = () => {
 
   return (
     <SiteLayout>
-      <header className="pt-40 pb-20 container">
-        <SectionTitle
-          eyebrow="Begin"
-          title="Tell us where you'd love to go."
-          description="A few words about your dream trip is all we need. A travel curator will reach out within hours."
-        />
-      </header>
+      <PageHero title="CONTACT US" crumb="Contact" />
 
-      <section className="container pb-24 grid lg:grid-cols-5 gap-16">
+      <section className="container py-16 md:py-24 grid lg:grid-cols-5 gap-16">
         <div ref={ref} className="reveal lg:col-span-3 bg-card border border-border/60 p-8 md:p-12">
           <h2 className="font-serif text-3xl text-foreground mb-2">Send an enquiry</h2>
           <p className="text-sm text-muted-foreground mb-10">We reply within a few hours, every day.</p>
