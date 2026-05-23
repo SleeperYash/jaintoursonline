@@ -100,56 +100,7 @@ const Reviews = () => {
   );
 };
 
-type ReviewDisplayItem = DisplayReview | (typeof clientReviews)[number];
-type ReviewWallItem = DisplayReview | (typeof reviews)[number];
-
-const PhotoGallery = ({ items }: { items: ReviewDisplayItem[] }) => {
-  const ref = useReveal<HTMLDivElement>();
-  return (
-    <section className="container py-20">
-      <div className="text-center max-w-2xl mx-auto mb-12">
-        <p className="text-xs tracking-luxe uppercase text-gold mb-3">Travel Diary</p>
-        <h2 className="font-serif text-4xl md:text-5xl text-foreground">
-          Moments, <span className="italic text-gold">unfiltered</span>
-        </h2>
-      </div>
-      <div ref={ref} className="reveal grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
-        {items.map((c, i) => (
-          <figure
-            key={`${c.name}-${i}`}
-            className={`group relative overflow-hidden rounded-xl border border-gold/10 bg-card shadow-luxe ${
-              i % 7 === 0 ? "row-span-2 aspect-[3/4]" : "aspect-square"
-            }`}
-          >
-            <img
-              src={c.image ?? ""}
-              alt={`${c.name} in ${c.destination}`}
-              loading="lazy"
-              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-            />
-            <div
-              className="absolute inset-0 opacity-90 group-hover:opacity-100 transition-opacity"
-              style={{
-                background:
-                  "linear-gradient(180deg, transparent 30%, hsl(220 50% 6% / 0.4) 60%, hsl(220 50% 4% / 0.95) 100%)",
-              }}
-            />
-            <figcaption className="absolute inset-x-0 bottom-0 p-4 md:p-5 translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
-              <div className="flex items-center gap-1.5 mb-1.5">
-                <MapPin className="w-3 h-3 text-gold" />
-                <span className="text-[10px] uppercase tracking-luxe text-gold">{c.destination}</span>
-              </div>
-              <p className="text-sm font-serif italic text-foreground line-clamp-2 leading-snug">
-                "{c.text.slice(0, 90)}…"
-              </p>
-              <p className="text-[10px] text-muted-foreground mt-2 tracking-wide">— {c.name}</p>
-            </figcaption>
-          </figure>
-        ))}
-      </div>
-    </section>
-  );
-};
+type ReviewWallItem = typeof reviews[number];
 
 const ReviewWall = ({ items }: { items: ReviewWallItem[] }) => {
   const ref = useReveal<HTMLDivElement>();
