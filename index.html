@@ -1,9 +1,17 @@
 <!doctype html>
-<html lang="en" class="dark">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Jain Tours &amp; Travels — Mumbai</title>
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("jtt-theme");
+          if (t === "dark") document.documentElement.classList.add("dark");
+        } catch (e) {}
+      })();
+    </script>
     <meta name="description" content="Jain Tours &amp; Travels is your trusted travel partner for creating unforgettable journeys across India and around the world.">
     <meta name="author" content="Jain Tours & Travels" />
     <link rel="canonical" href="/" />
