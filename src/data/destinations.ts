@@ -124,7 +124,7 @@ export const destinations: Destination[] = [
     ["Rann of Kutch tents", "Gir lion safari", "Statue of Unity", "Modhera Sun Temple", "Ahmedabad heritage walk"],
     ["1597149959998-b7b1a4b2c8e1", "1606298855672-3efb63017be8", "1623853008827-0c9a2e3c1c3a", "1605649487212-47bdab064df7", "1582719471384-894fbb16e074", "1602216056096-3b40cc0c9944"]),
 
-  mk("kerala", "Kerala", "Domestic", "India",
+  mk("kerala", "kerala", "Domestic", "India",
     "A backwater lullaby.",
     "Glide through Alleppey's emerald canals on a private houseboat, then unwind in colonial Cochin and Munnar's spice gardens.",
     "5 – 7 Nights",
