@@ -35,7 +35,7 @@ const HandpickedPackages = () => {
           <h2 className="font-serif text-3xl md:text-5xl text-foreground leading-tight">
             Handpicked <span className="italic text-gold">Holiday Packages</span>
           </h2>
-          <p className="mt-4 text-sm text-muted-foreground font-light text-zinc-800">
+          <p className="mt-4 text-sm text-muted-foreground font-light text-slate-100">
             Every destination we offer — designed end-to-end by our travel curators.
           </p>
         </div>
