@@ -134,7 +134,7 @@ const Footer = () => {
             <ManageDestinationDialog
               allowSwitcher
               triggerLabel="Manage"
-              triggerClassName="text-[10px] uppercase tracking-luxe text-foreground/30 hover:text-gold inline-flex items-center gap-1.5 transition-colors text-slate-300"
+              triggerClassName="text-[10px] uppercase tracking-luxe text-foreground/30 hover:text-gold inline-flex items-center gap-1.5 transition-colors"
             />
             <p className="tracking-wide text-slate-300">Crafted with care in Mumbai · India</p>
           </div>

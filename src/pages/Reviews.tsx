@@ -134,7 +134,7 @@ const ReviewWall = ({ items }: { items: ReviewWallItem[] }) => {
                 </div>
                 <div>
                   <p className="text-sm text-foreground">{r.name}</p>
-                  <p className="text-[10px] text-muted-foreground tracking-wide uppercase text-slate-100">
+                  <p className="text-[10px] text-muted-foreground tracking-wide uppercase">
                     Google · {r.date}
                   </p>
                 </div>
