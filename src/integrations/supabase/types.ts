@@ -249,6 +249,9 @@ export type Database = {
           file_path: string
           file_size: number | null
           id: string
+          parse_error: string | null
+          parsed_at: string | null
+          parsed_data: Json | null
           title: string
           updated_at: string
           uploaded_by: string | null
@@ -259,6 +262,9 @@ export type Database = {
           file_path: string
           file_size?: number | null
           id?: string
+          parse_error?: string | null
+          parsed_at?: string | null
+          parsed_data?: Json | null
           title: string
           updated_at?: string
           uploaded_by?: string | null
@@ -269,6 +275,9 @@ export type Database = {
           file_path?: string
           file_size?: number | null
           id?: string
+          parse_error?: string | null
+          parsed_at?: string | null
+          parsed_data?: Json | null
           title?: string
           updated_at?: string
           uploaded_by?: string | null
