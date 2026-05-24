@@ -388,47 +388,49 @@ const ItineraryDetailView = ({
                 </section>
               </TabsContent>
 
-              <TabsContent value="inclusions" className="animate-fade-in mt-0">
-                {parsed.inclusions?.length || parsed.exclusions?.length ? (
-                  <div className="grid md:grid-cols-2 gap-4 md:gap-6">
-                    <div className="rounded-2xl border border-border/60 bg-card p-5 md:p-6 shadow-luxe">
-                      <p className="flex items-center gap-2 text-xs uppercase tracking-luxe text-gold mb-4">
-                        <Check className="w-4 h-4" /> Included
-                      </p>
-                      {parsed.inclusions?.length ? (
-                        <ul className="space-y-2.5">
-                          {parsed.inclusions.map((i, k) => (
-                            <li key={k} className="flex items-start gap-2.5 text-sm text-foreground/85 font-light">
-                              <Check className="w-4 h-4 mt-0.5 text-gold shrink-0" />
-                              <span>{i}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <p className="text-sm text-muted-foreground font-light">Not Provided</p>
-                      )}
+              <TabsContent value="inclusions" className="animate-fade-in mt-0" asChild>
+                <section aria-label="Inclusions and exclusions">
+                  {parsed.inclusions?.length || parsed.exclusions?.length ? (
+                    <div className="grid md:grid-cols-2 gap-4 md:gap-6">
+                      <div className="rounded-2xl border border-border/60 bg-card p-5 md:p-6 shadow-luxe">
+                        <h2 className="flex items-center gap-2 text-xs uppercase tracking-luxe text-gold mb-4">
+                          <Check className="w-4 h-4" aria-hidden /> Included
+                        </h2>
+                        {parsed.inclusions?.length ? (
+                          <ul className="space-y-2.5">
+                            {parsed.inclusions.map((itm, k) => (
+                              <li key={k} className="flex items-start gap-2.5 text-sm text-foreground/85 font-light">
+                                <Check className="w-4 h-4 mt-0.5 text-gold shrink-0" aria-hidden />
+                                <span>{itm}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <p className="text-sm text-muted-foreground font-light">Not Provided</p>
+                        )}
+                      </div>
+                      <div className="rounded-2xl border border-border/60 bg-card p-5 md:p-6 shadow-luxe">
+                        <h2 className="flex items-center gap-2 text-xs uppercase tracking-luxe text-destructive mb-4">
+                          <XIcon className="w-4 h-4" aria-hidden /> Not included
+                        </h2>
+                        {parsed.exclusions?.length ? (
+                          <ul className="space-y-2.5">
+                            {parsed.exclusions.map((itm, k) => (
+                              <li key={k} className="flex items-start gap-2.5 text-sm text-foreground/85 font-light">
+                                <XIcon className="w-4 h-4 mt-0.5 text-destructive shrink-0" aria-hidden />
+                                <span>{itm}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <p className="text-sm text-muted-foreground font-light">Not Provided</p>
+                        )}
+                      </div>
                     </div>
-                    <div className="rounded-2xl border border-border/60 bg-card p-5 md:p-6 shadow-luxe">
-                      <p className="flex items-center gap-2 text-xs uppercase tracking-luxe text-destructive mb-4">
-                        <XIcon className="w-4 h-4" /> Not included
-                      </p>
-                      {parsed.exclusions?.length ? (
-                        <ul className="space-y-2.5">
-                          {parsed.exclusions.map((i, k) => (
-                            <li key={k} className="flex items-start gap-2.5 text-sm text-foreground/85 font-light">
-                              <XIcon className="w-4 h-4 mt-0.5 text-destructive shrink-0" />
-                              <span>{i}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <p className="text-sm text-muted-foreground font-light">Not Provided</p>
-                      )}
-                    </div>
-                  </div>
-                ) : (
-                  <NotProvided />
-                )}
+                  ) : (
+                    <NotProvided />
+                  )}
+                </section>
               </TabsContent>
 
               <TabsContent value="terms" className="animate-fade-in mt-0">
