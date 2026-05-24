@@ -35,6 +35,7 @@ const DestinationDetail = () => {
     title: d ? `${d.name} Tour Package — Jain Tours & Travels` : "Destination | Jain Tours",
     description: d?.overview ?? "Curated destination by Jain Tours & Travels.",
     canonicalPath: `/destinations/${slug}`,
+    ogImage: heroPhoto !== PLACEHOLDER ? heroPhoto : undefined,
   });
 
   if (!d) return <Navigate to="/destinations" replace />;
