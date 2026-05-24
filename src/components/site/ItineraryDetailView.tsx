@@ -166,14 +166,44 @@ const ItineraryDetailView = ({
     }
   };
 
+  const schema = useMemo(() => {
+    if (!parsed) return null;
+    return {
+      "@context": "https://schema.org",
+      "@type": "TouristAttraction",
+      name: title,
+      description: parsed.overview ?? `${title} itinerary by Jain Tours & Travels`,
+      image: heroImage || undefined,
+      touristType: "Travel package",
+      additionalProperty: parsed.days.map((d, i) => ({
+        "@type": "PropertyValue",
+        name: `Day ${i + 1}`,
+        value: d.title,
+      })),
+      isPartOf: {
+        "@type": "TouristDestination",
+        name: destinationName,
+      },
+      offers: {
+        "@type": "Offer",
+        availability: "https://schema.org/InStock",
+        seller: {
+          "@type": "TravelAgency",
+          name: "Jain Tours & Travels",
+        },
+      },
+    };
+  }, [parsed, title, destinationName, heroImage]);
+
   return (
     <div className="flex flex-col h-full overflow-y-auto bg-background">
       {/* Hero */}
       <div className="relative w-full h-44 sm:h-56 md:h-72 shrink-0 overflow-hidden">
         <img
           src={heroImage || "/placeholder.svg"}
-          alt={destinationName}
+          alt={`${destinationName} — ${title} tour package`}
           className="w-full h-full object-cover"
+          loading="lazy"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/40 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-4 md:p-8">
@@ -185,6 +215,11 @@ const ItineraryDetailView = ({
           </h2>
         </div>
       </div>
+
+      {/* Structured data for SEO */}
+      {schema && (
+        <script type="application/ld+json">{JSON.stringify(schema)}</script>
+      )}
 
       {/* Tabs */}
       <Tabs defaultValue="overview" className="flex-1 flex flex-col">
@@ -259,168 +294,178 @@ const ItineraryDetailView = ({
             <NotProvided />
           ) : (
             <>
-              <TabsContent value="overview" className="animate-fade-in mt-0">
-                {parsed.overview ? (
-                  <div className="rounded-2xl border border-border/60 bg-card p-6 md:p-8 shadow-luxe hover:shadow-gold/10 transition-shadow">
-                    <p className="text-xs uppercase tracking-luxe text-gold mb-3">Trip overview</p>
-                    <p className="text-base md:text-lg leading-relaxed text-foreground/85 font-light whitespace-pre-line">
-                      {parsed.overview}
-                    </p>
-                  </div>
-                ) : (
-                  <NotProvided />
-                )}
-              </TabsContent>
-
-              <TabsContent value="days" className="animate-fade-in mt-0">
-                {parsed.days?.length ? (
-                  <>
-                    <div className="flex items-center justify-between mb-4">
-                      <p className="text-xs uppercase tracking-luxe text-foreground/60">
-                        {parsed.days.length} day{parsed.days.length > 1 ? "s" : ""}
+              <TabsContent value="overview" className="animate-fade-in mt-1" asChild>
+                <section aria-label="Trip overview">
+                  {parsed.overview ? (
+                    <div className="rounded-2xl border border-border/60 bg-card p-6 md:p-8 shadow-luxe hover:shadow-gold/10 transition-shadow">
+                      <h2 className="text-xs uppercase tracking-luxe text-gold mb-3">Trip overview</h2>
+                      <p className="text-base md:text-lg leading-relaxed text-foreground/85 font-light whitespace-pre-line">
+                        {parsed.overview}
                       </p>
-                      <button
-                        onClick={() => setOpenDays(allOpen ? [] : dayValues)}
-                        className="inline-flex items-center gap-1.5 text-[11px] md:text-xs uppercase tracking-luxe text-gold hover:text-gold-deep transition"
-                      >
-                        {allOpen ? (
-                          <>
-                            <ChevronsDownUp className="w-3.5 h-3.5" /> Collapse all
-                          </>
-                        ) : (
-                          <>
-                            <ChevronsUpDown className="w-3.5 h-3.5" /> Expand all
-                          </>
-                        )}
-                      </button>
                     </div>
-                    <Accordion
-                      type="multiple"
-                      value={openDays}
-                      onValueChange={onAccordionChange as (v: string[]) => void}
-                      className="space-y-3"
-                    >
-                      {parsed.days.map((d, i) => (
-                        <AccordionItem
-                          key={i}
-                          value={`d-${i}`}
-                          className="border border-border/60 rounded-2xl bg-card overflow-hidden hover:border-gold/40 hover:shadow-luxe transition-all"
-                        >
-                          <AccordionTrigger className="px-4 md:px-6 py-4 hover:no-underline group">
-                            <div className="flex items-center gap-3 md:gap-4 text-left flex-1 min-w-0">
-                              <span className="shrink-0 inline-flex items-center justify-center w-9 h-9 md:w-10 md:h-10 rounded-full bg-gold/10 text-gold text-xs md:text-sm font-medium border border-gold/20 group-hover:bg-gold group-hover:text-primary-foreground transition">
-                                {i + 1}
-                              </span>
-                              <span className="font-serif text-base md:text-lg text-foreground truncate">
-                                {d.title}
-                              </span>
-                            </div>
-                          </AccordionTrigger>
-                          <AccordionContent className="px-4 md:px-6 pb-5">
-                            <div className="pl-0 md:pl-14">
-                              {d.body && (
-                                <p className="text-sm md:text-base text-foreground/80 font-light leading-relaxed whitespace-pre-line">
-                                  {d.body}
-                                </p>
-                              )}
-                              {d.activities?.length ? (
-                                <div className="mt-4">
-                                  <p className="text-[11px] uppercase tracking-luxe text-gold mb-2">
-                                    Activities
-                                  </p>
-                                  <ul className="space-y-1.5">
-                                    {d.activities.map((a, ai) => (
-                                      <li key={ai} className="flex items-start gap-2 text-sm text-foreground/80 font-light">
-                                        <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-gold shrink-0" />
-                                        <span>{a}</span>
-                                      </li>
-                                    ))}
-                                  </ul>
-                                </div>
-                              ) : null}
-                            </div>
-                          </AccordionContent>
-                        </AccordionItem>
-                      ))}
-                    </Accordion>
-                  </>
-                ) : (
-                  <NotProvided />
-                )}
-              </TabsContent>
-
-              <TabsContent value="inclusions" className="animate-fade-in mt-0">
-                {parsed.inclusions?.length || parsed.exclusions?.length ? (
-                  <div className="grid md:grid-cols-2 gap-4 md:gap-6">
-                    <div className="rounded-2xl border border-border/60 bg-card p-5 md:p-6 shadow-luxe">
-                      <p className="flex items-center gap-2 text-xs uppercase tracking-luxe text-gold mb-4">
-                        <Check className="w-4 h-4" /> Included
-                      </p>
-                      {parsed.inclusions?.length ? (
-                        <ul className="space-y-2.5">
-                          {parsed.inclusions.map((i, k) => (
-                            <li key={k} className="flex items-start gap-2.5 text-sm text-foreground/85 font-light">
-                              <Check className="w-4 h-4 mt-0.5 text-gold shrink-0" />
-                              <span>{i}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <p className="text-sm text-muted-foreground font-light">Not Provided</p>
-                      )}
-                    </div>
-                    <div className="rounded-2xl border border-border/60 bg-card p-5 md:p-6 shadow-luxe">
-                      <p className="flex items-center gap-2 text-xs uppercase tracking-luxe text-destructive mb-4">
-                        <XIcon className="w-4 h-4" /> Not included
-                      </p>
-                      {parsed.exclusions?.length ? (
-                        <ul className="space-y-2.5">
-                          {parsed.exclusions.map((i, k) => (
-                            <li key={k} className="flex items-start gap-2.5 text-sm text-foreground/85 font-light">
-                              <XIcon className="w-4 h-4 mt-0.5 text-destructive shrink-0" />
-                              <span>{i}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <p className="text-sm text-muted-foreground font-light">Not Provided</p>
-                      )}
-                    </div>
-                  </div>
-                ) : (
-                  <NotProvided />
-                )}
-              </TabsContent>
-
-              <TabsContent value="terms" className="animate-fade-in mt-0">
-                <div className="space-y-3">
-                  {TERMS.map((t, i) => (
-                    <div
-                      key={i}
-                      className="rounded-2xl border border-border/60 bg-card p-5 md:p-6 shadow-luxe hover:border-gold/30 transition"
-                    >
-                      <p className="font-serif text-base md:text-lg text-foreground mb-1.5">{t.h}</p>
-                      <p className="text-sm text-foreground/75 font-light leading-relaxed">{t.b}</p>
-                    </div>
-                  ))}
-                </div>
-              </TabsContent>
-
-              <TabsContent value="visa" className="animate-fade-in mt-0">
-                <div className="rounded-2xl border border-border/60 bg-card p-6 md:p-8 shadow-luxe">
-                  <p className="flex items-center gap-2 text-xs uppercase tracking-luxe text-gold mb-3">
-                    <Plane className="w-4 h-4" /> Visa information
-                  </p>
-                  {parsed.visa ? (
-                    <p className="text-base leading-relaxed text-foreground/85 font-light whitespace-pre-line">
-                      {parsed.visa}
-                    </p>
                   ) : (
-                    <p className="text-sm md:text-base text-foreground/75 font-light">
-                      Visa information will be shared by our travel expert.
-                    </p>
+                    <NotProvided />
                   )}
-                </div>
+                </section>
+              </TabsContent>
+
+              <TabsContent value="days" className="animate-fade-in mt-1" asChild>
+                <section aria-label="Day by day itinerary">
+                  {parsed.days?.length ? (
+                    <>
+                      <div className="flex items-center justify-between mb-4">
+                        <p className="text-xs uppercase tracking-luxe text-foreground/60">
+                          {parsed.days.length} day{parsed.days.length > 1 ? "s" : ""}
+                        </p>
+                        <button
+                          onClick={() => setOpenDays(allOpen ? [] : dayValues)}
+                          className="inline-flex items-center gap-1.5 text-[11px] md:text-xs uppercase tracking-luxe text-gold hover:text-gold-deep transition"
+                        >
+                          {allOpen ? (
+                            <>
+                              <ChevronsDownUp className="w-3.5 h-3.5" /> Collapse all
+                            </>
+                          ) : (
+                            <>
+                              <ChevronsUpDown className="w-3.5 h-3.5" /> Expand all
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <Accordion
+                        type="multiple"
+                        value={openDays}
+                        onValueChange={onAccordionChange as (v: string[]) => void}
+                        className="space-y-3"
+                      >
+                        {parsed.days.map((d, i) => (
+                          <AccordionItem
+                            key={i}
+                            value={`d-${i}`}
+                            className="border border-border/60 rounded-2xl bg-card overflow-hidden hover:border-gold/40 hover:shadow-luxe transition-all"
+                          >
+                            <AccordionTrigger className="px-4 md:px-6 py-4 hover:no-underline group">
+                              <div className="flex items-center gap-3 md:gap-4 text-left flex-1 min-w-1">
+                                <span className="shrink-0 inline-flex items-center justify-center w-9 h-9 md:w-10 md:h-10 rounded-full bg-gold/10 text-gold text-xs md:text-sm font-medium border border-gold/20 group-hover:bg-gold group-hover:text-primary-foreground transition">
+                                  {i + 1}
+                                </span>
+                                <h3 className="font-serif text-base md:text-lg text-foreground truncate">
+                                  {d.title}
+                                </h3>
+                              </div>
+                            </AccordionTrigger>
+                            <AccordionContent className="px-4 md:px-6 pb-5">
+                              <div className="pl-0 md:pl-14">
+                                {d.body && (
+                                  <p className="text-sm md:text-base text-foreground/80 font-light leading-relaxed whitespace-pre-line">
+                                    {d.body}
+                                  </p>
+                                )}
+                                {d.activities?.length ? (
+                                  <div className="mt-4">
+                                    <h4 className="text-[11px] uppercase tracking-luxe text-gold mb-2">
+                                      Activities
+                                    </h4>
+                                    <ul className="space-y-1.5">
+                                      {d.activities.map((a, ai) => (
+                                        <li key={ai} className="flex items-start gap-2 text-sm text-foreground/80 font-light">
+                                          <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-gold shrink-0" />
+                                          <span>{a}</span>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </div>
+                                ) : null}
+                              </div>
+                            </AccordionContent>
+                          </AccordionItem>
+                        ))}
+                      </Accordion>
+                    </>
+                  ) : (
+                    <NotProvided />
+                  )}
+                </section>
+              </TabsContent>
+
+              <TabsContent value="inclusions" className="animate-fade-in mt-0" asChild>
+                <section aria-label="Inclusions and exclusions">
+                  {parsed.inclusions?.length || parsed.exclusions?.length ? (
+                    <div className="grid md:grid-cols-2 gap-4 md:gap-6">
+                      <div className="rounded-2xl border border-border/60 bg-card p-5 md:p-6 shadow-luxe">
+                        <h2 className="flex items-center gap-2 text-xs uppercase tracking-luxe text-gold mb-4">
+                          <Check className="w-4 h-4" aria-hidden /> Included
+                        </h2>
+                        {parsed.inclusions?.length ? (
+                          <ul className="space-y-2.5">
+                            {parsed.inclusions.map((itm, k) => (
+                              <li key={k} className="flex items-start gap-2.5 text-sm text-foreground/85 font-light">
+                                <Check className="w-4 h-4 mt-0.5 text-gold shrink-0" aria-hidden />
+                                <span>{itm}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <p className="text-sm text-muted-foreground font-light">Not Provided</p>
+                        )}
+                      </div>
+                      <div className="rounded-2xl border border-border/60 bg-card p-5 md:p-6 shadow-luxe">
+                        <h2 className="flex items-center gap-2 text-xs uppercase tracking-luxe text-destructive mb-4">
+                          <XIcon className="w-4 h-4" aria-hidden /> Not included
+                        </h2>
+                        {parsed.exclusions?.length ? (
+                          <ul className="space-y-2.5">
+                            {parsed.exclusions.map((itm, k) => (
+                              <li key={k} className="flex items-start gap-2.5 text-sm text-foreground/85 font-light">
+                                <XIcon className="w-4 h-4 mt-0.5 text-destructive shrink-0" aria-hidden />
+                                <span>{itm}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <p className="text-sm text-muted-foreground font-light">Not Provided</p>
+                        )}
+                      </div>
+                    </div>
+                  ) : (
+                    <NotProvided />
+                  )}
+                </section>
+              </TabsContent>
+
+              <TabsContent value="terms" className="animate-fade-in mt-0" asChild>
+                <section aria-label="Terms and conditions">
+                  <div className="space-y-3">
+                    {TERMS.map((t, i) => (
+                      <article
+                        key={i}
+                        className="rounded-2xl border border-border/60 bg-card p-5 md:p-6 shadow-luxe hover:border-gold/30 transition"
+                      >
+                        <h2 className="font-serif text-base md:text-lg text-foreground mb-1.5">{t.h}</h2>
+                        <p className="text-sm text-foreground/75 font-light leading-relaxed">{t.b}</p>
+                      </article>
+                    ))}
+                  </div>
+                </section>
+              </TabsContent>
+
+              <TabsContent value="visa" className="animate-fade-in mt-0" asChild>
+                <section aria-label="Visa information">
+                  <div className="rounded-2xl border border-border/60 bg-card p-6 md:p-8 shadow-luxe">
+                    <h2 className="flex items-center gap-2 text-xs uppercase tracking-luxe text-gold mb-3">
+                      <Plane className="w-4 h-4" aria-hidden /> Visa information
+                    </h2>
+                    {parsed.visa ? (
+                      <p className="text-base leading-relaxed text-foreground/85 font-light whitespace-pre-line">
+                        {parsed.visa}
+                      </p>
+                    ) : (
+                      <p className="text-sm md:text-base text-foreground/75 font-light">
+                        Visa information will be shared by our travel expert.
+                      </p>
+                    )}
+                  </div>
+                </section>
               </TabsContent>
             </>
           )}
