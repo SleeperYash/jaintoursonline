@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import SiteLayout from "@/components/site/SiteLayout";
 import PageHero from "@/components/site/PageHero";
 import InquiryBand from "@/components/site/InquiryBand";
@@ -7,7 +7,7 @@ import { useSeo } from "@/hooks/useSeo";
 import { useReveal } from "@/hooks/useReveal";
 import { useDestinationCovers } from "@/hooks/useDestinationCovers";
 import { Link } from "react-router-dom";
-import { ArrowUpRight, MapPin, Plane, Globe } from "lucide-react";
+import { ArrowUpRight, MapPin, Plane, Globe, Search, X } from "lucide-react";
 
 type CategoryKey = "domestic" | "international";
 type FilterKey = "all" | CategoryKey;
@@ -53,6 +53,7 @@ const Destinations = () => {
   });
 
   const [filter, setFilter] = useState<FilterKey>("all");
+  const [query, setQuery] = useState("");
 
   const filterPills: { key: FilterKey; label: string; icon: typeof Globe }[] = [
     { key: "all", label: "All", icon: Globe },
@@ -80,57 +81,99 @@ const Destinations = () => {
   return (
     <SiteLayout>
       <PageHero title="DESTINATIONS" crumb="Destinations" />
-      <div className="pb-6 container pt-12 md:pt-16">
-        <p className="tracking-luxe uppercase text-gold text-center text-base font-serif font-semibold bg-inherit">Curated Worldwide</p>
-      </div>
 
-      <div className="container pb-[10px]">
-        <div role="tablist" aria-label="Filter destinations" className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
-          {filterPills.map(({ key, label, icon: Icon }) => (
-            <button
-              key={key}
-              role="tab"
-              aria-selected={filter === key}
-              onClick={() => setFilter(key)}
-               className={`inline-flex items-center gap-2 px-4 sm:px-5 py-2 text-xs uppercase tracking-luxe border rounded-none transition-all duration-300 ${pillClasses(key)}`}
-            >
-              <Icon className="w-3.5 h-3.5" />
-              {label}
-            </button>
-          ))}
+      {/* Floating search + filter card, half overlapping hero */}
+      <div className="container relative -mt-12 md:-mt-16 z-20 px-4">
+        <div className="mx-auto max-w-3xl rounded-2xl border border-gold/30 bg-card/90 backdrop-blur-xl shadow-[0_25px_60px_-20px_hsl(var(--gold)/0.35)] ring-1 ring-white/5 p-4 sm:p-5 animate-fade-in">
+          <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-4">
+            <div className="relative flex-1">
+              <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-gold" />
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search destinations…"
+                className="w-full h-11 pl-11 pr-10 rounded-full bg-background/80 border border-border focus:border-gold focus:ring-2 focus:ring-gold/30 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-all"
+              />
+              {query && (
+                <button
+                  onClick={() => setQuery("")}
+                  aria-label="Clear search"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+            <div role="tablist" aria-label="Filter destinations" className="flex items-center justify-center gap-2 flex-wrap">
+              {filterPills.map(({ key, label, icon: Icon }) => (
+                <button
+                  key={key}
+                  role="tab"
+                  aria-selected={filter === key}
+                  onClick={() => setFilter(key)}
+                  className={`inline-flex items-center gap-1.5 px-3 sm:px-4 py-2 text-[11px] sm:text-xs uppercase tracking-luxe border rounded-full transition-all duration-300 ${pillClasses(key)}`}
+                >
+                  <Icon className="w-3.5 h-3.5" />
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
-      <DestinationsContent filter={filter} />
+      <div className="pb-2 container pt-10 md:pt-14">
+        <p className="tracking-luxe uppercase text-gold text-center text-base font-serif font-semibold bg-inherit">Curated Worldwide</p>
+      </div>
+
+      <DestinationsContent filter={filter} query={query} />
 
       <InquiryBand />
     </SiteLayout>
   );
 };
 
-const DestinationsContent = ({ filter }: { filter: FilterKey }) => {
+const DestinationsContent = ({ filter, query }: { filter: FilterKey; query: string }) => {
   const { covers } = useDestinationCovers();
+  const q = query.trim().toLowerCase();
+  const matches = (d: Destination) =>
+    !q ||
+    d.name.toLowerCase().includes(q) ||
+    d.country?.toLowerCase().includes(q) ||
+    d.tagline?.toLowerCase().includes(q);
+  const domestic = useMemo(() => domesticDestinations.filter(matches), [q]);
+  const international = useMemo(() => internationalDestinations.filter(matches), [q]);
+  const noResults =
+    (filter === "all" && domestic.length === 0 && international.length === 0) ||
+    (filter === "domestic" && domestic.length === 0) ||
+    (filter === "international" && international.length === 0);
   return (
     <div key={filter} className="transition-opacity duration-500 animate-in fade-in">
-      {(filter === "all" || filter === "domestic") && (
+      {noResults && (
+        <div className="container py-20 text-center text-muted-foreground">
+          No destinations match "{query}".
+        </div>
+      )}
+      {(filter === "all" || filter === "domestic") && domestic.length > 0 && (
         <div className="container py-16 md:py-20 pt-0 pb-[50px]">
           <DestinationGroup
             category="domestic"
             eyebrow="Domestic"
             title="India, intimately known."
-            list={domesticDestinations}
+            list={domestic}
             covers={covers}
           />
         </div>
       )}
 
-      {(filter === "all" || filter === "international") && (
+      {(filter === "all" || filter === "international") && international.length > 0 && (
         <div className="container py-16 md:py-20 pt-0 pb-[80px]">
           <DestinationGroup
             category="international"
             eyebrow="International"
             title="The world, quietly arranged."
-            list={internationalDestinations}
+            list={international}
             covers={covers}
           />
         </div>
