@@ -7,24 +7,9 @@ import { findDestination } from "@/data/destinations";
 import { useSeo } from "@/hooks/useSeo";
 import { useDestinationImages } from "@/hooks/useDestinationImages";
 import { adminPublicUrl } from "@/hooks/useAdminAuth";
-import { useDestinationGuide } from "@/hooks/useDestinationGuide";
-import {
-  Star, Clock, Users, Sun, ArrowRight, MapPin, Loader2,
-  Plane, Hotel, Coffee, Car, Map, Camera, ChevronLeft, ChevronRight, X,
-} from "lucide-react";
+import { Camera, ChevronLeft, ChevronRight, X } from "lucide-react";
 
 const PLACEHOLDER = "/placeholder.svg";
-const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-
-const INCLUDED = [
-  { icon: Plane, label: "Return flights" },
-  { icon: Hotel, label: "Hotels" },
-  { icon: Coffee, label: "Daily breakfast" },
-  { icon: Car, label: "Private transfers" },
-  { icon: Map, label: "Sightseeing" },
-  { icon: Camera, label: "Visa & insurance" },
-];
-const NOT_INCLUDED = ["Lunch & dinner", "Personal expenses", "Tips & gratuities", "Optional activities", "Travel insurance upgrade"];
 
 const DUMMY_PRICE = 89999;
 
@@ -44,13 +29,6 @@ const DestinationDetail = () => {
   const sidePhoto1 = photos[1] ?? photos[0] ?? PLACEHOLDER;
   const sidePhoto2 = photos[2] ?? photos[1] ?? photos[0] ?? PLACEHOLDER;
 
-  const { guide, loading: guideLoading } = useDestinationGuide(slug, {
-    name: d?.name ?? "",
-    country: d?.country ?? "",
-    duration: d?.duration ?? "",
-    highlights: d?.highlights ?? [],
-  });
-
   const [lightbox, setLightbox] = useState<number | null>(null);
 
   useSeo({
@@ -60,12 +38,6 @@ const DestinationDetail = () => {
   });
 
   if (!d) return <Navigate to="/destinations" replace />;
-
-  const stops = guide?.stops?.length ? guide.stops : d.highlights.slice(0, 5);
-  const bestMonths = new Set(guide?.bestMonths ?? []);
-  const bestSeasonLabel = bestMonths.size
-    ? Array.from(bestMonths).sort((a, b) => a - b).slice(0, 3).map((m) => MONTHS[m - 1]).join(" – ")
-    : "All year";
 
   const waMessage = encodeURIComponent(`Hi, I'm interested in the ${d.name} tour. Please share pricing.`);
   const waUrl = `https://wa.me/9821235678?text=${waMessage}`;
@@ -118,104 +90,7 @@ const DestinationDetail = () => {
             <h1 className="font-serif text-2xl sm:text-3xl md:text-5xl lg:text-6xl text-foreground leading-[1.1]">{d.name}</h1>
             <p className="mt-2 md:mt-3 text-sm md:text-lg text-foreground/70 font-light max-w-2xl">{d.tagline}</p>
 
-            <div className="mt-4 md:mt-6 flex flex-wrap gap-1.5 md:gap-2">
-              <span className="inline-flex items-center gap-1.5 md:gap-2 px-2.5 md:px-4 py-1.5 md:py-2 rounded-full bg-card border border-border text-[10px] md:text-xs uppercase tracking-luxe text-foreground/80">
-                <Clock className="w-3 h-3 md:w-3.5 md:h-3.5 text-gold" /> {d.duration}
-              </span>
-              <span className="inline-flex items-center gap-1.5 md:gap-2 px-2.5 md:px-4 py-1.5 md:py-2 rounded-full bg-card border border-border text-[10px] md:text-xs uppercase tracking-luxe text-foreground/80">
-                <Users className="w-3 h-3 md:w-3.5 md:h-3.5 text-gold" /> Group / Private
-              </span>
-              <span className="inline-flex items-center gap-1.5 md:gap-2 px-2.5 md:px-4 py-1.5 md:py-2 rounded-full bg-card border border-border text-[10px] md:text-xs uppercase tracking-luxe text-foreground/80">
-                <Sun className="w-3 h-3 md:w-3.5 md:h-3.5 text-gold" /> Best: {bestSeasonLabel}
-              </span>
-            </div>
-
             <p className="mt-5 md:mt-8 text-sm md:text-base text-foreground/80 font-light leading-relaxed max-w-2xl">{d.overview}</p>
-
-            {/* Route strip */}
-            <div className="mt-8 md:mt-10">
-              <p className="text-[10px] md:text-xs uppercase tracking-luxe text-gold mb-2 md:mb-3">Your route</p>
-              <div className="flex flex-wrap items-center gap-1.5 md:gap-2">
-                {stops.map((s, i) => (
-                  <div key={`${s}-${i}`} className="flex items-center gap-1.5 md:gap-2">
-                    <span className="inline-flex items-center gap-1 md:gap-1.5 px-2.5 md:px-3 py-1 md:py-1.5 rounded-full bg-card border border-gold/30 text-xs md:text-sm text-foreground">
-                      <MapPin className="w-3 h-3 md:w-3.5 md:h-3.5 text-gold" /> {s}
-                    </span>
-                    {i < stops.length - 1 && <ArrowRight className="w-3.5 h-3.5 md:w-4 md:h-4 text-gold/60" />}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Day-by-day */}
-            <div className="mt-10 md:mt-12">
-              <p className="text-[10px] md:text-xs uppercase tracking-luxe text-gold mb-2 md:mb-3">Day-by-day itinerary</p>
-              <h2 className="font-serif text-2xl md:text-4xl text-foreground mb-5 md:mb-8">Your journey, day by day</h2>
-
-              {guideLoading && !guide && (
-                <div className="flex items-center gap-3 text-foreground/60 py-8 md:py-10 text-sm">
-                  <Loader2 className="w-4 h-4 md:w-5 md:h-5 animate-spin text-gold" />
-                  Crafting your itinerary…
-                </div>
-              )}
-
-              {guide?.days?.length ? (
-                <div className="relative pl-7 md:pl-10 space-y-4 md:space-y-6">
-                  <span className="absolute left-[13px] md:left-[19px] top-2 bottom-2 w-px bg-gold/30" aria-hidden />
-                  {guide.days.map((day) => (
-                    <div key={day.day} className="relative">
-                      <span className="absolute -left-7 md:-left-10 top-1 w-7 h-7 md:w-10 md:h-10 rounded-full bg-gold text-primary-foreground flex items-center justify-center text-[11px] md:text-xs font-semibold border-[3px] md:border-4 border-background shadow-md">
-                        {day.day}
-                      </span>
-                      <div className="bg-card border border-border/60 rounded-xl p-3.5 md:p-6 hover:border-gold/40 transition-colors">
-                        <p className="text-[10px] md:text-xs uppercase tracking-luxe text-gold mb-0.5 md:mb-1">Day {day.day}</p>
-                        <h3 className="font-serif text-base md:text-2xl text-foreground mb-1 md:mb-2 leading-tight">{day.location}</h3>
-                        <p className="text-xs md:text-sm text-foreground/75 leading-relaxed">{day.description}</p>
-                        {day.activities?.length > 0 && (
-                          <div className="mt-2.5 md:mt-4 flex flex-wrap gap-1.5 md:gap-2">
-                            {day.activities.map((a, i) => (
-                              <span key={i} className="text-[10px] md:text-xs px-2 md:px-2.5 py-0.5 md:py-1 rounded-full bg-gold/10 text-foreground/85 border border-gold/20">
-                                {a}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : !guideLoading ? (
-                <p className="text-sm text-foreground/60">Itinerary will be generated when available.</p>
-              ) : null}
-            </div>
-
-            {/* What's included */}
-            <div className="mt-10 md:mt-14">
-              <p className="text-[10px] md:text-xs uppercase tracking-luxe text-gold mb-2 md:mb-3">What's included</p>
-              <h2 className="font-serif text-2xl md:text-4xl text-foreground mb-4 md:mb-6">In your package</h2>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">
-                {INCLUDED.map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <div key={item.label} className="bg-card border border-border/60 rounded-lg md:rounded-xl p-2.5 md:p-4 flex items-center gap-2 md:gap-3 hover:border-gold/40 transition-colors">
-                      <span className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gold/10 border border-gold/30 flex items-center justify-center shrink-0">
-                        <Icon className="w-3.5 h-3.5 md:w-4 md:h-4 text-gold" />
-                      </span>
-                      <span className="text-xs md:text-sm text-foreground font-medium leading-tight">{item.label}</span>
-                    </div>
-                  );
-                })}
-              </div>
-
-              <p className="mt-5 md:mt-6 text-[10px] md:text-xs uppercase tracking-luxe text-foreground/60 mb-2 md:mb-3">Not included</p>
-              <div className="flex flex-wrap gap-1.5 md:gap-2">
-                {NOT_INCLUDED.map((n) => (
-                  <span key={n} className="text-[10px] md:text-xs px-2.5 md:px-3 py-1 md:py-1.5 rounded-full border border-dashed border-border text-foreground/65">
-                    {n}
-                  </span>
-                ))}
-              </div>
-            </div>
           </div>
 
           {/* Sticky booking */}
@@ -227,7 +102,7 @@ const DestinationDetail = () => {
                   <span className="font-serif text-4xl text-foreground">₹{DUMMY_PRICE.toLocaleString("en-IN")}</span>
                   <span className="text-xs text-foreground/60">/ person</span>
                 </div>
-                <p className="mt-1 text-xs text-foreground/60">{d.duration} · twin sharing</p>
+                <p className="mt-1 text-xs text-foreground/60">twin sharing</p>
 
                 <a
                   href={waUrl}
@@ -256,7 +131,7 @@ const DestinationDetail = () => {
         </div>
       </section>
 
-      <ItineraryViewer destinationSlug={d.slug} destinationName={d.name} />
+      <ItineraryViewer destinationSlug={d.slug} destinationName={d.name} fallbackImage={heroPhoto} />
 
       {/* Lightbox */}
       <Dialog open={lightbox !== null} onOpenChange={(o) => !o && setLightbox(null)}>
