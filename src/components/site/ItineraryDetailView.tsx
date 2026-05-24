@@ -294,17 +294,19 @@ const ItineraryDetailView = ({
             <NotProvided />
           ) : (
             <>
-              <TabsContent value="overview" className="animate-fade-in mt-0">
-                {parsed.overview ? (
-                  <div className="rounded-2xl border border-border/60 bg-card p-6 md:p-8 shadow-luxe hover:shadow-gold/10 transition-shadow">
-                    <p className="text-xs uppercase tracking-luxe text-gold mb-3">Trip overview</p>
-                    <p className="text-base md:text-lg leading-relaxed text-foreground/85 font-light whitespace-pre-line">
-                      {parsed.overview}
-                    </p>
-                  </div>
-                ) : (
-                  <NotProvided />
-                )}
+              <TabsContent value="overview" className="animate-fade-in mt-1" asChild>
+                <section aria-label="Trip overview">
+                  {parsed.overview ? (
+                    <div className="rounded-2xl border border-border/60 bg-card p-6 md:p-8 shadow-luxe hover:shadow-gold/10 transition-shadow">
+                      <h2 className="text-xs uppercase tracking-luxe text-gold mb-3">Trip overview</h2>
+                      <p className="text-base md:text-lg leading-relaxed text-foreground/85 font-light whitespace-pre-line">
+                        {parsed.overview}
+                      </p>
+                    </div>
+                  ) : (
+                    <NotProvided />
+                  )}
+                </section>
               </TabsContent>
 
               <TabsContent value="days" className="animate-fade-in mt-0">
