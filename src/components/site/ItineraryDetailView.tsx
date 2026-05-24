@@ -309,81 +309,83 @@ const ItineraryDetailView = ({
                 </section>
               </TabsContent>
 
-              <TabsContent value="days" className="animate-fade-in mt-0">
-                {parsed.days?.length ? (
-                  <>
-                    <div className="flex items-center justify-between mb-4">
-                      <p className="text-xs uppercase tracking-luxe text-foreground/60">
-                        {parsed.days.length} day{parsed.days.length > 1 ? "s" : ""}
-                      </p>
-                      <button
-                        onClick={() => setOpenDays(allOpen ? [] : dayValues)}
-                        className="inline-flex items-center gap-1.5 text-[11px] md:text-xs uppercase tracking-luxe text-gold hover:text-gold-deep transition"
-                      >
-                        {allOpen ? (
-                          <>
-                            <ChevronsDownUp className="w-3.5 h-3.5" /> Collapse all
-                          </>
-                        ) : (
-                          <>
-                            <ChevronsUpDown className="w-3.5 h-3.5" /> Expand all
-                          </>
-                        )}
-                      </button>
-                    </div>
-                    <Accordion
-                      type="multiple"
-                      value={openDays}
-                      onValueChange={onAccordionChange as (v: string[]) => void}
-                      className="space-y-3"
-                    >
-                      {parsed.days.map((d, i) => (
-                        <AccordionItem
-                          key={i}
-                          value={`d-${i}`}
-                          className="border border-border/60 rounded-2xl bg-card overflow-hidden hover:border-gold/40 hover:shadow-luxe transition-all"
+              <TabsContent value="days" className="animate-fade-in mt-1" asChild>
+                <section aria-label="Day by day itinerary">
+                  {parsed.days?.length ? (
+                    <>
+                      <div className="flex items-center justify-between mb-4">
+                        <p className="text-xs uppercase tracking-luxe text-foreground/60">
+                          {parsed.days.length} day{parsed.days.length > 1 ? "s" : ""}
+                        </p>
+                        <button
+                          onClick={() => setOpenDays(allOpen ? [] : dayValues)}
+                          className="inline-flex items-center gap-1.5 text-[11px] md:text-xs uppercase tracking-luxe text-gold hover:text-gold-deep transition"
                         >
-                          <AccordionTrigger className="px-4 md:px-6 py-4 hover:no-underline group">
-                            <div className="flex items-center gap-3 md:gap-4 text-left flex-1 min-w-0">
-                              <span className="shrink-0 inline-flex items-center justify-center w-9 h-9 md:w-10 md:h-10 rounded-full bg-gold/10 text-gold text-xs md:text-sm font-medium border border-gold/20 group-hover:bg-gold group-hover:text-primary-foreground transition">
-                                {i + 1}
-                              </span>
-                              <span className="font-serif text-base md:text-lg text-foreground truncate">
-                                {d.title}
-                              </span>
-                            </div>
-                          </AccordionTrigger>
-                          <AccordionContent className="px-4 md:px-6 pb-5">
-                            <div className="pl-0 md:pl-14">
-                              {d.body && (
-                                <p className="text-sm md:text-base text-foreground/80 font-light leading-relaxed whitespace-pre-line">
-                                  {d.body}
-                                </p>
-                              )}
-                              {d.activities?.length ? (
-                                <div className="mt-4">
-                                  <p className="text-[11px] uppercase tracking-luxe text-gold mb-2">
-                                    Activities
+                          {allOpen ? (
+                            <>
+                              <ChevronsDownUp className="w-3.5 h-3.5" /> Collapse all
+                            </>
+                          ) : (
+                            <>
+                              <ChevronsUpDown className="w-3.5 h-3.5" /> Expand all
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <Accordion
+                        type="multiple"
+                        value={openDays}
+                        onValueChange={onAccordionChange as (v: string[]) => void}
+                        className="space-y-3"
+                      >
+                        {parsed.days.map((d, i) => (
+                          <AccordionItem
+                            key={i}
+                            value={`d-${i}`}
+                            className="border border-border/60 rounded-2xl bg-card overflow-hidden hover:border-gold/40 hover:shadow-luxe transition-all"
+                          >
+                            <AccordionTrigger className="px-4 md:px-6 py-4 hover:no-underline group">
+                              <div className="flex items-center gap-3 md:gap-4 text-left flex-1 min-w-1">
+                                <span className="shrink-0 inline-flex items-center justify-center w-9 h-9 md:w-10 md:h-10 rounded-full bg-gold/10 text-gold text-xs md:text-sm font-medium border border-gold/20 group-hover:bg-gold group-hover:text-primary-foreground transition">
+                                  {i + 1}
+                                </span>
+                                <h3 className="font-serif text-base md:text-lg text-foreground truncate">
+                                  {d.title}
+                                </h3>
+                              </div>
+                            </AccordionTrigger>
+                            <AccordionContent className="px-4 md:px-6 pb-5">
+                              <div className="pl-0 md:pl-14">
+                                {d.body && (
+                                  <p className="text-sm md:text-base text-foreground/80 font-light leading-relaxed whitespace-pre-line">
+                                    {d.body}
                                   </p>
-                                  <ul className="space-y-1.5">
-                                    {d.activities.map((a, ai) => (
-                                      <li key={ai} className="flex items-start gap-2 text-sm text-foreground/80 font-light">
-                                        <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-gold shrink-0" />
-                                        <span>{a}</span>
-                                      </li>
-                                    ))}
-                                  </ul>
-                                </div>
-                              ) : null}
-                            </div>
-                          </AccordionContent>
-                        </AccordionItem>
-                      ))}
-                    </Accordion>
-                  </>
-                ) : (
-                  <NotProvided />
-                )}
+                                )}
+                                {d.activities?.length ? (
+                                  <div className="mt-4">
+                                    <h4 className="text-[11px] uppercase tracking-luxe text-gold mb-2">
+                                      Activities
+                                    </h4>
+                                    <ul className="space-y-1.5">
+                                      {d.activities.map((a, ai) => (
+                                        <li key={ai} className="flex items-start gap-2 text-sm text-foreground/80 font-light">
+                                          <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-gold shrink-0" />
+                                          <span>{a}</span>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </div>
+                                ) : null}
+                              </div>
+                            </AccordionContent>
+                          </AccordionItem>
+                        ))}
+                      </Accordion>
+                    </>
+                  ) : (
+                    <NotProvided />
+                  )}
+                </section>
               </TabsContent>
 
               <TabsContent value="inclusions" className="animate-fade-in mt-0">
