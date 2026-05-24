@@ -84,7 +84,7 @@ const Destinations = () => {
 
       {/* Floating search + filter card, half overlapping hero */}
       <div className="container relative -mt-12 md:-mt-16 z-20 px-4">
-        <div className="mx-auto max-w-3xl rounded-2xl border border-gold/30 bg-card/90 backdrop-blur-xl shadow-[0_25px_60px_-20px_hsl(var(--gold)/0.35)] ring-1 ring-white/5 p-4 sm:p-5 animate-fade-in">
+        <div className="mx-auto max-w-3xl rounded-2xl border border-gold/30 bg-card/90 backdrop-blur-xl shadow-[0_25px_60px_-20px_hsl(var(--gold)/0.35)] ring-1 ring-white/5 p-3 sm:p-4 animate-fade-in">
           <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-4">
             <div className="relative flex-1">
               <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-gold" />
@@ -93,7 +93,7 @@ const Destinations = () => {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search destinations…"
-                className="w-full h-11 pl-11 pr-10 rounded-full bg-background/80 border border-border focus:border-gold focus:ring-2 focus:ring-gold/30 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-all"
+                className="w-full h-9 pl-11 pr-10 rounded-full bg-background/80 border border-border focus:border-gold focus:ring-2 focus:ring-gold/30 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-all"
               />
               {query && (
                 <button
@@ -112,9 +112,9 @@ const Destinations = () => {
                   role="tab"
                   aria-selected={filter === key}
                   onClick={() => setFilter(key)}
-                  className={`inline-flex items-center gap-1.5 px-3 sm:px-4 py-2 text-[11px] sm:text-xs uppercase tracking-luxe border rounded-full transition-all duration-300 ${pillClasses(key)}`}
+                  className={`inline-flex items-center gap-1 px-2.5 sm:px-3 py-1.5 text-[10px] sm:text-[11px] uppercase tracking-luxe border rounded-full transition-all duration-300 ${pillClasses(key)}`}
                 >
-                  <Icon className="w-3.5 h-3.5" />
+                  <Icon className="w-3 h-3" />
                   {label}
                 </button>
               ))}
