@@ -114,7 +114,7 @@ const Destinations = () => {
                   onClick={() => setFilter(key)}
                   className={`inline-flex items-center gap-1 px-2.5 sm:px-3 py-1.5 text-[10px] sm:text-[11px] uppercase tracking-luxe border rounded-full transition-all duration-300 ${pillClasses(key)}`}
                 >
-                  <Icon className="w-3.5 h-3.5" />
+                  <Icon className="w-3 h-3" />
                   {label}
                 </button>
               ))}
