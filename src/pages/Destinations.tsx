@@ -93,7 +93,7 @@ const Destinations = () => {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search destinations…"
-                className="w-full h-11 pl-11 pr-10 rounded-full bg-background/80 border border-border focus:border-gold focus:ring-2 focus:ring-gold/30 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-all"
+                className="w-full h-9 pl-11 pr-10 rounded-full bg-background/80 border border-border focus:border-gold focus:ring-2 focus:ring-gold/30 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-all"
               />
               {query && (
                 <button
