@@ -41,6 +41,7 @@ type Props = {
   heroImage?: string;
   destinationName: string;
   onEnquire?: () => void;
+  onDownload?: () => void;
 };
 
 const TERMS = [
@@ -96,6 +97,7 @@ const ItineraryDetailView = ({
   heroImage,
   destinationName,
   onEnquire,
+  onDownload,
 }: Props) => {
   const { toast } = useToast();
   const isMobile = useIsMobile();
@@ -226,15 +228,13 @@ const ItineraryDetailView = ({
               </TabsList>
             </div>
             <div className="hidden sm:flex items-center gap-2 shrink-0">
-              <a
-                href={pdfUrl}
-                download
-                target="_blank"
-                rel="noreferrer"
+              <button
+                type="button"
+                onClick={() => onDownload?.()}
                 className="inline-flex items-center gap-2 text-xs uppercase tracking-luxe text-foreground/80 hover:text-gold px-3 py-2 rounded-full border border-border/60 hover:border-gold/40 transition"
               >
                 <Download className="w-3.5 h-3.5" /> PDF
-              </a>
+              </button>
               <button
                 onClick={share}
                 className="inline-flex items-center gap-2 text-xs uppercase tracking-luxe text-foreground/80 hover:text-gold px-3 py-2 rounded-full border border-border/60 hover:border-gold/40 transition"
@@ -429,16 +429,14 @@ const ItineraryDetailView = ({
 
       {/* Sticky mobile CTA */}
       <div className="sm:hidden sticky bottom-0 left-0 right-0 z-30 border-t border-border/60 bg-background/95 backdrop-blur px-3 py-2.5 flex items-center gap-2">
-        <a
-          href={pdfUrl}
-          download
-          target="_blank"
-          rel="noreferrer"
+        <button
+          type="button"
+          onClick={() => onDownload?.()}
           className="inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-full border border-border/60 text-foreground/80 text-xs uppercase tracking-luxe"
           aria-label="Download PDF"
         >
           <Download className="w-4 h-4" />
-        </a>
+        </button>
         <button
           onClick={share}
           className="inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-full border border-border/60 text-foreground/80 text-xs uppercase tracking-luxe"
