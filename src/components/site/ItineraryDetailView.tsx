@@ -449,21 +449,23 @@ const ItineraryDetailView = ({
                 </section>
               </TabsContent>
 
-              <TabsContent value="visa" className="animate-fade-in mt-0">
-                <div className="rounded-2xl border border-border/60 bg-card p-6 md:p-8 shadow-luxe">
-                  <p className="flex items-center gap-2 text-xs uppercase tracking-luxe text-gold mb-3">
-                    <Plane className="w-4 h-4" /> Visa information
-                  </p>
-                  {parsed.visa ? (
-                    <p className="text-base leading-relaxed text-foreground/85 font-light whitespace-pre-line">
-                      {parsed.visa}
-                    </p>
-                  ) : (
-                    <p className="text-sm md:text-base text-foreground/75 font-light">
-                      Visa information will be shared by our travel expert.
-                    </p>
-                  )}
-                </div>
+              <TabsContent value="visa" className="animate-fade-in mt-0" asChild>
+                <section aria-label="Visa information">
+                  <div className="rounded-2xl border border-border/60 bg-card p-6 md:p-8 shadow-luxe">
+                    <h2 className="flex items-center gap-2 text-xs uppercase tracking-luxe text-gold mb-3">
+                      <Plane className="w-4 h-4" aria-hidden /> Visa information
+                    </h2>
+                    {parsed.visa ? (
+                      <p className="text-base leading-relaxed text-foreground/85 font-light whitespace-pre-line">
+                        {parsed.visa}
+                      </p>
+                    ) : (
+                      <p className="text-sm md:text-base text-foreground/75 font-light">
+                        Visa information will be shared by our travel expert.
+                      </p>
+                    )}
+                  </div>
+                </section>
               </TabsContent>
             </>
           )}
