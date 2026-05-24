@@ -166,14 +166,44 @@ const ItineraryDetailView = ({
     }
   };
 
+  const schema = useMemo(() => {
+    if (!parsed) return null;
+    return {
+      "@context": "https://schema.org",
+      "@type": "TouristAttraction",
+      name: title,
+      description: parsed.overview ?? `${title} itinerary by Jain Tours & Travels`,
+      image: heroImage || undefined,
+      touristType: "Travel package",
+      additionalProperty: parsed.days.map((d, i) => ({
+        "@type": "PropertyValue",
+        name: `Day ${i + 1}`,
+        value: d.title,
+      })),
+      isPartOf: {
+        "@type": "TouristDestination",
+        name: destinationName,
+      },
+      offers: {
+        "@type": "Offer",
+        availability: "https://schema.org/InStock",
+        seller: {
+          "@type": "TravelAgency",
+          name: "Jain Tours & Travels",
+        },
+      },
+    };
+  }, [parsed, title, destinationName, heroImage]);
+
   return (
     <div className="flex flex-col h-full overflow-y-auto bg-background">
       {/* Hero */}
       <div className="relative w-full h-44 sm:h-56 md:h-72 shrink-0 overflow-hidden">
         <img
           src={heroImage || "/placeholder.svg"}
-          alt={destinationName}
+          alt={`${destinationName} — ${title} tour package`}
           className="w-full h-full object-cover"
+          loading="lazy"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/40 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-4 md:p-8">
@@ -185,6 +215,11 @@ const ItineraryDetailView = ({
           </h2>
         </div>
       </div>
+
+      {/* Structured data for SEO */}
+      {schema && (
+        <script type="application/ld+json">{JSON.stringify(schema)}</script>
+      )}
 
       {/* Tabs */}
       <Tabs defaultValue="overview" className="flex-1 flex flex-col">
