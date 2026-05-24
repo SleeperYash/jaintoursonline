@@ -25,6 +25,26 @@ const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string;
 const publicUrl = (path: string) =>
   `${SUPABASE_URL}/storage/v1/object/public/itineraries/${path}`;
 
+const LEAD_KEY = "vt_itinerary_lead";
+const getSavedLead = () => {
+  try {
+    const raw = localStorage.getItem(LEAD_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+};
+const triggerDownload = (url: string, filename: string) => {
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.target = "_blank";
+  a.rel = "noreferrer";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+};
+
 const ItineraryViewer = ({
   destinationSlug,
   destinationName,
@@ -38,9 +58,9 @@ const ItineraryViewer = ({
   const [items, setItems] = useState<Itinerary[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const [unlockedIds, setUnlockedIds] = useState<Set<string>>(new Set());
   const [activeView, setActiveView] = useState<Itinerary | null>(null);
   const [enquiryFor, setEnquiryFor] = useState<Itinerary | null>(null);
+  const [pendingDownload, setPendingDownload] = useState<Itinerary | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [enquiry, setEnquiry] = useState({
     name: "",
@@ -72,11 +92,17 @@ const ItineraryViewer = ({
   }, [destinationSlug]);
 
   const openItinerary = (it: Itinerary) => {
-    if (unlockedIds.has(it.id)) {
-      setActiveView(it);
-    } else {
-      setEnquiryFor(it);
+    setActiveView(it);
+  };
+
+  const requestDownload = (it: Itinerary) => {
+    const lead = getSavedLead();
+    if (lead) {
+      triggerDownload(publicUrl(it.file_path), `${it.title}.pdf`);
+      return;
     }
+    setPendingDownload(it);
+    setEnquiryFor(it);
   };
 
   const submitEnquiry = async (e: React.FormEvent) => {
@@ -104,12 +130,29 @@ const ItineraryViewer = ({
       toast({ title: "Couldn't send", description: error.message, variant: "destructive" });
       return;
     }
-    const opened = enquiryFor;
-    setUnlockedIds((s) => new Set(s).add(opened.id));
+    try {
+      localStorage.setItem(
+        LEAD_KEY,
+        JSON.stringify({
+          name: enquiry.name.trim(),
+          phone: enquiry.phone.trim(),
+          email: enquiry.email.trim(),
+          savedAt: Date.now(),
+        }),
+      );
+    } catch {
+      /* ignore */
+    }
+    const target = pendingDownload;
     setEnquiryFor(null);
-    setActiveView(opened);
+    if (target) {
+      triggerDownload(publicUrl(target.file_path), `${target.title}.pdf`);
+      setPendingDownload(null);
+      toast({ title: "Thank you", description: "Your download is starting." });
+    } else {
+      toast({ title: "Thank you", description: "We'll be in touch shortly." });
+    }
     setEnquiry({ name: "", phone: "", email: "", travel_dates: "", travellers: "", budget_per_person: "" });
-    toast({ title: "Thank you", description: "Opening your itinerary now." });
   };
 
   return (
@@ -179,7 +222,7 @@ const ItineraryViewer = ({
         <DialogContent className="max-w-lg w-[95vw] bg-card border-border/60">
           <DialogHeader>
             <DialogTitle className="font-serif text-2xl text-foreground">
-              A few details first
+              {pendingDownload ? "A few details before download" : "A few details first"}
             </DialogTitle>
             <DialogDescription className="text-muted-foreground font-light">
               Share these so our travel desk can tailor {enquiryFor?.title} to your party.
@@ -260,7 +303,7 @@ const ItineraryViewer = ({
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" /> Submitting…
                   </>
                 ) : (
-                  "View itinerary"
+                  pendingDownload ? "Submit & download PDF" : "Submit"
                 )}
               </Button>
             </div>
@@ -286,6 +329,7 @@ const ItineraryViewer = ({
               pdfUrl={publicUrl(activeView.file_path)}
               heroImage={fallbackImage}
               destinationName={destinationName}
+              onDownload={() => requestDownload(activeView)}
               onEnquire={() => {
                 setActiveView(null);
                 setEnquiryFor(activeView);
