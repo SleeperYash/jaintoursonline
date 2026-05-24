@@ -27,9 +27,11 @@ const publicUrl = (path: string) =>
 const ItineraryViewer = ({
   destinationSlug,
   destinationName,
+  fallbackImage,
 }: {
   destinationSlug: string;
   destinationName: string;
+  fallbackImage?: string;
 }) => {
   const { toast } = useToast();
   const [items, setItems] = useState<Itinerary[]>([]);
@@ -132,24 +134,41 @@ const ItineraryViewer = ({
             </p>
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 gap-px bg-border/60">
-            {items.map((it) => (
-              <div key={it.id} className="bg-card p-5 md:p-7 flex items-center gap-4 md:gap-5">
-                <FileText className="w-6 h-6 text-gold shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <p className="text-foreground font-medium truncate">{it.title}</p>
-                  <p className="text-xs text-muted-foreground tracking-luxe uppercase mt-1">
-                    PDF{it.file_size ? ` · ${(it.file_size / 1024 / 1024).toFixed(2)} MB` : ""}
-                  </p>
-                </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+            {items.map((it) => {
+              const nightsMatch = it.title.match(/(\d+\s*N\s*\/?\s*\d*\s*D?)/i);
+              const nightsBadge = nightsMatch ? nightsMatch[0].replace(/\s+/g, "").toUpperCase() : null;
+              const subtitleMatch = it.title.match(/\d+\s*N\s+(.+)/i);
+              const subtitle = subtitleMatch ? subtitleMatch[1].trim() : destinationName;
+              return (
                 <button
+                  key={it.id}
                   onClick={() => openItinerary(it)}
-                  className="text-xs uppercase tracking-luxe px-3 py-2 md:px-4 md:py-2.5 border border-gold/60 text-gold hover:bg-gold/10 transition shrink-0"
+                  className="group text-left bg-card rounded-2xl overflow-hidden border border-border/60 hover:border-gold/40 hover:shadow-luxe transition-all duration-300"
                 >
-                  {unlockedIds.has(it.id) ? "View" : "Preview"}
+                  <div className="relative aspect-[16/10] overflow-hidden bg-muted">
+                    <img
+                      src={fallbackImage ?? "/placeholder.svg"}
+                      alt={it.title}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                  </div>
+                  <div className="p-4 md:p-5 flex items-start justify-between gap-3">
+                    <div className="flex-1 min-w-0">
+                      <p className="font-serif text-base md:text-lg text-foreground leading-tight truncate">
+                        {it.title}
+                      </p>
+                      <p className="text-xs md:text-sm text-foreground/60 mt-1 truncate">{subtitle}</p>
+                    </div>
+                    {nightsBadge && (
+                      <span className="shrink-0 inline-flex items-center px-2.5 py-1 rounded-md border border-gold/50 text-gold text-[11px] font-medium tracking-wide">
+                        {nightsBadge}
+                      </span>
+                    )}
+                  </div>
                 </button>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
