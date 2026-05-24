@@ -433,18 +433,20 @@ const ItineraryDetailView = ({
                 </section>
               </TabsContent>
 
-              <TabsContent value="terms" className="animate-fade-in mt-0">
-                <div className="space-y-3">
-                  {TERMS.map((t, i) => (
-                    <div
-                      key={i}
-                      className="rounded-2xl border border-border/60 bg-card p-5 md:p-6 shadow-luxe hover:border-gold/30 transition"
-                    >
-                      <p className="font-serif text-base md:text-lg text-foreground mb-1.5">{t.h}</p>
-                      <p className="text-sm text-foreground/75 font-light leading-relaxed">{t.b}</p>
-                    </div>
-                  ))}
-                </div>
+              <TabsContent value="terms" className="animate-fade-in mt-0" asChild>
+                <section aria-label="Terms and conditions">
+                  <div className="space-y-3">
+                    {TERMS.map((t, i) => (
+                      <article
+                        key={i}
+                        className="rounded-2xl border border-border/60 bg-card p-5 md:p-6 shadow-luxe hover:border-gold/30 transition"
+                      >
+                        <h2 className="font-serif text-base md:text-lg text-foreground mb-1.5">{t.h}</h2>
+                        <p className="text-sm text-foreground/75 font-light leading-relaxed">{t.b}</p>
+                      </article>
+                    ))}
+                  </div>
+                </section>
               </TabsContent>
 
               <TabsContent value="visa" className="animate-fade-in mt-0">
