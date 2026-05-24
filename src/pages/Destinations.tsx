@@ -84,7 +84,7 @@ const Destinations = () => {
 
       {/* Floating search + filter card, half overlapping hero */}
       <div className="container relative -mt-12 md:-mt-16 z-20 px-4">
-        <div className="mx-auto max-w-3xl rounded-2xl border border-gold/30 bg-card/90 backdrop-blur-xl shadow-[0_25px_60px_-20px_hsl(var(--gold)/0.35)] ring-1 ring-white/5 p-4 sm:p-5 animate-fade-in">
+        <div className="mx-auto max-w-3xl rounded-2xl border border-gold/30 bg-card/90 backdrop-blur-xl shadow-[0_25px_60px_-20px_hsl(var(--gold)/0.35)] ring-1 ring-white/5 p-3 sm:p-4 animate-fade-in">
           <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-4">
             <div className="relative flex-1">
               <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-gold" />
