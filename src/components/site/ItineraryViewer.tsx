@@ -11,7 +11,8 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { FileText, Download, Loader2, X } from "lucide-react";
+import { FileText, Loader2, X } from "lucide-react";
+import ItineraryDetailView from "./ItineraryDetailView";
 
 type Itinerary = {
   id: string;
@@ -269,39 +270,26 @@ const ItineraryViewer = ({
 
       {/* PDF viewer dialog */}
       <Dialog open={!!activeView} onOpenChange={(o) => !o && setActiveView(null)}>
-        <DialogContent className="max-w-6xl w-[95vw] h-[90vh] p-0 bg-card border-border/60 flex flex-col">
-          <div className="flex items-center justify-between px-4 md:px-6 py-3 md:py-4 border-b border-border/60 shrink-0">
-            <div className="flex items-center gap-3 min-w-0">
-              <FileText className="w-4 h-4 text-gold shrink-0" />
-              <p className="text-sm text-foreground truncate pr-4">{activeView?.title}</p>
-            </div>
-            <div className="flex items-center gap-2 shrink-0">
-              {activeView && (
-                <a
-                  href={publicUrl(activeView.file_path)}
-                  download
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-2 text-xs uppercase tracking-luxe text-foreground/80 hover:text-gold px-3 py-2"
-                >
-                  <Download className="w-4 h-4" /> <span className="hidden sm:inline">Download</span>
-                </a>
-              )}
-              <button
-                onClick={() => setActiveView(null)}
-                className="p-2 text-foreground/70 hover:text-foreground"
-                aria-label="Close"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
+        <DialogContent className="max-w-6xl w-[97vw] h-[94vh] p-0 bg-background border-border/60 flex flex-col overflow-hidden">
+          <button
+            onClick={() => setActiveView(null)}
+            className="absolute top-3 right-3 z-40 p-2 rounded-full bg-ink/60 text-white hover:bg-ink/80 backdrop-blur"
+            aria-label="Close"
+          >
+            <X className="w-4 h-4" />
+          </button>
           {activeView && (
-            <iframe
+            <ItineraryDetailView
               key={activeView.id}
-              src={`${publicUrl(activeView.file_path)}#toolbar=0&navpanes=0`}
+              itineraryId={activeView.id}
               title={activeView.title}
-              className="w-full flex-1 bg-background"
+              pdfUrl={publicUrl(activeView.file_path)}
+              heroImage={fallbackImage}
+              destinationName={destinationName}
+              onEnquire={() => {
+                setActiveView(null);
+                setEnquiryFor(activeView);
+              }}
             />
           )}
         </DialogContent>
