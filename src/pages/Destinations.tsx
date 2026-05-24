@@ -84,41 +84,43 @@ const Destinations = () => {
 
       {/* Floating search + filter card, half overlapping hero */}
       <div className="container relative -mt-12 md:-mt-16 z-20 px-4">
-        <div className="mx-auto max-w-3xl rounded-2xl border border-gold/30 bg-card/90 backdrop-blur-xl shadow-[0_25px_60px_-20px_hsl(var(--gold)/0.35)] ring-1 ring-white/5 p-3 sm:p-4 animate-fade-in">
-          <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            <div className="relative flex-shrink-1 w-[150px] sm:w-[220px] md:flex-1 md:min-w-0">
-              <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-gold" />
-              <input
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search destinations…"
-                className="w-full h-9 pl-11 pr-10 rounded-full bg-background/80 border border-border focus:border-gold focus:ring-2 focus:ring-gold/30 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-all"
-              />
-              {query && (
-                <button
-                  onClick={() => setQuery("")}
-                  aria-label="Clear search"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              )}
-            </div>
-            <div role="tablist" aria-label="Filter destinations" className="flex items-center gap-2 flex-shrink-1 flex-nowrap">
-              {filterPills.map(({ key, label, icon: Icon }) => (
-                <button
-                  key={key}
-                  role="tab"
-                  aria-selected={filter === key}
-                  onClick={() => setFilter(key)}
-                  className={`inline-flex items-center gap-1 px-2.5 sm:px-3 py-1.5 text-[10px] sm:text-[11px] uppercase tracking-luxe border rounded-full transition-all duration-300 ${pillClasses(key)}`}
-                >
-                  <Icon className="w-3 h-3" />
-                  {label}
-                </button>
-              ))}
-            </div>
+        <div className="mx-auto max-w-3xl rounded-2xl border border-gold/30 bg-card/90 backdrop-blur-xl shadow-[0_25px_60px_-20px_hsl(var(--gold)/0.35)] ring-1 ring-white/5 p-3 sm:p-4 animate-fade-in space-y-3">
+          <div className="relative w-full">
+            <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-gold" />
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search destinations…"
+              className="w-full h-10 pl-11 pr-10 rounded-full bg-background/80 border border-border focus:border-gold focus:ring-2 focus:ring-gold/30 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-all"
+            />
+            {query && (
+              <button
+                onClick={() => setQuery("")}
+                aria-label="Clear search"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+          <div
+            role="tablist"
+            aria-label="Filter destinations"
+            className="flex items-center gap-2 flex-nowrap overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          >
+            {filterPills.map(({ key, label, icon: Icon }) => (
+              <button
+                key={key}
+                role="tab"
+                aria-selected={filter === key}
+                onClick={() => setFilter(key)}
+                className={`shrink-0 inline-flex items-center gap-1 px-3 sm:px-4 py-1.5 text-[11px] sm:text-xs uppercase tracking-luxe border rounded-full transition-all duration-300 ${pillClasses(key)}`}
+              >
+                <Icon className="w-3 h-3" />
+                {label}
+              </button>
+            ))}
           </div>
         </div>
       </div>
