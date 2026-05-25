@@ -40,6 +40,7 @@ type Props = {
   pdfUrl: string;
   heroImage?: string;
   destinationName: string;
+  isDomestic?: boolean;
   onEnquire?: () => void;
   onDownload?: () => void;
 };
@@ -96,6 +97,7 @@ const ItineraryDetailView = ({
   pdfUrl,
   heroImage,
   destinationName,
+  isDomestic = false,
   onEnquire,
   onDownload,
 }: Props) => {
@@ -257,12 +259,14 @@ const ItineraryDetailView = ({
                 >
                   <Section icon={ShieldCheck} label="Terms" />
                 </TabsTrigger>
-                <TabsTrigger
-                  value="visa"
-                  className="shrink-0 rounded-full px-3 md:px-4 py-2 text-xs md:text-sm border border-transparent data-[state=active]:bg-gold data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=inactive]:text-foreground/70 data-[state=inactive]:hover:bg-muted"
-                >
-                  <Section icon={Plane} label="Visa" />
-                </TabsTrigger>
+                {!isDomestic && (
+                  <TabsTrigger
+                    value="visa"
+                    className="shrink-0 rounded-full px-3 md:px-4 py-2 text-xs md:text-sm border border-transparent data-[state=active]:bg-gold data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=inactive]:text-foreground/70 data-[state=inactive]:hover:bg-muted"
+                  >
+                    <Section icon={Plane} label="Visa" />
+                  </TabsTrigger>
+                )}
               </TabsList>
             </div>
             <div className="hidden sm:flex items-center gap-2 shrink-0">
@@ -348,19 +352,19 @@ const ItineraryDetailView = ({
                             className="border border-border/60 rounded-2xl bg-card overflow-hidden hover:border-gold/40 hover:shadow-luxe transition-all"
                           >
                             <AccordionTrigger className="px-4 md:px-6 py-4 hover:no-underline group">
-                              <div className="flex items-center gap-3 md:gap-4 text-left flex-1 min-w-1">
+                              <div className="flex items-center gap-3 md:gap-4 text-left flex-1 min-w-0">
                                 <span className="shrink-0 inline-flex items-center justify-center w-9 h-9 md:w-10 md:h-10 rounded-full bg-gold/10 text-gold text-xs md:text-sm font-medium border border-gold/20 group-hover:bg-gold group-hover:text-primary-foreground transition">
                                   {i + 1}
                                 </span>
-                                <h3 className="font-serif text-base md:text-lg text-foreground truncate">
+                                <h3 className="font-serif text-base md:text-lg text-foreground break-words flex-1 min-w-0 text-left">
                                   {d.title}
                                 </h3>
                               </div>
                             </AccordionTrigger>
                             <AccordionContent className="px-4 md:px-6 pb-5">
-                              <div className="pl-0 md:pl-14">
+                              <div className="pl-0 md:pl-14 min-w-0 break-words">
                                 {d.body && (
-                                  <p className="text-sm md:text-base text-foreground/80 font-light leading-relaxed whitespace-pre-line">
+                                  <p className="text-sm md:text-base text-foreground/80 font-light leading-relaxed whitespace-pre-line break-words [overflow-wrap:anywhere]">
                                     {d.body}
                                   </p>
                                 )}
@@ -371,7 +375,7 @@ const ItineraryDetailView = ({
                                     </h4>
                                     <ul className="space-y-1.5">
                                       {d.activities.map((a, ai) => (
-                                        <li key={ai} className="flex items-start gap-2 text-sm text-foreground/80 font-light">
+                                        <li key={ai} className="flex items-start gap-2 text-sm text-foreground/80 font-light break-words [overflow-wrap:anywhere]">
                                           <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-gold shrink-0" />
                                           <span>{a}</span>
                                         </li>
