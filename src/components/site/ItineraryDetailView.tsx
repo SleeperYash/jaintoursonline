@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import {
   Accordion,
@@ -8,6 +9,8 @@ import {
 } from "@/components/ui/accordion";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { BRAND, waLink } from "@/lib/brand";
+import { slugify } from "@/lib/slug";
 import {
   Check,
   X as XIcon,
@@ -22,6 +25,9 @@ import {
   ChevronsDownUp,
   ChevronsUpDown,
   Tag,
+  Phone,
+  Mail,
+  MessageCircle,
 } from "lucide-react";
 
 type ParsedDay = { title: string; body: string; activities?: string[] };
@@ -41,6 +47,7 @@ type Props = {
   pdfUrl: string;
   heroImage?: string;
   destinationName: string;
+  destinationSlug?: string;
   isDomestic?: boolean;
   onEnquire?: () => void;
   onDownload?: () => void;
@@ -98,6 +105,7 @@ const ItineraryDetailView = ({
   pdfUrl,
   heroImage,
   destinationName,
+  destinationSlug,
   isDomestic = false,
   onEnquire,
   onDownload,
@@ -110,6 +118,25 @@ const ItineraryDetailView = ({
   const [openDays, setOpenDays] = useState<string[]>([]);
   const tabsBarRef = useRef<HTMLDivElement>(null);
   const [activeSection, setActiveSection] = useState<string>("overview");
+  const [similar, setSimilar] = useState<{ id: string; title: string }[]>([]);
+
+  useEffect(() => {
+    if (!destinationSlug) return;
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from("itineraries")
+        .select("id,title")
+        .eq("destination_slug", destinationSlug)
+        .neq("id", itineraryId)
+        .order("created_at", { ascending: false })
+        .limit(6);
+      if (!cancelled) setSimilar((data ?? []) as { id: string; title: string }[]);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [destinationSlug, itineraryId]);
 
   useEffect(() => {
     let cancelled = false;
@@ -246,22 +273,6 @@ const ItineraryDetailView = ({
           </div>
         </div>
       </div>
-
-      {/* Starting from price */}
-      {parsed?.starting_price && (
-        <div className="px-3 md:px-6 mt-3 md:mt-4">
-          <div className="inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/5 px-4 py-2">
-            <Tag className="w-4 h-4 text-gold" aria-hidden />
-            <span className="text-[10px] md:text-xs uppercase tracking-luxe text-foreground/70">
-              Starting from
-            </span>
-            <span className="font-serif text-base md:text-lg text-gold">
-              {parsed.starting_price}
-            </span>
-            <span className="text-[10px] md:text-xs text-foreground/60">/ per person</span>
-          </div>
-        </div>
-      )}
 
       {/* Structured data for SEO */}
       {schema && (
@@ -510,24 +521,113 @@ const ItineraryDetailView = ({
             )}
           </>
         )}
+
+        {/* Need Help card */}
+        <div className="rounded-2xl border border-border/60 bg-card p-5 md:p-7 shadow-luxe">
+          <div className="flex items-start justify-between gap-3 mb-4">
+            <h2 className="font-serif text-xl md:text-2xl text-foreground">Need Help?</h2>
+            <span className="inline-flex items-center px-3 py-1 rounded-full border border-gold/40 text-gold text-[11px] uppercase tracking-luxe">
+              24×7 Support
+            </span>
+          </div>
+          <div className="space-y-3 mb-5">
+            <a
+              href={`tel:+${BRAND.phoneDigits}`}
+              className="flex items-center gap-3 text-foreground/85 hover:text-gold transition"
+            >
+              <Phone className="w-4 h-4 text-foreground/60" />
+              <span className="text-sm md:text-base">{BRAND.phone}</span>
+            </a>
+            <a
+              href={`mailto:${BRAND.email}`}
+              className="flex items-center gap-3 text-foreground/85 hover:text-gold transition break-all"
+            >
+              <Mail className="w-4 h-4 text-foreground/60 shrink-0" />
+              <span className="text-sm md:text-base">{BRAND.email}</span>
+            </a>
+          </div>
+          <a
+            href={waLink(`Hello Jain Tours, I'd like help with ${displayTitle}.`)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-full bg-[#25D366] text-white text-sm md:text-base font-medium hover:opacity-90 transition shadow-sm"
+          >
+            <MessageCircle className="w-5 h-5" /> Enquire on WhatsApp
+          </a>
+        </div>
+
+        {/* Similar tours */}
+        {similar.length > 0 && destinationSlug && (
+          <div>
+            <h2 className="font-serif text-2xl md:text-3xl text-foreground mb-5">
+              Similar Tours
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+              {similar.map((it) => {
+                const nightsMatch = it.title.match(/(\d+)\s*N(?:ights?)?\s*\/?\s*(\d+)?\s*D?/i);
+                const nights = nightsMatch ? parseInt(nightsMatch[1], 10) : null;
+                const days = nightsMatch && nightsMatch[2]
+                  ? parseInt(nightsMatch[2], 10)
+                  : nights ? nights + 1 : null;
+                const pill = days ? (nights ? `${nights}N / ${days}D` : `${days} Days`) : null;
+                return (
+                  <Link
+                    key={it.id}
+                    to={`/destinations/${destinationSlug}/${slugify(it.title)}`}
+                    className="group relative aspect-[16/10] rounded-2xl overflow-hidden border border-border/60 hover:border-gold/40 hover:shadow-luxe transition-all"
+                  >
+                    <img
+                      src={heroImage || "/placeholder.svg"}
+                      alt={it.title}
+                      loading="lazy"
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/30 to-transparent" />
+                    {pill && (
+                      <span className="absolute top-3 right-3 inline-flex items-center px-2.5 py-1 rounded-md bg-background/90 border border-gold/40 text-gold text-[11px] font-medium">
+                        {pill}
+                      </span>
+                    )}
+                    <div className="absolute bottom-0 left-0 right-0 p-4">
+                      <p className="font-serif text-base md:text-lg text-white leading-tight line-clamp-2">
+                        {it.title}
+                      </p>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Sticky mobile CTA */}
-      <div className="sm:hidden sticky bottom-0 left-0 right-0 z-30 border-t border-border/60 bg-background/95 backdrop-blur px-3 py-2.5 flex items-center gap-2">
-        <button
-          type="button"
-          onClick={() => onDownload?.()}
-          className="inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-full border border-border/60 text-foreground/80 text-xs uppercase tracking-luxe"
-          aria-label="Download PDF"
+      {/* Sticky bottom price + Enquire CTA */}
+      <div className="sticky bottom-0 left-0 right-0 z-30 border-t border-border/60 bg-background/95 backdrop-blur px-3 md:px-6 py-3 flex items-center justify-between gap-3">
+        <div className="min-w-0">
+          {parsed?.starting_price ? (
+            <>
+              <p className="text-[10px] md:text-xs uppercase tracking-luxe text-foreground/60">
+                Starting from
+              </p>
+              <p className="font-serif text-lg md:text-2xl text-gold leading-tight truncate">
+                {parsed.starting_price}
+                <span className="text-xs md:text-sm text-foreground/60 font-sans ml-1.5">
+                  / per person
+                </span>
+              </p>
+            </>
+          ) : (
+            <p className="text-xs md:text-sm text-foreground/70">Best price on request</p>
+          )}
+        </div>
+        <a
+          href={waLink(`Hi Jain Tours, I'd like to enquire about ${displayTitle}.`)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="shrink-0 inline-flex items-center justify-center gap-2 px-5 md:px-7 py-3 rounded-full bg-[#25D366] text-white text-xs md:text-sm font-medium uppercase tracking-luxe hover:opacity-90 transition shadow-sm"
         >
-          <Download className="w-4 h-4" />
-        </button>
-        <button
-          onClick={onEnquire}
-          className="flex-1 inline-flex items-center justify-center px-4 py-2.5 rounded-full bg-gold text-primary-foreground text-xs uppercase tracking-luxe shadow-sm hover:bg-gold/90 transition"
-        >
-          Enquire now
-        </button>
+          <MessageCircle className="w-4 h-4" /> Enquire Now
+        </a>
       </div>
     </div>
   );
