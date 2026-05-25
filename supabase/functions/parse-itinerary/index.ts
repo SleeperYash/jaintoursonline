@@ -16,6 +16,8 @@ const json = (body: unknown, status = 200) =>
   });
 
 type Parsed = {
+  title: string | null;
+  starting_price: string | null;
   overview: string | null;
   days: { title: string; body: string; activities?: string[] }[];
   inclusions: string[];
@@ -25,6 +27,8 @@ type Parsed = {
 
 const SYSTEM = `You are a precise travel-itinerary parser. You receive raw text extracted from a tour itinerary PDF.
 Return STRICT JSON using the provided tool. Rules:
+- "title": the package / tour title exactly as printed on the PDF (e.g. "Majestic Dubai 5N/6D"). null if not found.
+- "starting_price": the lowest "starting from" / "per person" price exactly as printed, including currency symbol (e.g. "₹49,999", "INR 1,25,000", "$899"). null if not found.
 - "overview": 2-4 short sentences describing the trip. null if not present.
 - "days": array. One entry per day. "title" like "Day 1 - Arrival in Dubai". "body" is the full descriptive paragraph for that day (clean line breaks). "activities" is an optional list of bullet activities for that day if clearly listed.
 - "inclusions": clean bullet strings of what's included.
@@ -41,6 +45,8 @@ const TOOL = {
       type: "object",
       additionalProperties: false,
       properties: {
+        title: { type: ["string", "null"] },
+        starting_price: { type: ["string", "null"] },
         overview: { type: ["string", "null"] },
         days: {
           type: "array",
@@ -59,7 +65,7 @@ const TOOL = {
         exclusions: { type: "array", items: { type: "string" } },
         visa: { type: ["string", "null"] },
       },
-      required: ["overview", "days", "inclusions", "exclusions", "visa"],
+      required: ["title", "starting_price", "overview", "days", "inclusions", "exclusions", "visa"],
     },
   },
 };
@@ -93,9 +99,14 @@ Deno.serve(async (req) => {
     .maybeSingle();
   if (rowErr || !row) return json({ error: rowErr?.message ?? "Not found" }, 404);
 
-  // Return cache if present and not forced
-  if (!force && row.parsed_data) {
-    return json({ ok: true, cached: true, parsed: row.parsed_data });
+  // Return cache if present, not forced, AND already has the latest fields
+  const cached = row.parsed_data as Partial<Parsed> | null;
+  const cacheIsFresh =
+    cached &&
+    Object.prototype.hasOwnProperty.call(cached, "title") &&
+    Object.prototype.hasOwnProperty.call(cached, "starting_price");
+  if (!force && cacheIsFresh) {
+    return json({ ok: true, cached: true, parsed: cached });
   }
 
   // Download PDF
