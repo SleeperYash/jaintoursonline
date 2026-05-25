@@ -53,10 +53,11 @@ type Props = {
   onDownload?: () => void;
 };
 
-type TermBlock = { h: string; points: string[] };
+type TermBlock = { h: string; icon: React.ComponentType<{ className?: string }>; points: string[] };
 const TERMS: TermBlock[] = [
   {
     h: "Cancellation Policy",
+    icon: FileText,
     points: [
       "30+ days before departure — non-refundable",
       "30–60 days before departure — 25% refund",
@@ -65,6 +66,7 @@ const TERMS: TermBlock[] = [
   },
   {
     h: "Payment Terms",
+    icon: Tag,
     points: [
       "25% advance at the time of booking",
       "Remaining balance due 30 days before departure",
@@ -74,12 +76,14 @@ const TERMS: TermBlock[] = [
   },
   {
     h: "Travel Insurance",
+    icon: ShieldCheck,
     points: [
       "We strongly recommend purchasing comprehensive travel insurance covering trip cancellation, medical emergencies, and baggage loss. Insurance is not included in the package price.",
     ],
   },
   {
     h: "Important Notes",
+    icon: Sparkles,
     points: [
       "Itinerary is subject to change due to weather or unforeseen circumstances",
       "Airfare is dynamic and subject to change until ticketed. Final pricing is locked at the time of issuance.",
@@ -492,27 +496,41 @@ const ItineraryDetailView = ({
             <div className="h-px bg-border/60" />
 
             <section id="section-terms" aria-label="Terms and conditions" className="scroll-mt-40">
-              <h2 className="text-xs uppercase tracking-luxe text-gold mb-4 flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4" /> Terms
-              </h2>
-              <div className="space-y-3">
-                {TERMS.map((t, i) => (
-                  <article
-                    key={i}
-                    className="rounded-2xl border border-border/60 bg-card p-5 md:p-6 shadow-luxe hover:border-gold/30 transition"
-                  >
-                    <h3 className="font-serif text-base md:text-lg text-foreground mb-2">{t.h}</h3>
-                    <ul className="space-y-2">
-                      {t.points.map((p, pi) => (
-                        <li key={pi} className="flex items-start gap-2.5 text-sm text-foreground/75 font-light leading-relaxed">
-                          <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-gold shrink-1" />
-                          <span>{p}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </article>
-                ))}
-              </div>
+              <article className="rounded-2xl border border-border/60 bg-card p-5 sm:p-7 md:p-8 shadow-luxe">
+                <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl text-foreground mb-6 md:mb-8">
+                  Terms &amp; Conditions
+                </h2>
+                <div className="space-y-6 md:space-y-7">
+                  {TERMS.map((t, i) => {
+                    const Icon = t.icon;
+                    return (
+                      <div key={i}>
+                        <h3 className="flex items-center gap-2 font-semibold text-sm sm:text-base md:text-lg text-foreground mb-2 md:mb-3">
+                          <Icon className="w-4 h-4 md:w-[18px] md:h-[18px] text-foreground/90 shrink-0" />
+                          <span>{t.h}</span>
+                        </h3>
+                        {t.points.length === 1 ? (
+                          <p className="text-sm md:text-[15px] text-foreground/70 font-light leading-relaxed [overflow-wrap:anywhere]">
+                            {t.points[0]}
+                          </p>
+                        ) : (
+                          <ul className="space-y-1.5 md:space-y-2 pl-1">
+                            {t.points.map((p, pi) => (
+                              <li
+                                key={pi}
+                                className="flex items-start gap-2.5 text-sm md:text-[15px] text-foreground/70 font-light leading-relaxed [overflow-wrap:anywhere]"
+                              >
+                                <span className="mt-2 w-1.5 h-1.5 rounded-full bg-foreground/40 shrink-0" />
+                                <span>{p}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </article>
             </section>
 
             {!isDomestic && (
