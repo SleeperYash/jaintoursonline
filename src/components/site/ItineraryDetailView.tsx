@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import {
   Accordion,
@@ -8,6 +9,8 @@ import {
 } from "@/components/ui/accordion";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { BRAND, waLink } from "@/lib/brand";
+import { slugify } from "@/lib/slug";
 import {
   Check,
   X as XIcon,
@@ -22,6 +25,9 @@ import {
   ChevronsDownUp,
   ChevronsUpDown,
   Tag,
+  Phone,
+  Mail,
+  MessageCircle,
 } from "lucide-react";
 
 type ParsedDay = { title: string; body: string; activities?: string[] };
@@ -41,6 +47,7 @@ type Props = {
   pdfUrl: string;
   heroImage?: string;
   destinationName: string;
+  destinationSlug?: string;
   isDomestic?: boolean;
   onEnquire?: () => void;
   onDownload?: () => void;
