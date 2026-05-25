@@ -9,6 +9,7 @@ type Itinerary = {
   title: string;
   file_path: string;
   file_size: number | null;
+  parsed_data: { days?: { title: string }[] } | null;
 };
 
 const ItineraryViewer = ({
@@ -29,12 +30,34 @@ const ItineraryViewer = ({
       setLoading(true);
       const { data } = await supabase
         .from("itineraries")
-        .select("id,title,file_path,file_size")
+        .select("id,title,file_path,file_size,parsed_data")
         .eq("destination_slug", destinationSlug)
         .order("created_at", { ascending: false });
       if (!cancelled) {
-        setItems(data ?? []);
+        const list = (data ?? []) as Itinerary[];
+        setItems(list);
         setLoading(false);
+        // Lazy-parse any itineraries that don't yet have parsed_data
+        // so day counts populate automatically after upload.
+        const unparsed = list.filter((it) => !it.parsed_data);
+        if (unparsed.length) {
+          Promise.all(
+            unparsed.map((it) =>
+              supabase.functions
+                .invoke("parse-itinerary", { body: { itinerary_id: it.id } })
+                .then((res) => ({ id: it.id, parsed: res.data?.parsed ?? null }))
+                .catch(() => ({ id: it.id, parsed: null })),
+            ),
+          ).then((results) => {
+            if (cancelled) return;
+            setItems((prev) =>
+              prev.map((p) => {
+                const r = results.find((x) => x.id === p.id);
+                return r?.parsed ? { ...p, parsed_data: r.parsed } : p;
+              }),
+            );
+          });
+        }
       }
     })();
     return () => {
@@ -67,8 +90,17 @@ const ItineraryViewer = ({
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
             {items.map((it) => {
-              const nightsMatch = it.title.match(/(\d+\s*N\s*\/?\s*\d*\s*D?)/i);
-              const nightsBadge = nightsMatch ? nightsMatch[0].replace(/\s+/g, "").toUpperCase() : null;
+              const parsedDays = it.parsed_data?.days?.length ?? 0;
+              const nightsMatch = it.title.match(/(\d+)\s*N(?:ights?)?\s*\/?\s*(\d+)?\s*D?/i);
+              const nightsFromTitle = nightsMatch ? parseInt(nightsMatch[1], 10) : null;
+              const daysFromTitle = nightsMatch && nightsMatch[2] ? parseInt(nightsMatch[2], 10) : nightsFromTitle ? nightsFromTitle + 1 : null;
+              const daysCount = parsedDays || daysFromTitle;
+              const nightsCount = nightsFromTitle ?? (daysCount ? daysCount - 1 : null);
+              const pill = daysCount
+                ? nightsCount
+                  ? `${nightsCount}N / ${daysCount}D`
+                  : `${daysCount} Day${daysCount > 1 ? "s" : ""}`
+                : null;
               const subtitleMatch = it.title.match(/\d+\s*N\s+(.+)/i);
               const subtitle = subtitleMatch ? subtitleMatch[1].trim() : destinationName;
               return (
@@ -92,9 +124,9 @@ const ItineraryViewer = ({
                       </p>
                       <p className="text-xs md:text-sm text-foreground/60 mt-1 truncate">{subtitle}</p>
                     </div>
-                    {nightsBadge && (
+                    {pill && (
                       <span className="shrink-0 inline-flex items-center px-2.5 py-1 rounded-md border border-gold/50 text-gold text-[11px] font-medium tracking-wide">
-                        {nightsBadge}
+                        {pill}
                       </span>
                     )}
                   </div>
