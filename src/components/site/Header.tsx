@@ -70,7 +70,7 @@ const Header = () => {
             <span className="font-serif text-sm md:text-lg lg:text-xl tracking-wide text-foreground">
               Jain <span className="text-gold italic font-bold">Tours & Travels</span>
             </span>
-            <span className="tracking-luxe uppercase text-muted-foreground mt-1 text-[8px] md:text-[9px] lg:text-[10px]">
+            <span className="tracking-luxe uppercase text-muted-foreground mt-1 md:text-[9px] lg:text-[10px] text-black text-xs">
               Mumbai ·
             </span>
           </div>
@@ -92,7 +92,7 @@ const Header = () => {
             >
               {({ isActive }) => (
                 <>
-                  <span className="font-semibold">{l.label}</span>
+                  <span className="font-semibold text-sky-500">{l.label}</span>
                   <span
                     className={cn(
                       "absolute left-4 right-4 -bottom-0.5 h-px bg-gold transition-all duration-500 origin-left",
