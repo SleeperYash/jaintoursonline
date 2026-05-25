@@ -11,6 +11,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { BRAND, waLink } from "@/lib/brand";
 import { slugify } from "@/lib/slug";
+import ItineraryCard from "@/components/site/ItineraryCard";
+import { destinations } from "@/data/destinations";
 import {
   Check,
   X as XIcon,
