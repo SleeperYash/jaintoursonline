@@ -274,22 +274,6 @@ const ItineraryDetailView = ({
         </div>
       </div>
 
-      {/* Starting from price */}
-      {parsed?.starting_price && (
-        <div className="px-3 md:px-6 mt-3 md:mt-4">
-          <div className="inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/5 px-4 py-2">
-            <Tag className="w-4 h-4 text-gold" aria-hidden />
-            <span className="text-[10px] md:text-xs uppercase tracking-luxe text-foreground/70">
-              Starting from
-            </span>
-            <span className="font-serif text-base md:text-lg text-gold">
-              {parsed.starting_price}
-            </span>
-            <span className="text-[10px] md:text-xs text-foreground/60">/ per person</span>
-          </div>
-        </div>
-      )}
-
       {/* Structured data for SEO */}
       {schema && (
         <script type="application/ld+json">{JSON.stringify(schema)}</script>
