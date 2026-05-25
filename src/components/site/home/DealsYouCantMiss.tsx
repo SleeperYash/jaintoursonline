@@ -63,7 +63,7 @@ const DealsYouCantMiss = () => {
                     src={img}
                     alt={p.title}
                     loading="lazy"
-                    className="w-full h-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-110"
+                    className="w-full h-full transition-transform duration-[1200ms] ease-out group-hover:scale-110 object-fill"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-transparent" />
                   <span className="absolute top-3 left-3 text-[10px] uppercase tracking-luxe text-gold bg-background/60 backdrop-blur-sm border border-gold/30 px-2.5 py-1 rounded-full">

@@ -242,7 +242,7 @@ const SignatureTravelCollections = () => {
                       <img
                         src={img}
                         alt={slot.label}
-                        className="w-full h-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-110"
+                        className="w-full h-full transition-transform duration-[1200ms] ease-out group-hover:scale-110 object-fill"
                       />
                     ) : (
                       <div
