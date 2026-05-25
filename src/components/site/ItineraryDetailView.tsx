@@ -53,30 +53,40 @@ type Props = {
   onDownload?: () => void;
 };
 
-const TERMS = [
+type TermBlock = { h: string; points: string[] };
+const TERMS: TermBlock[] = [
   {
-    h: "Cancellation policy",
-    b: "Cancellations within 30 days of departure are non-refundable. 30–60 days: 50% retention. Beyond 60 days: 10% admin fee.",
+    h: "Cancellation Policy",
+    points: [
+      "30+ days before departure — non-refundable",
+      "30–60 days before departure — 25% refund",
+      "Beyond 60 days: 10% admin fee.",
+    ],
   },
   {
-    h: "Booking policy",
-    b: "A 25% non-refundable advance confirms your booking. Balance due 30 days prior to departure.",
+    h: "Payment Terms",
+    points: [
+      "25% advance at the time of booking",
+      "Remaining balance due 30 days before departure",
+      "All prices are per person on twin-sharing basis",
+      "Payments accepted via UPI, bank transfer or credit card. International cards may attract a small surcharge",
+    ],
   },
   {
-    h: "Payment terms",
-    b: "Payments accepted via UPI, bank transfer or credit card. International cards may attract a small surcharge.",
+    h: "Travel Insurance",
+    points: [
+      "We strongly recommend purchasing comprehensive travel insurance covering trip cancellation, medical emergencies, and baggage loss. Insurance is not included in the package price.",
+    ],
   },
   {
-    h: "Hotel availability",
-    b: "Listed hotels are subject to availability at the time of confirmation. Equivalent properties of the same category will be offered if needed.",
-  },
-  {
-    h: "Flight fare",
-    b: "Airfare is dynamic and subject to change until ticketed. Final pricing is locked at the time of issuance.",
-  },
-  {
-    h: "Force majeure",
-    b: "We are not liable for delays or changes caused by weather, political unrest, strikes, pandemics or other events beyond our control.",
+    h: "Important Notes",
+    points: [
+      "Itinerary is subject to change due to weather or unforeseen circumstances",
+      "Airfare is dynamic and subject to change until ticketed. Final pricing is locked at the time of issuance.",
+      "Valid passport with 6+ months validity required for international trips",
+      "Room allocation is subject to availability at the time of check-in",
+      "Price Are Subject To Change. Please Confirm Final Price At The Time Of Booking / Advance Payment.",
+    ],
   },
 ];
 
@@ -491,8 +501,15 @@ const ItineraryDetailView = ({
                     key={i}
                     className="rounded-2xl border border-border/60 bg-card p-5 md:p-6 shadow-luxe hover:border-gold/30 transition"
                   >
-                    <h3 className="font-serif text-base md:text-lg text-foreground mb-1.5">{t.h}</h3>
-                    <p className="text-sm text-foreground/75 font-light leading-relaxed">{t.b}</p>
+                    <h3 className="font-serif text-base md:text-lg text-foreground mb-2">{t.h}</h3>
+                    <ul className="space-y-2">
+                      {t.points.map((p, pi) => (
+                        <li key={pi} className="flex items-start gap-2.5 text-sm text-foreground/75 font-light leading-relaxed">
+                          <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-gold shrink-1" />
+                          <span>{p}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </article>
                 ))}
               </div>
