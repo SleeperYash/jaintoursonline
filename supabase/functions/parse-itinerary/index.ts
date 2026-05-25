@@ -99,9 +99,14 @@ Deno.serve(async (req) => {
     .maybeSingle();
   if (rowErr || !row) return json({ error: rowErr?.message ?? "Not found" }, 404);
 
-  // Return cache if present and not forced
-  if (!force && row.parsed_data) {
-    return json({ ok: true, cached: true, parsed: row.parsed_data });
+  // Return cache if present, not forced, AND already has the latest fields
+  const cached = row.parsed_data as Partial<Parsed> | null;
+  const cacheIsFresh =
+    cached &&
+    Object.prototype.hasOwnProperty.call(cached, "title") &&
+    Object.prototype.hasOwnProperty.call(cached, "starting_price");
+  if (!force && cacheIsFresh) {
+    return json({ ok: true, cached: true, parsed: cached });
   }
 
   // Download PDF
