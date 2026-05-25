@@ -10,7 +10,8 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { BRAND, waLink } from "@/lib/brand";
-import { slugify } from "@/lib/slug";
+import ItineraryCard from "@/components/site/ItineraryCard";
+import { destinations } from "@/data/destinations";
 import {
   Check,
   X as XIcon,
@@ -597,41 +598,26 @@ const ItineraryDetailView = ({
             <h2 className="font-serif text-2xl md:text-3xl text-foreground mb-5">
               Similar Tours
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
-              {similar.map((it) => {
-                const nightsMatch = it.title.match(/(\d+)\s*N(?:ights?)?\s*\/?\s*(\d+)?\s*D?/i);
-                const nights = nightsMatch ? parseInt(nightsMatch[1], 10) : null;
-                const days = nightsMatch && nightsMatch[2]
-                  ? parseInt(nightsMatch[2], 10)
-                  : nights ? nights + 1 : null;
-                const pill = days ? (nights ? `${nights}N / ${days}D` : `${days} Days`) : null;
-                return (
-                  <Link
-                    key={it.id}
-                    to={`/destinations/${destinationSlug}/${slugify(it.title)}`}
-                    className="group relative aspect-[16/10] rounded-2xl overflow-hidden border border-border/60 hover:border-gold/40 hover:shadow-luxe transition-all"
-                  >
-                    <img
-                      src={heroImage || "/placeholder.svg"}
-                      alt={it.title}
-                      loading="lazy"
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/30 to-transparent" />
-                    {pill && (
-                      <span className="absolute top-3 right-3 inline-flex items-center px-2.5 py-1 rounded-md bg-background/90 border border-gold/40 text-gold text-[11px] font-medium">
-                        {pill}
-                      </span>
-                    )}
-                    <div className="absolute bottom-0 left-0 right-0 p-4">
-                      <p className="font-serif text-base md:text-lg text-white leading-tight line-clamp-2">
-                        {it.title}
-                      </p>
+            {(() => {
+              const dest = destinations.find((d) => d.slug === destinationSlug);
+              const locationLabel = (dest?.country ?? destinationName).toUpperCase();
+              return (
+                <div className="-mx-4 px-4 md:mx-0 md:px-0 flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 overflow-x-auto md:overflow-visible snap-x snap-mandatory pb-2 scrollbar-hide" style={{ scrollbarWidth: "none" }}>
+                  {similar.map((it, i) => (
+                    <div key={it.id} className="shrink-0 w-[78%] sm:w-[60%] md:w-auto snap-start">
+                      <ItineraryCard
+                        id={it.id}
+                        title={it.title}
+                        image={heroImage}
+                        destinationSlug={destinationSlug}
+                        locationLabel={locationLabel}
+                        index={i}
+                      />
                     </div>
-                  </Link>
-                );
-              })}
-            </div>
+                  ))}
+                </div>
+              );
+            })()}
           </div>
         )}
       </div>
