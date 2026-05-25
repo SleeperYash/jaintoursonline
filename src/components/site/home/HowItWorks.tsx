@@ -85,8 +85,8 @@ const HowItWorks = () => {
                     {n}
                   </span>
                 </div>
-                <h3 className="font-serif text-lg text-foreground mt-4 font-extralight">{title}</h3>
-                <p className="mt-2 text-xs text-muted-foreground font-light leading-relaxed max-w-[220px] mx-auto">
+                <h3 className="font-serif text-lg text-foreground mt-4 font-extralight text-black">{title}</h3>
+                <p className="mt-2 text-xs text-muted-foreground font-light leading-relaxed max-w-[220px] mx-auto text-black">
                   {desc}
                 </p>
               </li>

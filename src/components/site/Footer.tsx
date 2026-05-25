@@ -120,7 +120,7 @@ const Footer = () => {
             href={waLink()}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-6 inline-flex items-center px-5 py-2.5 border border-gold/50 text-gold text-[11px] uppercase tracking-luxe hover:bg-gold hover:text-primary-foreground transition border-sky-300 text-sky-300"
+            className="mt-6 inline-flex items-center px-5 py-2.5 border border-gold/50 text-gold text-[11px] uppercase tracking-luxe hover:bg-gold hover:text-primary-foreground transition border-sky-300 bg-sky-600 text-black"
           >
             WhatsApp Us
           </a>
