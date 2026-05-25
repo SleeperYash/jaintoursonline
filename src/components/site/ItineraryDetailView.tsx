@@ -501,8 +501,15 @@ const ItineraryDetailView = ({
                     key={i}
                     className="rounded-2xl border border-border/60 bg-card p-5 md:p-6 shadow-luxe hover:border-gold/30 transition"
                   >
-                    <h3 className="font-serif text-base md:text-lg text-foreground mb-1.5">{t.h}</h3>
-                    <p className="text-sm text-foreground/75 font-light leading-relaxed">{t.b}</p>
+                    <h3 className="font-serif text-base md:text-lg text-foreground mb-2">{t.h}</h3>
+                    <ul className="space-y-2">
+                      {t.points.map((p, pi) => (
+                        <li key={pi} className="flex items-start gap-2.5 text-sm text-foreground/75 font-light leading-relaxed">
+                          <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-gold shrink-1" />
+                          <span>{p}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </article>
                 ))}
               </div>
