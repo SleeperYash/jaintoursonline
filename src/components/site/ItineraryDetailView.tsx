@@ -118,6 +118,25 @@ const ItineraryDetailView = ({
   const [openDays, setOpenDays] = useState<string[]>([]);
   const tabsBarRef = useRef<HTMLDivElement>(null);
   const [activeSection, setActiveSection] = useState<string>("overview");
+  const [similar, setSimilar] = useState<{ id: string; title: string }[]>([]);
+
+  useEffect(() => {
+    if (!destinationSlug) return;
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from("itineraries")
+        .select("id,title")
+        .eq("destination_slug", destinationSlug)
+        .neq("id", itineraryId)
+        .order("created_at", { ascending: false })
+        .limit(6);
+      if (!cancelled) setSimilar((data ?? []) as { id: string; title: string }[]);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [destinationSlug, itineraryId]);
 
   useEffect(() => {
     let cancelled = false;
