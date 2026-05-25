@@ -188,6 +188,7 @@ const ItineraryDetailPage = () => {
           pdfUrl={publicUrl(item.file_path)}
           heroImage={heroPhoto}
           destinationName={d.name}
+          destinationSlug={slug}
           isDomestic={d.region === "Domestic"}
           onDownload={requestDownload}
           onEnquire={() => {
