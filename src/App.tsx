@@ -10,6 +10,7 @@ import Index from "./pages/Index.tsx";
 
 import Destinations from "./pages/Destinations.tsx";
 import DestinationDetail from "./pages/DestinationDetail.tsx";
+import ItineraryDetailPage from "./pages/ItineraryDetailPage.tsx";
 import Services from "./pages/Services.tsx";
 import Reviews from "./pages/Reviews.tsx";
 import About from "./pages/About.tsx";
@@ -33,6 +34,7 @@ const AnimatedRoutes = () => {
         <Route path="/" element={<PageTransition><Index /></PageTransition>} />
         <Route path="/destinations" element={<PageTransition><Destinations /></PageTransition>} />
         <Route path="/destinations/:slug" element={<PageTransition><DestinationDetail /></PageTransition>} />
+        <Route path="/destinations/:slug/:itinerarySlug" element={<PageTransition><ItineraryDetailPage /></PageTransition>} />
         <Route path="/services" element={<PageTransition><Services /></PageTransition>} />
         <Route path="/reviews" element={<PageTransition><Reviews /></PageTransition>} />
         <Route path="/about" element={<PageTransition><About /></PageTransition>} />
