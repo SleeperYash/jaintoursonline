@@ -36,7 +36,7 @@ const FeaturedDestinations = () => {
                   src={d.image}
                   alt={d.name}
                   loading="lazy"
-                  className="w-full h-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-110"
+                  className="w-full h-full transition-transform duration-[1200ms] ease-out group-hover:scale-110 object-fill"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
               </div>
