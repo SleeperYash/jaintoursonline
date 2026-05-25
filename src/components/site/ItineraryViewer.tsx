@@ -11,7 +11,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { FileText, Loader2, X } from "lucide-react";
+import { FileText, Loader2, ChevronLeft } from "lucide-react";
 import ItineraryDetailView from "./ItineraryDetailView";
 
 type Itinerary = {
@@ -93,6 +93,12 @@ const ItineraryViewer = ({
 
   const openItinerary = (it: Itinerary) => {
     setActiveView(it);
+    // Smooth scroll to detail section after render
+    setTimeout(() => {
+      document
+        .getElementById("itinerary-detail")
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 50);
   };
 
   const requestDownload = (it: Itinerary) => {
@@ -158,6 +164,30 @@ const ItineraryViewer = ({
   return (
     <section className="bg-background border-t border-border/60 py-16 md:py-24">
       <div className="container">
+        {activeView ? (
+          <div id="itinerary-detail" className="mb-8 md:mb-10">
+            <button
+              onClick={() => {
+                setActiveView(null);
+                setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 0);
+              }}
+              className="inline-flex items-center gap-2 text-xs uppercase tracking-luxe text-foreground/70 hover:text-gold transition-colors mb-4"
+            >
+              <ChevronLeft className="w-4 h-4" /> Back to itineraries
+            </button>
+            <ItineraryDetailView
+              key={activeView.id}
+              itineraryId={activeView.id}
+              title={activeView.title}
+              pdfUrl={publicUrl(activeView.file_path)}
+              heroImage={fallbackImage}
+              destinationName={destinationName}
+              onDownload={() => requestDownload(activeView)}
+              onEnquire={() => setEnquiryFor(activeView)}
+            />
+          </div>
+        ) : (
+          <>
         <div className="mb-8 md:mb-10">
           <p className="text-xs uppercase tracking-luxe text-gold mb-3 md:mb-4">Sample itineraries</p>
           <h2 className="font-serif text-3xl md:text-5xl text-foreground mb-3">
@@ -214,6 +244,8 @@ const ItineraryViewer = ({
               );
             })}
           </div>
+        )}
+          </>
         )}
       </div>
 
@@ -311,33 +343,6 @@ const ItineraryViewer = ({
         </DialogContent>
       </Dialog>
 
-      {/* PDF viewer dialog */}
-      <Dialog open={!!activeView} onOpenChange={(o) => !o && setActiveView(null)}>
-        <DialogContent className="max-w-6xl w-[97vw] h-[94vh] p-0 bg-background border-border/60 flex flex-col overflow-hidden">
-          <button
-            onClick={() => setActiveView(null)}
-            className="absolute top-3 right-3 z-40 p-2 rounded-full bg-ink/60 text-white hover:bg-ink/80 backdrop-blur"
-            aria-label="Close"
-          >
-            <X className="w-4 h-4" />
-          </button>
-          {activeView && (
-            <ItineraryDetailView
-              key={activeView.id}
-              itineraryId={activeView.id}
-              title={activeView.title}
-              pdfUrl={publicUrl(activeView.file_path)}
-              heroImage={fallbackImage}
-              destinationName={destinationName}
-              onDownload={() => requestDownload(activeView)}
-              onEnquire={() => {
-                setActiveView(null);
-                setEnquiryFor(activeView);
-              }}
-            />
-          )}
-        </DialogContent>
-      </Dialog>
     </section>
   );
 };
