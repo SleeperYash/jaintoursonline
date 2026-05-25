@@ -6,14 +6,12 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
   Check,
   X as XIcon,
   Download,
-  Share2,
   Loader2,
   FileText,
   Plane,
@@ -23,10 +21,13 @@ import {
   Sparkles,
   ChevronsDownUp,
   ChevronsUpDown,
+  Tag,
 } from "lucide-react";
 
 type ParsedDay = { title: string; body: string; activities?: string[] };
 type Parsed = {
+  title?: string | null;
+  starting_price?: string | null;
   overview: string | null;
   days: ParsedDay[];
   inclusions: string[];
@@ -108,6 +109,7 @@ const ItineraryDetailView = ({
   const [parsed, setParsed] = useState<Parsed | null>(null);
   const [openDays, setOpenDays] = useState<string[]>([]);
   const tabsBarRef = useRef<HTMLDivElement>(null);
+  const [activeSection, setActiveSection] = useState<string>("overview");
 
   useEffect(() => {
     let cancelled = false;
@@ -150,23 +152,45 @@ const ItineraryDetailView = ({
     }
   };
 
-  const share = async () => {
-    const url = pdfUrl;
-    if (navigator.share) {
-      try {
-        await navigator.share({ title, url });
-        return;
-      } catch {
-        /* user cancelled */
-      }
-    }
-    try {
-      await navigator.clipboard.writeText(url);
-      toast({ title: "Link copied", description: "Itinerary link is on your clipboard." });
-    } catch {
-      toast({ title: "Couldn't share", variant: "destructive" });
-    }
+  const sections = useMemo(
+    () =>
+      [
+        { id: "overview", label: "Overview", icon: Sparkles },
+        { id: "days", label: "Day-by-Day", icon: CalendarDays },
+        { id: "inclusions", label: "Inclusions", icon: ScrollText },
+        { id: "terms", label: "Terms", icon: ShieldCheck },
+        ...(!isDomestic ? [{ id: "visa", label: "Visa", icon: Plane }] : []),
+      ] as const,
+    [isDomestic],
+  );
+
+  const scrollToSection = (id: string) => {
+    const el = document.getElementById(`section-${id}`);
+    if (!el) return;
+    const offset = (tabsBarRef.current?.offsetHeight ?? 60) + 80;
+    const top = el.getBoundingClientRect().top + window.scrollY - offset;
+    window.scrollTo({ top, behavior: "smooth" });
   };
+
+  useEffect(() => {
+    if (loading) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible?.target?.id) {
+          setActiveSection(visible.target.id.replace("section-", ""));
+        }
+      },
+      { rootMargin: "-30% 0px -55% 0px", threshold: [0, 0.25, 0.5, 0.75, 1] },
+    );
+    sections.forEach((s) => {
+      const el = document.getElementById(`section-${s.id}`);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, [loading, sections]);
 
   const schema = useMemo(() => {
     if (!parsed) return null;
@@ -197,6 +221,8 @@ const ItineraryDetailView = ({
     };
   }, [parsed, title, destinationName, heroImage]);
 
+  const displayTitle = parsed?.title?.trim() || title;
+
   return (
     <div className="flex flex-col bg-background w-full max-w-[1280px] mx-auto">
       {/* Hero */}
@@ -204,7 +230,7 @@ const ItineraryDetailView = ({
         <div className="relative w-full h-[180px] sm:h-[240px] md:h-[420px] overflow-hidden rounded-xl md:rounded-2xl">
           <img
             src={heroImage || "/placeholder.svg"}
-            alt={`${destinationName} — ${title} tour package`}
+            alt={`${destinationName} — ${displayTitle} tour package`}
             className="w-full h-full object-cover object-center"
             loading="lazy"
             decoding="async"
@@ -215,253 +241,260 @@ const ItineraryDetailView = ({
               {destinationName}
             </p>
             <h2 className="font-serif text-xl sm:text-2xl md:text-4xl text-white leading-tight max-w-3xl">
-              {title}
+              {displayTitle}
             </h2>
           </div>
         </div>
       </div>
+
+      {/* Starting from price */}
+      {parsed?.starting_price && (
+        <div className="px-3 md:px-6 mt-3 md:mt-4">
+          <div className="inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/5 px-4 py-2">
+            <Tag className="w-4 h-4 text-gold" aria-hidden />
+            <span className="text-[10px] md:text-xs uppercase tracking-luxe text-foreground/70">
+              Starting from
+            </span>
+            <span className="font-serif text-base md:text-lg text-gold">
+              {parsed.starting_price}
+            </span>
+            <span className="text-[10px] md:text-xs text-foreground/60">/ per person</span>
+          </div>
+        </div>
+      )}
 
       {/* Structured data for SEO */}
       {schema && (
         <script type="application/ld+json">{JSON.stringify(schema)}</script>
       )}
 
-      {/* Tabs */}
-      <Tabs defaultValue="overview" className="flex flex-col mt-4 md:mt-6">
-        <div
-          ref={tabsBarRef}
-          className="sticky top-16 md:top-20 z-20 bg-background/95 backdrop-blur border-y border-border/60"
-        >
-          <div className="px-3 md:px-6 py-3 flex items-center gap-2 md:gap-4">
-            <div className="flex-1 min-w-0 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              <TabsList className="bg-transparent p-0 h-auto inline-flex gap-1 md:gap-2">
-                <TabsTrigger
-                  value="overview"
-                  className="shrink-0 rounded-full px-3 md:px-4 py-2 text-xs md:text-sm border border-transparent data-[state=active]:bg-gold data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=inactive]:text-foreground/70 data-[state=inactive]:hover:bg-muted"
-                >
-                  <Section icon={Sparkles} label="Overview" />
-                </TabsTrigger>
-                <TabsTrigger
-                  value="days"
-                  className="shrink-0 rounded-full px-3 md:px-4 py-2 text-xs md:text-sm border border-transparent data-[state=active]:bg-gold data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=inactive]:text-foreground/70 data-[state=inactive]:hover:bg-muted"
-                >
-                  <Section icon={CalendarDays} label="Day-by-Day" />
-                </TabsTrigger>
-                <TabsTrigger
-                  value="inclusions"
-                  className="shrink-0 rounded-full px-3 md:px-4 py-2 text-xs md:text-sm border border-transparent data-[state=active]:bg-gold data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=inactive]:text-foreground/70 data-[state=inactive]:hover:bg-muted"
-                >
-                  <Section icon={ScrollText} label="Inclusions" />
-                </TabsTrigger>
-                <TabsTrigger
-                  value="terms"
-                  className="shrink-0 rounded-full px-3 md:px-4 py-2 text-xs md:text-sm border border-transparent data-[state=active]:bg-gold data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=inactive]:text-foreground/70 data-[state=inactive]:hover:bg-muted"
-                >
-                  <Section icon={ShieldCheck} label="Terms" />
-                </TabsTrigger>
-                {!isDomestic && (
-                  <TabsTrigger
-                    value="visa"
-                    className="shrink-0 rounded-full px-3 md:px-4 py-2 text-xs md:text-sm border border-transparent data-[state=active]:bg-gold data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=inactive]:text-foreground/70 data-[state=inactive]:hover:bg-muted"
+      {/* Section nav (scroll to) */}
+      <div
+        ref={tabsBarRef}
+        className="sticky top-16 md:top-20 z-20 bg-background/95 backdrop-blur border-y border-border/60 mt-4 md:mt-6"
+      >
+        <div className="px-3 md:px-6 py-3 flex items-center gap-2 md:gap-4">
+          <div className="flex-1 min-w-0 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <div className="inline-flex gap-1 md:gap-2">
+              {sections.map((s) => {
+                const active = activeSection === s.id;
+                return (
+                  <button
+                    key={s.id}
+                    type="button"
+                    onClick={() => scrollToSection(s.id)}
+                    className={`shrink-0 rounded-full px-3 md:px-4 py-2 text-xs md:text-sm border transition ${
+                      active
+                        ? "bg-gold text-primary-foreground border-transparent shadow-sm"
+                        : "border-transparent text-foreground/70 hover:bg-muted"
+                    }`}
                   >
-                    <Section icon={Plane} label="Visa" />
-                  </TabsTrigger>
-                )}
-              </TabsList>
-            </div>
-            <div className="hidden sm:flex items-center gap-2 shrink-0">
-              <button
-                type="button"
-                onClick={() => onDownload?.()}
-                className="inline-flex items-center gap-2 text-xs uppercase tracking-luxe text-foreground/80 hover:text-gold px-3 py-2 rounded-full border border-border/60 hover:border-gold/40 transition"
-              >
-                <Download className="w-3.5 h-3.5" /> PDF
-              </button>
-              <button
-                onClick={share}
-                className="inline-flex items-center gap-2 text-xs uppercase tracking-luxe text-foreground/80 hover:text-gold px-3 py-2 rounded-full border border-border/60 hover:border-gold/40 transition"
-              >
-                <Share2 className="w-3.5 h-3.5" /> Share
-              </button>
+                    <Section icon={s.icon} label={s.label} />
+                  </button>
+                );
+              })}
             </div>
           </div>
+          <div className="hidden sm:flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={() => onDownload?.()}
+              className="inline-flex items-center gap-2 text-xs uppercase tracking-luxe text-foreground/80 hover:text-gold px-3 py-2 rounded-full border border-border/60 hover:border-gold/40 transition"
+            >
+              <Download className="w-3.5 h-3.5" /> PDF
+            </button>
+          </div>
         </div>
+      </div>
 
-        <div className="px-4 md:px-8 py-6 md:py-10 pb-28 md:pb-12 w-full mx-auto">
-          {loading ? (
-            <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">
-              <Loader2 className="w-6 h-6 animate-spin text-gold mb-3" />
-              <p className="text-sm font-light">Reading your itinerary…</p>
-            </div>
-          ) : error ? (
-            <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-6 text-sm text-destructive">
-              Couldn't parse this PDF: {error}
-            </div>
-          ) : !parsed ? (
-            <NotProvided />
-          ) : (
-            <>
-              <TabsContent value="overview" className="animate-fade-in mt-1" asChild>
-                <section aria-label="Trip overview">
-                  {parsed.overview ? (
-                    <div className="rounded-2xl border border-border/60 bg-card p-6 md:p-8 shadow-luxe hover:shadow-gold/10 transition-shadow">
-                      <h2 className="text-xs uppercase tracking-luxe text-gold mb-3">Trip overview</h2>
-                      <p className="text-base md:text-lg leading-relaxed text-foreground/85 font-light whitespace-pre-line">
-                        {parsed.overview}
-                      </p>
-                    </div>
-                  ) : (
-                    <NotProvided />
-                  )}
-                </section>
-              </TabsContent>
+      <div className="px-4 md:px-8 py-6 md:py-10 pb-28 md:pb-12 w-full mx-auto space-y-10 md:space-y-14">
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">
+            <Loader2 className="w-6 h-6 animate-spin text-gold mb-3" />
+            <p className="text-sm font-light">Reading your itinerary…</p>
+          </div>
+        ) : error ? (
+          <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-6 text-sm text-destructive">
+            Couldn't parse this PDF: {error}
+          </div>
+        ) : !parsed ? (
+          <NotProvided />
+        ) : (
+          <>
+            <section id="section-overview" aria-label="Trip overview" className="scroll-mt-40">
+              <h2 className="text-xs uppercase tracking-luxe text-gold mb-4 flex items-center gap-2">
+                <Sparkles className="w-4 h-4" /> Overview
+              </h2>
+              {parsed.overview ? (
+                <div className="rounded-2xl border border-border/60 bg-card p-6 md:p-8 shadow-luxe">
+                  <p className="text-base md:text-lg leading-relaxed text-foreground/85 font-light whitespace-pre-line">
+                    {parsed.overview}
+                  </p>
+                </div>
+              ) : (
+                <NotProvided />
+              )}
+            </section>
 
-              <TabsContent value="days" className="animate-fade-in mt-1" asChild>
-                <section aria-label="Day by day itinerary">
+            <div className="h-px bg-border/60" />
+
+            <section id="section-days" aria-label="Day by day itinerary" className="scroll-mt-40">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xs uppercase tracking-luxe text-gold flex items-center gap-2">
+                  <CalendarDays className="w-4 h-4" /> Day-by-Day
                   {parsed.days?.length ? (
-                    <>
-                      <div className="flex items-center justify-between mb-4">
-                        <p className="text-xs uppercase tracking-luxe text-foreground/60">
-                          {parsed.days.length} day{parsed.days.length > 1 ? "s" : ""}
-                        </p>
-                        <button
-                          onClick={() => setOpenDays(allOpen ? [] : dayValues)}
-                          className="inline-flex items-center gap-1.5 text-[11px] md:text-xs uppercase tracking-luxe text-gold hover:text-gold-deep transition"
-                        >
-                          {allOpen ? (
-                            <>
-                              <ChevronsDownUp className="w-3.5 h-3.5" /> Collapse all
-                            </>
-                          ) : (
-                            <>
-                              <ChevronsUpDown className="w-3.5 h-3.5" /> Expand all
-                            </>
+                    <span className="ml-2 text-foreground/60 normal-case tracking-normal">
+                      · {parsed.days.length} day{parsed.days.length > 1 ? "s" : ""}
+                    </span>
+                  ) : null}
+                </h2>
+                {parsed.days?.length ? (
+                  <button
+                    onClick={() => setOpenDays(allOpen ? [] : dayValues)}
+                    className="inline-flex items-center gap-1.5 text-[11px] md:text-xs uppercase tracking-luxe text-gold hover:text-gold-deep transition"
+                  >
+                    {allOpen ? (
+                      <>
+                        <ChevronsDownUp className="w-3.5 h-3.5" /> Collapse all
+                      </>
+                    ) : (
+                      <>
+                        <ChevronsUpDown className="w-3.5 h-3.5" /> Expand all
+                      </>
+                    )}
+                  </button>
+                ) : null}
+              </div>
+              {parsed.days?.length ? (
+                <Accordion
+                  type="multiple"
+                  value={openDays}
+                  onValueChange={onAccordionChange as (v: string[]) => void}
+                  className="space-y-3"
+                >
+                  {parsed.days.map((d, i) => (
+                    <AccordionItem
+                      key={i}
+                      value={`d-${i}`}
+                      className="border border-border/60 rounded-2xl bg-card overflow-hidden hover:border-gold/40 hover:shadow-luxe transition-all"
+                    >
+                      <AccordionTrigger className="px-4 md:px-6 py-4 hover:no-underline group">
+                        <div className="flex items-center gap-3 md:gap-4 text-left flex-1 min-w-0">
+                          <span className="shrink-0 inline-flex items-center justify-center w-9 h-9 md:w-10 md:h-10 rounded-full bg-gold/10 text-gold text-xs md:text-sm font-medium border border-gold/20 group-hover:bg-gold group-hover:text-primary-foreground transition">
+                            {i + 1}
+                          </span>
+                          <h3 className="font-serif text-base md:text-lg text-foreground break-words flex-1 min-w-0 text-left">
+                            {d.title}
+                          </h3>
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent className="px-4 md:px-6 pb-5">
+                        <div className="pl-0 md:pl-14 min-w-0 break-words">
+                          {d.body && (
+                            <p className="text-sm md:text-base text-foreground/80 font-light leading-relaxed whitespace-pre-line break-words [overflow-wrap:anywhere]">
+                              {d.body}
+                            </p>
                           )}
-                        </button>
-                      </div>
-                      <Accordion
-                        type="multiple"
-                        value={openDays}
-                        onValueChange={onAccordionChange as (v: string[]) => void}
-                        className="space-y-3"
-                      >
-                        {parsed.days.map((d, i) => (
-                          <AccordionItem
-                            key={i}
-                            value={`d-${i}`}
-                            className="border border-border/60 rounded-2xl bg-card overflow-hidden hover:border-gold/40 hover:shadow-luxe transition-all"
-                          >
-                            <AccordionTrigger className="px-4 md:px-6 py-4 hover:no-underline group">
-                              <div className="flex items-center gap-3 md:gap-4 text-left flex-1 min-w-0">
-                                <span className="shrink-0 inline-flex items-center justify-center w-9 h-9 md:w-10 md:h-10 rounded-full bg-gold/10 text-gold text-xs md:text-sm font-medium border border-gold/20 group-hover:bg-gold group-hover:text-primary-foreground transition">
-                                  {i + 1}
-                                </span>
-                                <h3 className="font-serif text-base md:text-lg text-foreground break-words flex-1 min-w-0 text-left">
-                                  {d.title}
-                                </h3>
-                              </div>
-                            </AccordionTrigger>
-                            <AccordionContent className="px-4 md:px-6 pb-5">
-                              <div className="pl-0 md:pl-14 min-w-0 break-words">
-                                {d.body && (
-                                  <p className="text-sm md:text-base text-foreground/80 font-light leading-relaxed whitespace-pre-line break-words [overflow-wrap:anywhere]">
-                                    {d.body}
-                                  </p>
-                                )}
-                                {d.activities?.length ? (
-                                  <div className="mt-4">
-                                    <h4 className="text-[11px] uppercase tracking-luxe text-gold mb-2">
-                                      Activities
-                                    </h4>
-                                    <ul className="space-y-1.5">
-                                      {d.activities.map((a, ai) => (
-                                        <li key={ai} className="flex items-start gap-2 text-sm text-foreground/80 font-light break-words [overflow-wrap:anywhere]">
-                                          <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-gold shrink-0" />
-                                          <span>{a}</span>
-                                        </li>
-                                      ))}
-                                    </ul>
-                                  </div>
-                                ) : null}
-                              </div>
-                            </AccordionContent>
-                          </AccordionItem>
+                          {d.activities?.length ? (
+                            <div className="mt-4">
+                              <h4 className="text-[11px] uppercase tracking-luxe text-gold mb-2">
+                                Activities
+                              </h4>
+                              <ul className="space-y-1.5">
+                                {d.activities.map((a, ai) => (
+                                  <li key={ai} className="flex items-start gap-2 text-sm text-foreground/80 font-light break-words [overflow-wrap:anywhere]">
+                                    <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-gold shrink-0" />
+                                    <span>{a}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          ) : null}
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              ) : (
+                <NotProvided />
+              )}
+            </section>
+
+            <div className="h-px bg-border/60" />
+
+            <section id="section-inclusions" aria-label="Inclusions and exclusions" className="scroll-mt-40">
+              <h2 className="text-xs uppercase tracking-luxe text-gold mb-4 flex items-center gap-2">
+                <ScrollText className="w-4 h-4" /> Inclusions
+              </h2>
+              {parsed.inclusions?.length || parsed.exclusions?.length ? (
+                <div className="grid md:grid-cols-2 gap-4 md:gap-6">
+                  <div className="rounded-2xl border border-border/60 bg-card p-5 md:p-6 shadow-luxe">
+                    <h3 className="flex items-center gap-2 text-xs uppercase tracking-luxe text-gold mb-4">
+                      <Check className="w-4 h-4" aria-hidden /> Included
+                    </h3>
+                    {parsed.inclusions?.length ? (
+                      <ul className="space-y-2.5">
+                        {parsed.inclusions.map((itm, k) => (
+                          <li key={k} className="flex items-start gap-2.5 text-sm text-foreground/85 font-light">
+                            <Check className="w-4 h-4 mt-0.5 text-gold shrink-0" aria-hidden />
+                            <span>{itm}</span>
+                          </li>
                         ))}
-                      </Accordion>
-                    </>
-                  ) : (
-                    <NotProvided />
-                  )}
-                </section>
-              </TabsContent>
-
-              <TabsContent value="inclusions" className="animate-fade-in mt-0" asChild>
-                <section aria-label="Inclusions and exclusions">
-                  {parsed.inclusions?.length || parsed.exclusions?.length ? (
-                    <div className="grid md:grid-cols-2 gap-4 md:gap-6">
-                      <div className="rounded-2xl border border-border/60 bg-card p-5 md:p-6 shadow-luxe">
-                        <h2 className="flex items-center gap-2 text-xs uppercase tracking-luxe text-gold mb-4">
-                          <Check className="w-4 h-4" aria-hidden /> Included
-                        </h2>
-                        {parsed.inclusions?.length ? (
-                          <ul className="space-y-2.5">
-                            {parsed.inclusions.map((itm, k) => (
-                              <li key={k} className="flex items-start gap-2.5 text-sm text-foreground/85 font-light">
-                                <Check className="w-4 h-4 mt-0.5 text-gold shrink-0" aria-hidden />
-                                <span>{itm}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        ) : (
-                          <p className="text-sm text-muted-foreground font-light">Not Provided</p>
-                        )}
-                      </div>
-                      <div className="rounded-2xl border border-border/60 bg-card p-5 md:p-6 shadow-luxe">
-                        <h2 className="flex items-center gap-2 text-xs uppercase tracking-luxe text-destructive mb-4">
-                          <XIcon className="w-4 h-4" aria-hidden /> Not included
-                        </h2>
-                        {parsed.exclusions?.length ? (
-                          <ul className="space-y-2.5">
-                            {parsed.exclusions.map((itm, k) => (
-                              <li key={k} className="flex items-start gap-2.5 text-sm text-foreground/85 font-light">
-                                <XIcon className="w-4 h-4 mt-0.5 text-destructive shrink-0" aria-hidden />
-                                <span>{itm}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        ) : (
-                          <p className="text-sm text-muted-foreground font-light">Not Provided</p>
-                        )}
-                      </div>
-                    </div>
-                  ) : (
-                    <NotProvided />
-                  )}
-                </section>
-              </TabsContent>
-
-              <TabsContent value="terms" className="animate-fade-in mt-0" asChild>
-                <section aria-label="Terms and conditions">
-                  <div className="space-y-3">
-                    {TERMS.map((t, i) => (
-                      <article
-                        key={i}
-                        className="rounded-2xl border border-border/60 bg-card p-5 md:p-6 shadow-luxe hover:border-gold/30 transition"
-                      >
-                        <h2 className="font-serif text-base md:text-lg text-foreground mb-1.5">{t.h}</h2>
-                        <p className="text-sm text-foreground/75 font-light leading-relaxed">{t.b}</p>
-                      </article>
-                    ))}
+                      </ul>
+                    ) : (
+                      <p className="text-sm text-muted-foreground font-light">Not Provided</p>
+                    )}
                   </div>
-                </section>
-              </TabsContent>
+                  <div className="rounded-2xl border border-border/60 bg-card p-5 md:p-6 shadow-luxe">
+                    <h3 className="flex items-center gap-2 text-xs uppercase tracking-luxe text-destructive mb-4">
+                      <XIcon className="w-4 h-4" aria-hidden /> Not included
+                    </h3>
+                    {parsed.exclusions?.length ? (
+                      <ul className="space-y-2.5">
+                        {parsed.exclusions.map((itm, k) => (
+                          <li key={k} className="flex items-start gap-2.5 text-sm text-foreground/85 font-light">
+                            <XIcon className="w-4 h-4 mt-0.5 text-destructive shrink-0" aria-hidden />
+                            <span>{itm}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-sm text-muted-foreground font-light">Not Provided</p>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <NotProvided />
+              )}
+            </section>
 
-              <TabsContent value="visa" className="animate-fade-in mt-0" asChild>
-                <section aria-label="Visa information">
+            <div className="h-px bg-border/60" />
+
+            <section id="section-terms" aria-label="Terms and conditions" className="scroll-mt-40">
+              <h2 className="text-xs uppercase tracking-luxe text-gold mb-4 flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4" /> Terms
+              </h2>
+              <div className="space-y-3">
+                {TERMS.map((t, i) => (
+                  <article
+                    key={i}
+                    className="rounded-2xl border border-border/60 bg-card p-5 md:p-6 shadow-luxe hover:border-gold/30 transition"
+                  >
+                    <h3 className="font-serif text-base md:text-lg text-foreground mb-1.5">{t.h}</h3>
+                    <p className="text-sm text-foreground/75 font-light leading-relaxed">{t.b}</p>
+                  </article>
+                ))}
+              </div>
+            </section>
+
+            {!isDomestic && (
+              <>
+                <div className="h-px bg-border/60" />
+                <section id="section-visa" aria-label="Visa information" className="scroll-mt-40">
+                  <h2 className="text-xs uppercase tracking-luxe text-gold mb-4 flex items-center gap-2">
+                    <Plane className="w-4 h-4" /> Visa
+                  </h2>
                   <div className="rounded-2xl border border-border/60 bg-card p-6 md:p-8 shadow-luxe">
-                    <h2 className="flex items-center gap-2 text-xs uppercase tracking-luxe text-gold mb-3">
-                      <Plane className="w-4 h-4" aria-hidden /> Visa information
-                    </h2>
                     {parsed.visa ? (
                       <p className="text-base leading-relaxed text-foreground/85 font-light whitespace-pre-line">
                         {parsed.visa}
@@ -473,11 +506,11 @@ const ItineraryDetailView = ({
                     )}
                   </div>
                 </section>
-              </TabsContent>
-            </>
-          )}
-        </div>
-      </Tabs>
+              </>
+            )}
+          </>
+        )}
+      </div>
 
       {/* Sticky mobile CTA */}
       <div className="sm:hidden sticky bottom-0 left-0 right-0 z-30 border-t border-border/60 bg-background/95 backdrop-blur px-3 py-2.5 flex items-center gap-2">
@@ -488,13 +521,6 @@ const ItineraryDetailView = ({
           aria-label="Download PDF"
         >
           <Download className="w-4 h-4" />
-        </button>
-        <button
-          onClick={share}
-          className="inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-full border border-border/60 text-foreground/80 text-xs uppercase tracking-luxe"
-          aria-label="Share"
-        >
-          <Share2 className="w-4 h-4" />
         </button>
         <button
           onClick={onEnquire}
