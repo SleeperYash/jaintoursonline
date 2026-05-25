@@ -105,6 +105,7 @@ const ItineraryDetailView = ({
   pdfUrl,
   heroImage,
   destinationName,
+  destinationSlug,
   isDomestic = false,
   onEnquire,
   onDownload,
