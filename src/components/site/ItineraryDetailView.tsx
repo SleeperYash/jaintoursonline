@@ -196,23 +196,26 @@ const ItineraryDetailView = ({
   }, [parsed, title, destinationName, heroImage]);
 
   return (
-    <div className="flex flex-col h-full overflow-y-auto bg-background">
+    <div className="flex flex-col bg-background w-full max-w-[1280px] mx-auto">
       {/* Hero */}
-      <div className="relative w-full h-44 sm:h-56 md:h-72 shrink-0 overflow-hidden">
-        <img
-          src={heroImage || "/placeholder.svg"}
-          alt={`${destinationName} — ${title} tour package`}
-          className="w-full h-full object-cover"
-          loading="lazy"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/40 to-transparent" />
-        <div className="absolute bottom-0 left-0 right-0 p-4 md:p-8">
-          <p className="text-[10px] md:text-xs uppercase tracking-luxe text-gold mb-1">
-            {destinationName}
-          </p>
-          <h2 className="font-serif text-xl sm:text-2xl md:text-4xl text-white leading-tight max-w-3xl">
-            {title}
-          </h2>
+      <div className="px-3 md:px-6 pt-3 md:pt-6">
+        <div className="relative w-full h-[180px] sm:h-[240px] md:h-[420px] overflow-hidden rounded-xl md:rounded-2xl">
+          <img
+            src={heroImage || "/placeholder.svg"}
+            alt={`${destinationName} — ${title} tour package`}
+            className="w-full h-full object-cover object-center"
+            loading="lazy"
+            decoding="async"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/40 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 p-4 md:p-8">
+            <p className="text-[10px] md:text-xs uppercase tracking-luxe text-gold mb-1">
+              {destinationName}
+            </p>
+            <h2 className="font-serif text-xl sm:text-2xl md:text-4xl text-white leading-tight max-w-3xl">
+              {title}
+            </h2>
+          </div>
         </div>
       </div>
 
@@ -222,10 +225,10 @@ const ItineraryDetailView = ({
       )}
 
       {/* Tabs */}
-      <Tabs defaultValue="overview" className="flex-1 flex flex-col">
+      <Tabs defaultValue="overview" className="flex flex-col mt-4 md:mt-6">
         <div
           ref={tabsBarRef}
-          className="sticky top-0 z-20 bg-background/95 backdrop-blur border-b border-border/60"
+          className="sticky top-16 md:top-20 z-20 bg-background/95 backdrop-blur border-y border-border/60"
         >
           <div className="px-3 md:px-6 py-3 flex items-center gap-2 md:gap-4">
             <div className="flex-1 min-w-0 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -280,7 +283,7 @@ const ItineraryDetailView = ({
           </div>
         </div>
 
-        <div className="px-4 md:px-8 py-6 md:py-10 pb-28 md:pb-12 max-w-4xl w-full mx-auto">
+        <div className="px-4 md:px-8 py-6 md:py-10 pb-28 md:pb-12 w-full mx-auto">
           {loading ? (
             <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">
               <Loader2 className="w-6 h-6 animate-spin text-gold mb-3" />
