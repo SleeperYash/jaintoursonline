@@ -16,7 +16,6 @@ const GlobeStrip = () => {
         loading="lazy"
         className="w-full h-full object-cover transition-transform duration-[1200ms] group-hover:scale-110"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/30 to-transparent" />
       <div className="absolute inset-x-0 bottom-0 p-5">
         <p className="text-[10px] tracking-luxe uppercase text-gold mb-1">{d.region}</p>
         <h3 className="font-serif text-2xl text-foreground">{d.name}</h3>
