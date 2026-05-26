@@ -322,6 +322,7 @@ const ItineraryDetailView = ({
                   <button
                     key={s.id}
                     type="button"
+                    data-section={s.id}
                     onClick={() => scrollToSection(s.id)}
                     className={`shrink-0 rounded-full px-3 md:px-4 py-2 text-xs md:text-sm border transition ${
                       active
