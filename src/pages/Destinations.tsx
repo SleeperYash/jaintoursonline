@@ -240,7 +240,6 @@ const DestinationGroup = ({
               }}
               className="w-full h-full object-cover transition-all duration-[1200ms] ease-out group-hover:scale-110 group-hover:brightness-110"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/40 to-transparent" />
             <span className={`absolute top-3 left-3 inline-flex items-center gap-1 px-2.5 py-1 text-[9px] uppercase tracking-luxe rounded-full backdrop-blur-sm ${styles.bgSoft} ${styles.text}`}>
               <Icon className="w-2.5 h-2.5" />
               {eyebrow}
