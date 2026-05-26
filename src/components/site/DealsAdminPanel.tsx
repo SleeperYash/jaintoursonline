@@ -12,11 +12,10 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { Loader2, Plus, Pencil, Trash2, Upload, ImagePlus } from "lucide-react";
+import { Loader2, Plus, Pencil, Trash2, ImagePlus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { fileToBase64, adminPublicUrl } from "@/hooks/useAdminAuth";
 import { useDeals, type Deal } from "@/hooks/useDeals";
-import { useStampPhotos, STAMP_SLOTS } from "@/hooks/useStampPhotos";
 
 type Props = {
   callAdmin: (action: string, payload?: Record<string, unknown>) => Promise<any>;
@@ -40,7 +39,6 @@ const emptyForm = () => ({
 const DealsAdminPanel = ({ callAdmin }: Props) => {
   const { toast } = useToast();
   const { deals, refetch } = useDeals();
-  const { photos, refetch: refetchStamps } = useStampPhotos();
 
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Deal | null>(null);
@@ -149,33 +147,6 @@ const DealsAdminPanel = ({ callAdmin }: Props) => {
       toast({ title: "Failed", description: (err as Error).message, variant: "destructive" });
     }
   };
-
-  const handleStampUpload = useCallback(
-    async (stampKey: string, f: File) => {
-      if (!f.type.startsWith("image/")) {
-        toast({ title: "Image only", variant: "destructive" });
-        return;
-      }
-      if (f.size > 5 * 1024 * 1024) {
-        toast({ title: "Max 5MB", variant: "destructive" });
-        return;
-      }
-      try {
-        const file_base64 = await fileToBase64(f);
-        await callAdmin("stamp_upload", {
-          stamp_key: stampKey,
-          file_name: f.name,
-          content_type: f.type,
-          file_base64,
-        });
-        toast({ title: "Stamp updated" });
-        await refetchStamps();
-      } catch (err) {
-        toast({ title: "Failed", description: (err as Error).message, variant: "destructive" });
-      }
-    },
-    [callAdmin, refetchStamps, toast],
-  );
 
   return (
     <div className="space-y-8">
