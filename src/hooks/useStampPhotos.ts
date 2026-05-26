@@ -1,6 +1,11 @@
-import { useCallback, useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { adminPublicUrl } from "@/hooks/useAdminAuth";
+import malaysiaImg from "@/assets/stamps/malaysia.png";
+import singaporeImg from "@/assets/stamps/singapore.png";
+import thailandImg from "@/assets/stamps/thailand.png";
+import sriLankaImg from "@/assets/stamps/sri-lanka.png";
+import kashmirImg from "@/assets/stamps/kashmir.png";
+import himalayasImg from "@/assets/stamps/himalayas.png";
+import andamanImg from "@/assets/stamps/andaman.png";
+import northEastImg from "@/assets/stamps/north-east-india.png";
 
 export type StampKey =
   | "malaysia"
@@ -17,38 +22,16 @@ export type StampSlot = {
   label: string;
   borderColor: string;
   slug: string;
+  image: string;
 };
 
 export const STAMP_SLOTS: StampSlot[] = [
-  { key: "malaysia", label: "MALAYSIA", borderColor: "#D4860B", slug: "singapore-malaysia" },
-  { key: "singapore", label: "GEORGIA", borderColor: "#1A6FA8", slug: "georgia" },
-  { key: "thailand", label: "THAILAND", borderColor: "#C0392B", slug: "thailand" },
-  { key: "sri-lanka", label: "SRI LANKA", borderColor: "#2E7D32", slug: "sri-lanka" },
-  { key: "kashmir", label: "KASHMIR", borderColor: "#5C7FA3", slug: "kashmir" },
-  { key: "himalayas", label: "HIMALAYAS", borderColor: "#2C6B6B", slug: "himachal" },
-  { key: "andaman", label: "ANDAMAN", borderColor: "#00897B", slug: "andaman" },
-  { key: "north-east-india", label: "LEH LADAKH", borderColor: "#558B2F", slug: "leh-ladakh" },
+  { key: "malaysia", label: "MALAYSIA", borderColor: "#D4860B", slug: "singapore-malaysia", image: malaysiaImg },
+  { key: "singapore", label: "GEORGIA", borderColor: "#1A6FA8", slug: "georgia", image: singaporeImg },
+  { key: "thailand", label: "THAILAND", borderColor: "#C0392B", slug: "thailand", image: thailandImg },
+  { key: "sri-lanka", label: "SRI LANKA", borderColor: "#2E7D32", slug: "sri-lanka", image: sriLankaImg },
+  { key: "kashmir", label: "KASHMIR", borderColor: "#5C7FA3", slug: "kashmir", image: kashmirImg },
+  { key: "himalayas", label: "HIMALAYAS", borderColor: "#2C6B6B", slug: "himachal", image: himalayasImg },
+  { key: "andaman", label: "ANDAMAN", borderColor: "#00897B", slug: "andaman", image: andamanImg },
+  { key: "north-east-india", label: "LEH LADAKH", borderColor: "#558B2F", slug: "leh-ladakh", image: northEastImg },
 ];
-
-export const useStampPhotos = () => {
-  const [photos, setPhotos] = useState<Record<string, string | null>>({});
-  const [loading, setLoading] = useState(true);
-
-  const refetch = useCallback(async () => {
-    const { data } = await supabase
-      .from("stamp_photos")
-      .select("stamp_key,image_path");
-    const map: Record<string, string | null> = {};
-    for (const row of data ?? []) {
-      map[row.stamp_key] = row.image_path ? adminPublicUrl(row.image_path) : null;
-    }
-    setPhotos(map);
-    setLoading(false);
-  }, []);
-
-  useEffect(() => {
-    refetch();
-  }, [refetch]);
-
-  return { photos, loading, refetch };
-};
