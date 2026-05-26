@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,11 +12,10 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { Loader2, Plus, Pencil, Trash2, Upload, ImagePlus } from "lucide-react";
+import { Loader2, Plus, Pencil, Trash2, ImagePlus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { fileToBase64, adminPublicUrl } from "@/hooks/useAdminAuth";
 import { useDeals, type Deal } from "@/hooks/useDeals";
-import { useStampPhotos, STAMP_SLOTS } from "@/hooks/useStampPhotos";
 
 type Props = {
   callAdmin: (action: string, payload?: Record<string, unknown>) => Promise<any>;
@@ -40,7 +39,6 @@ const emptyForm = () => ({
 const DealsAdminPanel = ({ callAdmin }: Props) => {
   const { toast } = useToast();
   const { deals, refetch } = useDeals();
-  const { photos, refetch: refetchStamps } = useStampPhotos();
 
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Deal | null>(null);
@@ -150,33 +148,6 @@ const DealsAdminPanel = ({ callAdmin }: Props) => {
     }
   };
 
-  const handleStampUpload = useCallback(
-    async (stampKey: string, f: File) => {
-      if (!f.type.startsWith("image/")) {
-        toast({ title: "Image only", variant: "destructive" });
-        return;
-      }
-      if (f.size > 5 * 1024 * 1024) {
-        toast({ title: "Max 5MB", variant: "destructive" });
-        return;
-      }
-      try {
-        const file_base64 = await fileToBase64(f);
-        await callAdmin("stamp_upload", {
-          stamp_key: stampKey,
-          file_name: f.name,
-          content_type: f.type,
-          file_base64,
-        });
-        toast({ title: "Stamp updated" });
-        await refetchStamps();
-      } catch (err) {
-        toast({ title: "Failed", description: (err as Error).message, variant: "destructive" });
-      }
-    },
-    [callAdmin, refetchStamps, toast],
-  );
-
   return (
     <div className="space-y-8">
       {/* Deals list */}
@@ -253,59 +224,6 @@ const DealsAdminPanel = ({ callAdmin }: Props) => {
             ))}
           </div>
         )}
-      </div>
-
-      {/* Stamp photos */}
-      <div>
-        <p className="text-xs uppercase tracking-luxe text-gold mb-3">Stamp Destination Photos</p>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {STAMP_SLOTS.map((slot) => {
-            const img = photos[slot.key] ?? null;
-            return (
-              <div
-                key={slot.key}
-                className="border border-border/60 rounded-md p-2 bg-card"
-              >
-                <div
-                  className="w-full aspect-[4/5] rounded overflow-hidden mb-2 flex items-center justify-center"
-                  style={{
-                    background: img ? "transparent" : `${slot.borderColor}22`,
-                    border: `2px solid ${slot.borderColor}`,
-                  }}
-                >
-                  {img ? (
-                    <img src={img} alt={slot.label} className="w-full h-full object-cover" />
-                  ) : (
-                    <span
-                      className="text-[10px] uppercase tracking-widest font-bold"
-                      style={{ color: slot.borderColor }}
-                    >
-                      No photo
-                    </span>
-                  )}
-                </div>
-                <p className="text-[10px] text-center font-bold tracking-widest text-foreground mb-2">
-                  {slot.label}
-                </p>
-                <label className="block">
-                  <input
-                    type="file"
-                    accept={ACCEPT_IMG}
-                    className="hidden"
-                    onChange={(e) => {
-                      const f = e.target.files?.[0];
-                      e.target.value = "";
-                      if (f) handleStampUpload(slot.key, f);
-                    }}
-                  />
-                  <span className="block text-center cursor-pointer text-[10px] uppercase tracking-luxe px-2 py-1.5 border border-gold/60 text-gold hover:bg-gold/10 transition rounded">
-                    <Upload className="w-3 h-3 inline mr-1" /> Upload Photo
-                  </span>
-                </label>
-              </div>
-            );
-          })}
-        </div>
       </div>
 
       {/* Add/Edit dialog */}

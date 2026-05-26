@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight, Hotel, Coffee, Camera, Bus } from "lucide-react";
 import { useDeals } from "@/hooks/useDeals";
-import { useStampPhotos, STAMP_SLOTS } from "@/hooks/useStampPhotos";
+import { STAMP_SLOTS } from "@/hooks/useStampPhotos";
 import { adminPublicUrl } from "@/hooks/useAdminAuth";
 
 // Scattered polaroid tilt — gives the grid an editorial scrapbook feel
@@ -10,7 +10,6 @@ const TILTS = [-3, 2, -1.5, 2.5, 1.5, -2.5, 3, -2];
 
 const SignatureTravelCollections = () => {
   const { deals } = useDeals({ activeOnly: true });
-  const { photos } = useStampPhotos();
   const [idx, setIdx] = useState(0);
   const navigate = useNavigate();
 
@@ -209,7 +208,7 @@ const SignatureTravelCollections = () => {
           {/* RIGHT — 4×2 stamp grid */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5 content-start">
             {STAMP_SLOTS.map((slot, i) => {
-              const img = photos[slot.key] ?? null;
+              const img = slot.image;
               const tilt = TILTS[i % TILTS.length];
               return (
                 <button
