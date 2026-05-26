@@ -21,12 +21,11 @@ const FeatureCard = ({ d, tall = false }: { d: (typeof destinations)[number]; ta
           className="w-full h-[115%] object-cover transition-transform duration-[1400ms] group-hover:scale-110"
         />
       </div>
-      <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/40 to-transparent" />
       <div className="absolute inset-x-0 bottom-0 p-7 md:p-9">
         <p className="text-[10px] tracking-luxe uppercase text-gold mb-2">{d.region}</p>
         <h3 className={`font-serif text-foreground ${tall ? "text-4xl md:text-5xl" : "text-3xl"}`}>{d.name}</h3>
         <p className="text-sm text-foreground/70 mt-2 font-light max-w-md">{d.tagline}</p>
-        <span className="mt-5 inline-flex items-center gap-2 text-[11px] uppercase tracking-luxe text-gold opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-500">
+        <span className="mt-5 inline-flex items-center gap-2 text-[11px] uppercase tracking-luxe text-sky-300 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-500">
           Explore <ArrowUpRight className="w-3.5 h-3.5" />
         </span>
       </div>
