@@ -248,7 +248,7 @@ const DestinationGroup = ({
               <h3 className="font-serif text-xl md:text-2xl font-bold text-white leading-tight [text-shadow:_0_2px_8px_rgb(0_0_0_/_0.6)]">
                 {d.name}
               </h3>
-              <span className={`mt-3 inline-flex items-center gap-1.5 text-[10px] uppercase tracking-luxe text-gold transition-all duration-500`}>
+              <span className={`mt-3 inline-flex items-center gap-1.5 text-[10px] uppercase tracking-luxe text-sky-300 transition-all duration-500`}>
                 Explore <ArrowUpRight className="w-3 h-3" />
               </span>
             </div>
