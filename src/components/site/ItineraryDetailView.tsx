@@ -133,6 +133,7 @@ const ItineraryDetailView = ({
   const [openDays, setOpenDays] = useState<string[]>([]);
   const tabsBarRef = useRef<HTMLDivElement>(null);
   const [activeSection, setActiveSection] = useState<string>("overview");
+  const suppressObserverUntil = useRef<number>(0);
   const [similar, setSimilar] = useState<{ id: string; title: string }[]>([]);
 
   useEffect(() => {
@@ -211,6 +212,8 @@ const ItineraryDetailView = ({
     if (!el) return;
     const offset = (tabsBarRef.current?.offsetHeight ?? 60) + 80;
     const top = el.getBoundingClientRect().top + window.scrollY - offset;
+    setActiveSection(id);
+    suppressObserverUntil.current = Date.now() + 900;
     window.scrollTo({ top, behavior: "smooth" });
   };
 
@@ -218,6 +221,7 @@ const ItineraryDetailView = ({
     if (loading) return;
     const observer = new IntersectionObserver(
       (entries) => {
+        if (Date.now() < suppressObserverUntil.current) return;
         const visible = entries
           .filter((e) => e.isIntersecting)
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
@@ -233,6 +237,16 @@ const ItineraryDetailView = ({
     });
     return () => observer.disconnect();
   }, [loading, sections]);
+
+  // Keep the active tab pill in view inside the horizontally scrollable bar
+  useEffect(() => {
+    const bar = tabsBarRef.current;
+    if (!bar) return;
+    const btn = bar.querySelector<HTMLButtonElement>(`[data-section="${activeSection}"]`);
+    if (btn) {
+      btn.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+    }
+  }, [activeSection]);
 
   const schema = useMemo(() => {
     if (!parsed) return null;
@@ -308,6 +322,7 @@ const ItineraryDetailView = ({
                   <button
                     key={s.id}
                     type="button"
+                    data-section={s.id}
                     onClick={() => scrollToSection(s.id)}
                     className={`shrink-0 rounded-full px-3 md:px-4 py-2 text-xs md:text-sm border transition ${
                       active
