@@ -21,7 +21,6 @@ const FeatureCard = ({ d, tall = false }: { d: (typeof destinations)[number]; ta
           className="w-full h-[115%] object-cover transition-transform duration-[1400ms] group-hover:scale-110"
         />
       </div>
-      <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/40 to-transparent" />
       <div className="absolute inset-x-0 bottom-0 p-7 md:p-9">
         <p className="text-[10px] tracking-luxe uppercase text-gold mb-2">{d.region}</p>
         <h3 className={`font-serif text-foreground ${tall ? "text-4xl md:text-5xl" : "text-3xl"}`}>{d.name}</h3>
