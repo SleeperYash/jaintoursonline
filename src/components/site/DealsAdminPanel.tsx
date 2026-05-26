@@ -226,59 +226,6 @@ const DealsAdminPanel = ({ callAdmin }: Props) => {
         )}
       </div>
 
-      {/* Stamp photos */}
-      <div>
-        <p className="text-xs uppercase tracking-luxe text-gold mb-3">Stamp Destination Photos</p>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {STAMP_SLOTS.map((slot) => {
-            const img = photos[slot.key] ?? null;
-            return (
-              <div
-                key={slot.key}
-                className="border border-border/60 rounded-md p-2 bg-card"
-              >
-                <div
-                  className="w-full aspect-[4/5] rounded overflow-hidden mb-2 flex items-center justify-center"
-                  style={{
-                    background: img ? "transparent" : `${slot.borderColor}22`,
-                    border: `2px solid ${slot.borderColor}`,
-                  }}
-                >
-                  {img ? (
-                    <img src={img} alt={slot.label} className="w-full h-full object-cover" />
-                  ) : (
-                    <span
-                      className="text-[10px] uppercase tracking-widest font-bold"
-                      style={{ color: slot.borderColor }}
-                    >
-                      No photo
-                    </span>
-                  )}
-                </div>
-                <p className="text-[10px] text-center font-bold tracking-widest text-foreground mb-2">
-                  {slot.label}
-                </p>
-                <label className="block">
-                  <input
-                    type="file"
-                    accept={ACCEPT_IMG}
-                    className="hidden"
-                    onChange={(e) => {
-                      const f = e.target.files?.[0];
-                      e.target.value = "";
-                      if (f) handleStampUpload(slot.key, f);
-                    }}
-                  />
-                  <span className="block text-center cursor-pointer text-[10px] uppercase tracking-luxe px-2 py-1.5 border border-gold/60 text-gold hover:bg-gold/10 transition rounded">
-                    <Upload className="w-3 h-3 inline mr-1" /> Upload Photo
-                  </span>
-                </label>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
       {/* Add/Edit dialog */}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-lg w-[95vw] bg-card border-border/60 max-h-[90vh] overflow-y-auto">
