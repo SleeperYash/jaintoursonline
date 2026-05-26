@@ -1,14 +1,14 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowUpRight, Globe, MapPin, Plane } from "lucide-react";
+import { Globe, MapPin, Plane } from "lucide-react";
 import { motion } from "framer-motion";
 import {
   domesticDestinations,
   internationalDestinations,
-  destinations,
 } from "@/data/destinations";
 import { useDestinationCovers } from "@/hooks/useDestinationCovers";
 import { useReveal } from "@/hooks/useReveal";
+import { packages } from "@/data/packages";
 
 type Tab = "domestic" | "international";
 
@@ -26,6 +26,25 @@ const HandpickedPackages = () => {
     if (tab === "international") return internationalDestinations;
     return domesticDestinations;
   }, [tab]);
+
+  // Aggregate package count + lowest price per destination slug
+  const stats = useMemo(() => {
+    const map: Record<string, { count: number; min: number | null; label: string | null }> = {};
+    for (const p of packages) {
+      const m = map[p.destinationSlug] ?? { count: 0, min: null, label: null };
+      m.count += 1;
+      const num = parseInt(p.fromPrice.replace(/[^\d]/g, ""), 10);
+      if (!Number.isNaN(num) && (m.min === null || num < m.min)) {
+        m.min = num;
+        m.label = p.fromPrice;
+      }
+      map[p.destinationSlug] = m;
+    }
+    return map;
+  }, []);
+
+  const formatINR = (n: number) =>
+    `₹${n.toLocaleString("en-IN")}`;
 
   return (
     <section className="py-20 md:py-28 bg-background pt-[112px]">
@@ -62,45 +81,56 @@ const HandpickedPackages = () => {
           })}
         </div>
 
-        {/* Single-row horizontal carousel (all viewports) */}
+        {/* Single-row horizontal carousel (circular tiles) */}
         <motion.div
           ref={ref}
           key={tab}
-          className="-mx-4 px-4 flex gap-3 sm:gap-4 overflow-x-auto snap-x snap-mandatory pb-4 scrollbar-hide animate-in fade-in duration-500"
-          style={{ scrollbarWidth: "none" }}
+          className="-mx-4 px-4 flex gap-5 sm:gap-7 md:gap-9 overflow-x-auto snap-x snap-mandatory pb-6 scrollbar-hide animate-in fade-in duration-500"
+          style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" }}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.15 }}
           variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.07 } } }}
         >
-          {list.map((d) => (
-            <motion.div
-              key={d.slug}
-              className="shrink-0"
-              variants={{
-                hidden: { opacity: 0, y: 20 },
-                visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
-              }}
-            >
-              <Link
-                to={`/destinations/${d.slug}`}
-                className="group relative block w-[140px] sm:w-[160px] md:w-[180px] snap-start rounded-xl overflow-hidden border border-border/60 hover:border-gold/60 aspect-[3/4] bg-card transition-all duration-500 hover:-translate-y-1 hover:shadow-gold"
+          {list.map((d) => {
+            const s = stats[d.slug];
+            const count = s?.count ?? 0;
+            const displayCount = count > 0 ? `${count}+ Packages` : "On request";
+            const priceLabel = s?.min ? `From ${formatINR(s.min)}` : "On request";
+            return (
+              <motion.div
+                key={d.slug}
+                className="shrink-0 snap-start"
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
+                }}
               >
-              <img
-                src={covers[d.slug] ?? d.image}
-                alt={d.name}
-                loading="lazy"
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/25 to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 p-2.5">
-                <h3 className="font-serif text-sm md:text-base text-white leading-tight text-center font-semibold [text-shadow:_0_1px_4px_rgb(0_0_0_/_0.6)]">
-                  {d.name}
-                </h3>
-              </div>
-              </Link>
-            </motion.div>
-          ))}
+                <Link
+                  to={`/destinations/${d.slug}`}
+                  className="group block w-[160px] sm:w-[200px] md:w-[230px] text-left"
+                >
+                  <div className="relative aspect-square w-full rounded-full overflow-hidden bg-card ring-1 ring-border/60 group-hover:ring-gold/60 transition-all duration-500 group-hover:-translate-y-1 group-hover:shadow-gold">
+                    <img
+                      src={covers[d.slug] ?? d.image}
+                      alt={d.name}
+                      loading="lazy"
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                  </div>
+                  <div className="mt-3 md:mt-4 px-1">
+                    <h3 className="font-serif text-base sm:text-lg md:text-xl text-foreground leading-tight truncate">
+                      {d.name}
+                    </h3>
+                    <p className="mt-1 text-xs md:text-sm text-muted-foreground">{displayCount}</p>
+                    <p className="mt-1 text-sm md:text-base font-semibold text-emerald-600 dark:text-emerald-400">
+                      {priceLabel}
+                    </p>
+                  </div>
+                </Link>
+              </motion.div>
+            );
+          })}
         </motion.div>
       </div>
     </section>
