@@ -240,6 +240,7 @@ const DestinationGroup = ({
               }}
               className="w-full h-full object-cover transition-all duration-[1200ms] ease-out group-hover:scale-110 group-hover:brightness-110"
             />
+            <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/40 to-transparent" />
             <span className={`absolute top-3 left-3 inline-flex items-center gap-1 px-2.5 py-1 text-[9px] uppercase tracking-luxe rounded-full backdrop-blur-sm ${styles.bgSoft} ${styles.text}`}>
               <Icon className="w-2.5 h-2.5" />
               {eyebrow}
@@ -248,10 +249,7 @@ const DestinationGroup = ({
               <h3 className="font-serif text-xl md:text-2xl font-bold text-white leading-tight [text-shadow:_0_2px_8px_rgb(0_0_0_/_0.6)]">
                 {d.name}
               </h3>
-              <p className="text-[11px] tracking-wide text-white/85 mt-1.5 font-light line-clamp-1 [text-shadow:_0_1px_4px_rgb(0_0_0_/_0.5)]">
-                {d.tagline}
-              </p>
-              <span className={`mt-3 inline-flex items-center gap-1.5 text-[10px] uppercase tracking-luxe text-gold opacity-90 sm:opacity-0 sm:group-hover:opacity-100 translate-y-0 sm:translate-y-1 sm:group-hover:translate-y-0 transition-all duration-500`}>
+              <span className={`mt-3 inline-flex items-center gap-1.5 text-[10px] uppercase tracking-luxe text-gold transition-all duration-500`}>
                 Explore <ArrowUpRight className="w-3 h-3" />
               </span>
             </div>
