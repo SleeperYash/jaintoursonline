@@ -143,6 +143,12 @@ const ManageDestinationDialog = ({
     }
   }, [open, authed, fetchItineraries, fetchHiddenDefaults]);
 
+  useEffect(() => {
+    if (open && authed) {
+      fetchHiddenDefaults();
+    }
+  }, [destinationSlug, open, authed, fetchHiddenDefaults]);
+
   const handleSubmitReview = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!revName.trim() || !revText.trim()) {
