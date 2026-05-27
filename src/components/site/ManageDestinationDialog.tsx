@@ -128,9 +128,20 @@ const ManageDestinationDialog = ({
     setItineraries(data ?? []);
   }, [destinationSlug]);
 
+  const fetchHiddenDefaults = useCallback(async () => {
+    const { data } = await supabase
+      .from("hidden_defaults")
+      .select("image_url")
+      .eq("destination_slug", destinationSlug);
+    setHiddenDefaults((data ?? []).map((d) => d.image_url));
+  }, [destinationSlug]);
+
   useEffect(() => {
-    if (open && authed) fetchItineraries();
-  }, [open, authed, fetchItineraries]);
+    if (open && authed) {
+      fetchItineraries();
+      fetchHiddenDefaults();
+    }
+  }, [open, authed, fetchItineraries, fetchHiddenDefaults]);
 
   const handleSubmitReview = async (e: React.FormEvent) => {
     e.preventDefault();
