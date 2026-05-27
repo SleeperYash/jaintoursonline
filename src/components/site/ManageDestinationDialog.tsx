@@ -87,6 +87,8 @@ const ManageDestinationDialog = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const replaceInputRef = useRef<HTMLInputElement>(null);
   const [replaceTarget, setReplaceTarget] = useState<DestinationImage | null>(null);
+  const [hiddenDefaults, setHiddenDefaults] = useState<string[]>([]);
+  const [showHidden, setShowHidden] = useState(false);
 
   // Itineraries
   const [itineraries, setItineraries] = useState<Itinerary[]>([]);
