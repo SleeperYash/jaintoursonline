@@ -300,6 +300,33 @@ const ManageDestinationDialog = ({
     }
   };
 
+  const handleHideDefault = async (url: string) => {
+    if (!confirm("Hide this default image from the destination page?")) return;
+    setBusy(true);
+    try {
+      await callAdmin("hide_default", { destination_slug: destinationSlug, image_url: url });
+      await fetchHiddenDefaults();
+      toast({ title: "Hidden" });
+    } catch (err) {
+      toast({ title: "Failed", description: (err as Error).message, variant: "destructive" });
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const handleUnhideDefault = async (url: string) => {
+    setBusy(true);
+    try {
+      await callAdmin("unhide_default", { destination_slug: destinationSlug, image_url: url });
+      await fetchHiddenDefaults();
+      toast({ title: "Restored" });
+    } catch (err) {
+      toast({ title: "Failed", description: (err as Error).message, variant: "destructive" });
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const triggerReplace = (img: DestinationImage) => {
     setReplaceTarget(img);
     replaceInputRef.current?.click();
