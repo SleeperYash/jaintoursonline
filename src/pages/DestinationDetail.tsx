@@ -1,5 +1,6 @@
 import { useParams, Navigate, Link } from "react-router-dom";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import SiteLayout from "@/components/site/SiteLayout";
 import ItineraryViewer from "@/components/site/ItineraryViewer";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
