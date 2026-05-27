@@ -87,6 +87,8 @@ const ManageDestinationDialog = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const replaceInputRef = useRef<HTMLInputElement>(null);
   const [replaceTarget, setReplaceTarget] = useState<DestinationImage | null>(null);
+  const [hiddenDefaults, setHiddenDefaults] = useState<string[]>([]);
+  const [showHidden, setShowHidden] = useState(false);
 
   // Itineraries
   const [itineraries, setItineraries] = useState<Itinerary[]>([]);
@@ -126,9 +128,26 @@ const ManageDestinationDialog = ({
     setItineraries(data ?? []);
   }, [destinationSlug]);
 
+  const fetchHiddenDefaults = useCallback(async () => {
+    const { data } = await supabase
+      .from("hidden_defaults")
+      .select("image_url")
+      .eq("destination_slug", destinationSlug);
+    setHiddenDefaults((data ?? []).map((d) => d.image_url));
+  }, [destinationSlug]);
+
   useEffect(() => {
-    if (open && authed) fetchItineraries();
-  }, [open, authed, fetchItineraries]);
+    if (open && authed) {
+      fetchItineraries();
+      fetchHiddenDefaults();
+    }
+  }, [open, authed, fetchItineraries, fetchHiddenDefaults]);
+
+  useEffect(() => {
+    if (open && authed) {
+      fetchHiddenDefaults();
+    }
+  }, [destinationSlug, open, authed, fetchHiddenDefaults]);
 
   const handleSubmitReview = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -280,6 +299,33 @@ const ManageDestinationDialog = ({
       await callAdmin("image_delete", { id: img.id });
       await refetchImages();
       toast({ title: "Removed" });
+    } catch (err) {
+      toast({ title: "Failed", description: (err as Error).message, variant: "destructive" });
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const handleHideDefault = async (url: string) => {
+    if (!confirm("Hide this default image from the destination page?")) return;
+    setBusy(true);
+    try {
+      await callAdmin("hide_default", { destination_slug: destinationSlug, image_url: url });
+      await fetchHiddenDefaults();
+      toast({ title: "Hidden" });
+    } catch (err) {
+      toast({ title: "Failed", description: (err as Error).message, variant: "destructive" });
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const handleUnhideDefault = async (url: string) => {
+    setBusy(true);
+    try {
+      await callAdmin("unhide_default", { destination_slug: destinationSlug, image_url: url });
+      await fetchHiddenDefaults();
+      toast({ title: "Restored" });
     } catch (err) {
       toast({ title: "Failed", description: (err as Error).message, variant: "destructive" });
     } finally {
@@ -614,7 +660,9 @@ const ManageDestinationDialog = ({
 
                   {(() => {
                     const dest = ALL_DESTINATIONS.find((x) => x.slug === destinationSlug);
-                    const defaults = dest ? [dest.image, ...(dest.gallery ?? [])].filter(Boolean) : [];
+                    const allDefaults = dest ? [dest.image, ...(dest.gallery ?? [])].filter(Boolean) : [];
+                    const defaults = allDefaults.filter((u) => !hiddenDefaults.includes(u));
+                    const hidden = allDefaults.filter((u) => hiddenDefaults.includes(u));
                     const hasDbCover = images.some((i) => i.is_cover);
                     const primaryDefaultIsCover = !hasDbCover;
 
@@ -650,106 +698,158 @@ const ManageDestinationDialog = ({
                     };
 
                     return (
-                      <ul className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                        {defaults.map((url, idx) => {
-                          const isPrimary = idx === 0;
-                          const isCover = isPrimary && primaryDefaultIsCover;
-                          return (
-                            <li
-                              key={`def-${idx}`}
-                              className={cn(
-                                "relative group border border-border/60 rounded-md overflow-hidden bg-background",
-                                isCover && "ring-2 ring-gold",
-                              )}
-                            >
-                              <div className="aspect-[4/5] relative">
-                                <img src={url} alt="" className="w-full h-full object-cover" />
-                                {isCover && (
-                                  <span className="absolute top-2 left-2 bg-gold text-primary-foreground text-[10px] uppercase tracking-luxe px-2 py-1 rounded inline-flex items-center gap-1">
-                                    <Star className="w-3 h-3" /> Cover
-                                  </span>
+                      <div className="space-y-6">
+                        <ul className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                          {defaults.map((url, idx) => {
+                            const isPrimary = idx === 0 && url === dest?.image;
+                            const isCover = isPrimary && primaryDefaultIsCover;
+                            return (
+                              <li
+                                key={`def-${idx}`}
+                                className={cn(
+                                  "relative group border border-border/60 rounded-md overflow-hidden bg-background",
+                                  isCover && "ring-2 ring-gold",
                                 )}
-                                <span className="absolute top-2 right-2 bg-ink/70 text-foreground text-[10px] uppercase tracking-luxe px-2 py-1 rounded">
-                                  AI {idx + 1}
-                                </span>
-                              </div>
-                              <div className="p-2 flex flex-wrap gap-1 bg-card">
-                                <button
-                                  type="button"
-                                  disabled={busy || isCover}
-                                  onClick={() => handleUseDefaultCover(url, isPrimary)}
-                                  className="flex-1 min-w-0 text-[10px] uppercase tracking-luxe px-2 py-1.5 border border-gold/60 text-gold hover:bg-gold/10 transition disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center justify-center gap-1"
-                                  title={isPrimary ? "Use the default image as cover" : "Import this AI photo and set as cover"}
-                                >
-                                  <Star className="w-3 h-3" /> {isPrimary ? "Cover" : "Use as cover"}
-                                </button>
-                              </div>
-                            </li>
-                          );
-                        })}
-                        {images.map((img) => (
-                        <li
-                          key={img.id}
-                          draggable
-                          onDragStart={() => onItemDragStart(img.id)}
-                          onDragOver={onItemDragOver}
-                          onDrop={() => onItemDrop(img.id)}
-                          className={cn(
-                            "relative group border border-border/60 rounded-md overflow-hidden bg-background",
-                            dragId === img.id && "opacity-50",
-                            img.is_cover && "ring-2 ring-gold",
-                          )}
-                        >
-                          <div className="aspect-[4/5] relative">
-                            <img
-                              src={adminPublicUrl(img.file_path)}
-                              alt=""
-                              className="w-full h-full object-cover"
-                            />
-                            {img.is_cover && (
-                              <span className="absolute top-2 left-2 bg-gold text-primary-foreground text-[10px] uppercase tracking-luxe px-2 py-1 rounded inline-flex items-center gap-1">
-                                <Star className="w-3 h-3" /> Cover
-                              </span>
+                              >
+                                <div className="aspect-[4/5] relative">
+                                  <img src={url} alt="" className="w-full h-full object-cover" />
+                                  {isCover && (
+                                    <span className="absolute top-2 left-2 bg-gold text-primary-foreground text-[10px] uppercase tracking-luxe px-2 py-1 rounded inline-flex items-center gap-1">
+                                      <Star className="w-3 h-3" /> Cover
+                                    </span>
+                                  )}
+                                  <span className="absolute top-2 right-2 bg-ink/70 text-foreground text-[10px] uppercase tracking-luxe px-2 py-1 rounded">
+                                    AI {idx + 1}
+                                  </span>
+                                </div>
+                                <div className="p-2 flex flex-wrap gap-1 bg-card">
+                                  <button
+                                    type="button"
+                                    disabled={busy || isCover}
+                                    onClick={() => handleUseDefaultCover(url, isPrimary)}
+                                    className="flex-1 min-w-0 text-[10px] uppercase tracking-luxe px-2 py-1.5 border border-gold/60 text-gold hover:bg-gold/10 transition disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center justify-center gap-1"
+                                    title={isPrimary ? "Use the default image as cover" : "Import this AI photo and set as cover"}
+                                  >
+                                    <Star className="w-3 h-3" /> {isPrimary ? "Cover" : "Use as cover"}
+                                  </button>
+                                  <button
+                                    type="button"
+                                    disabled={busy}
+                                    onClick={() => handleHideDefault(url)}
+                                    className="flex-1 min-w-0 text-[10px] uppercase tracking-luxe px-2 py-1.5 border border-destructive/60 text-destructive hover:bg-destructive/10 transition inline-flex items-center justify-center gap-1"
+                                    title="Remove from display"
+                                  >
+                                    <Trash2 className="w-3 h-3" /> Remove
+                                  </button>
+                                </div>
+                              </li>
+                            );
+                          })}
+                          {images.map((img) => (
+                          <li
+                            key={img.id}
+                            draggable
+                            onDragStart={() => onItemDragStart(img.id)}
+                            onDragOver={onItemDragOver}
+                            onDrop={() => onItemDrop(img.id)}
+                            className={cn(
+                              "relative group border border-border/60 rounded-md overflow-hidden bg-background",
+                              dragId === img.id && "opacity-50",
+                              img.is_cover && "ring-2 ring-gold",
                             )}
-                            <span
-                              className="absolute top-2 right-2 bg-ink/70 text-foreground p-1.5 rounded cursor-grab"
-                              title="Drag to reorder"
+                          >
+                            <div className="aspect-[4/5] relative">
+                              <img
+                                src={adminPublicUrl(img.file_path)}
+                                alt=""
+                                className="w-full h-full object-cover"
+                              />
+                              {img.is_cover && (
+                                <span className="absolute top-2 left-2 bg-gold text-primary-foreground text-[10px] uppercase tracking-luxe px-2 py-1 rounded inline-flex items-center gap-1">
+                                  <Star className="w-3 h-3" /> Cover
+                                </span>
+                              )}
+                              <span
+                                className="absolute top-2 right-2 bg-ink/70 text-foreground p-1.5 rounded cursor-grab"
+                                title="Drag to reorder"
+                              >
+                                <GripVertical className="w-3 h-3" />
+                              </span>
+                            </div>
+                            <div className="p-2 flex flex-wrap gap-1 bg-card">
+                              <button
+                                type="button"
+                                disabled={busy || img.is_cover}
+                                onClick={() => handleSetCover(img)}
+                                className="flex-1 min-w-0 text-[10px] uppercase tracking-luxe px-2 py-1.5 border border-gold/60 text-gold hover:bg-gold/10 transition disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center justify-center gap-1"
+                                title="Set as cover image"
+                              >
+                                <Star className="w-3 h-3" /> Cover
+                              </button>
+                              <button
+                                type="button"
+                                disabled={busy}
+                                onClick={() => triggerReplace(img)}
+                                className="flex-1 min-w-0 text-[10px] uppercase tracking-luxe px-2 py-1.5 border border-border/60 text-foreground/80 hover:border-gold hover:text-gold transition inline-flex items-center justify-center gap-1"
+                                title="Replace"
+                              >
+                                <Replace className="w-3 h-3" />
+                              </button>
+                              <button
+                                type="button"
+                                disabled={busy}
+                                onClick={() => handleDeleteImg(img)}
+                                className="flex-1 min-w-0 text-[10px] uppercase tracking-luxe px-2 py-1.5 border border-destructive/60 text-destructive hover:bg-destructive/10 transition inline-flex items-center justify-center gap-1"
+                                title="Remove"
+                              >
+                                <Trash2 className="w-3 h-3" />
+                              </button>
+                            </div>
+                          </li>
+                          ))}
+                        </ul>
+
+                        {hidden.length > 0 && (
+                          <div className="border border-border/60 rounded-md p-3">
+                            <button
+                              type="button"
+                              onClick={() => setShowHidden((s) => !s)}
+                              className="flex items-center justify-between w-full text-xs uppercase tracking-luxe text-muted-foreground hover:text-foreground transition"
                             >
-                              <GripVertical className="w-3 h-3" />
-                            </span>
+                              <span>Hidden defaults ({hidden.length})</span>
+                              <span className="text-[10px]">{showHidden ? "Collapse" : "Expand"}</span>
+                            </button>
+                            {showHidden && (
+                              <ul className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-3">
+                                {hidden.map((url, idx) => (
+                                  <li
+                                    key={`hidden-${idx}`}
+                                    className="relative group border border-border/60 rounded-md overflow-hidden bg-background opacity-60"
+                                  >
+                                    <div className="aspect-[4/5] relative">
+                                      <img src={url} alt="" className="w-full h-full object-cover" />
+                                      <span className="absolute top-2 right-2 bg-ink/70 text-foreground text-[10px] uppercase tracking-luxe px-2 py-1 rounded">
+                                        Hidden
+                                      </span>
+                                    </div>
+                                    <div className="p-2 flex flex-wrap gap-1 bg-card">
+                                      <button
+                                        type="button"
+                                        disabled={busy}
+                                        onClick={() => handleUnhideDefault(url)}
+                                        className="flex-1 min-w-0 text-[10px] uppercase tracking-luxe px-2 py-1.5 border border-gold/60 text-gold hover:bg-gold/10 transition inline-flex items-center justify-center gap-1"
+                                        title="Restore to display"
+                                      >
+                                        <Star className="w-3 h-3" /> Restore
+                                      </button>
+                                    </div>
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
                           </div>
-                          <div className="p-2 flex flex-wrap gap-1 bg-card">
-                            <button
-                              type="button"
-                              disabled={busy || img.is_cover}
-                              onClick={() => handleSetCover(img)}
-                              className="flex-1 min-w-0 text-[10px] uppercase tracking-luxe px-2 py-1.5 border border-gold/60 text-gold hover:bg-gold/10 transition disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center justify-center gap-1"
-                              title="Set as cover image"
-                            >
-                              <Star className="w-3 h-3" /> Cover
-                            </button>
-                            <button
-                              type="button"
-                              disabled={busy}
-                              onClick={() => triggerReplace(img)}
-                              className="flex-1 min-w-0 text-[10px] uppercase tracking-luxe px-2 py-1.5 border border-border/60 text-foreground/80 hover:border-gold hover:text-gold transition inline-flex items-center justify-center gap-1"
-                              title="Replace"
-                            >
-                              <Replace className="w-3 h-3" />
-                            </button>
-                            <button
-                              type="button"
-                              disabled={busy}
-                              onClick={() => handleDeleteImg(img)}
-                              className="flex-1 min-w-0 text-[10px] uppercase tracking-luxe px-2 py-1.5 border border-destructive/60 text-destructive hover:bg-destructive/10 transition inline-flex items-center justify-center gap-1"
-                              title="Remove"
-                            >
-                              <Trash2 className="w-3 h-3" />
-                            </button>
-                          </div>
-                        </li>
-                        ))}
-                      </ul>
+                        )}
+                      </div>
                     );
                   })()}
                 </div>
