@@ -242,6 +242,27 @@ export type Database = {
         }
         Relationships: []
       }
+      hidden_defaults: {
+        Row: {
+          created_at: string
+          destination_slug: string
+          id: string
+          image_url: string
+        }
+        Insert: {
+          created_at?: string
+          destination_slug: string
+          id?: string
+          image_url: string
+        }
+        Update: {
+          created_at?: string
+          destination_slug?: string
+          id?: string
+          image_url?: string
+        }
+        Relationships: []
+      }
       itineraries: {
         Row: {
           created_at: string
