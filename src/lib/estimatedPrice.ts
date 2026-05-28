@@ -6,20 +6,21 @@ type Region = "Domestic" | "International";
 
 // Manual overrides for marquee destinations (premium curated baselines).
 const OVERRIDES: Record<string, number> = {
-  andaman: 18999,
-  "tamil-nadu": 12499,
-  goa: 9999,
-  kashmir: 24999,
-  kerala: 16999,
-  rajasthan: 14999,
-  himachal: 13999,
-  "leh-ladakh": 28999,
-  uttarakhand: 12999,
-  "char-dham": 17999,
-  "north-east": 22999,
-  "madhya-pradesh": 14499,
-  gujarat: 11999,
-  delhi: 8999,
+  andaman: 15999,
+  "tamil-nadu": 8999,
+  goa: 6999,
+  kashmir: 13999,
+  kerala: 10999,
+  rajasthan: 9499,
+  himachal: 7999,
+  "himachal-pradesh": 7999,
+  "leh-ladakh": 17999,
+  uttarakhand: 8499,
+  "char-dham": 12999,
+  "north-east": 13999,
+  "madhya-pradesh": 8999,
+  gujarat: 7499,
+  delhi: 5999,
 
   thailand: 32999,
   dubai: 44999,
@@ -60,7 +61,7 @@ export const generateEstimatedPrice = (
     return OVERRIDES[slug];
   }
   const [min, max] =
-    region === "International" ? [28999, 125999] : [8999, 35999];
+    region === "International" ? [28999, 125999] : [5999, 17999];
   const span = max - min;
   const raw = min + (hash(slug) % span);
   // Round to nearest 500 then end with 999 for premium feel.
