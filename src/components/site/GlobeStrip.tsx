@@ -19,7 +19,7 @@ const GlobeStrip = () => {
       <div className="absolute inset-x-0 bottom-0 p-5">
         <p className="text-[10px] tracking-luxe uppercase text-gold mb-1">{d.region}</p>
         <h3 className="font-serif text-2xl text-foreground">{d.name}</h3>
-        <span className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 border border-gold/60 text-[10px] uppercase tracking-luxe text-sky-300 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-500">
+        <span className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 border border-gold/60 text-[10px] uppercase tracking-luxe text-sky-600 dark:text-sky-300 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-500">
           Discover <ArrowUpRight className="w-3 h-3" />
         </span>
       </div>
