@@ -6,6 +6,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { findDestination } from "@/data/destinations";
 import { useSeo } from "@/hooks/useSeo";
 import { useDestinationImages } from "@/hooks/useDestinationImages";
+import { useHiddenDefaultImages } from "@/hooks/useHiddenDefaultImages";
 import { adminPublicUrl } from "@/hooks/useAdminAuth";
 import { Camera, ChevronLeft, ChevronRight, X } from "lucide-react";
 
@@ -16,19 +17,31 @@ const DUMMY_PRICE = 89999;
 const DestinationDetail = () => {
   const { slug = "" } = useParams();
   const d = findDestination(slug);
-  const { images, coverUrl } = useDestinationImages(slug);
+  const { images, loading: uploadedLoading } = useDestinationImages(slug);
+  const { hidden, loading: hiddenLoading } = useHiddenDefaultImages(slug);
+  const imagesReady = !uploadedLoading && !hiddenLoading;
 
-  // Build photo list: ONLY admin-uploaded images. Default/AI gallery photos
-  // are never used as filler — if nothing is uploaded we just show the hero.
+  // Build photo list once images + hidden filter have both resolved.
+  // Never render an AI/default image that the admin has removed.
   const photos = useMemo(() => {
-    if (images.length > 0) return images.map((i) => adminPublicUrl(i.file_path));
-    if (!d) return [];
-    return [d.image];
-  }, [images, d]);
+    if (!imagesReady || !d) return [];
+    const list: string[] = [];
+    images.forEach((i) => {
+      const url = adminPublicUrl(i.file_path);
+      if (url && !list.includes(url)) list.push(url);
+    });
+    if (list.length === 0) {
+      if (d.image && !hidden.has(d.image)) list.push(d.image);
+      (d.gallery ?? []).forEach((url) => {
+        if (url && !hidden.has(url) && !list.includes(url)) list.push(url);
+      });
+    }
+    return list;
+  }, [imagesReady, images, hidden, d]);
 
-  const heroPhoto = coverUrl ?? d?.image ?? PLACEHOLDER;
-  const sidePhoto1 = photos[1] ?? photos[0] ?? PLACEHOLDER;
-  const sidePhoto2 = photos[2] ?? photos[1] ?? photos[0] ?? PLACEHOLDER;
+  const heroPhoto = photos[0];
+  const sidePhoto1 = photos[1] ?? photos[0];
+  const sidePhoto2 = photos[2] ?? photos[1] ?? photos[0];
 
   const [lightbox, setLightbox] = useState<number | null>(null);
 
@@ -36,7 +49,7 @@ const DestinationDetail = () => {
     title: d ? `${d.name} Tour Package — Jain Tours & Travels` : "Destination | Jain Tours",
     description: d?.overview ?? "Curated destination by Jain Tours & Travels.",
     canonicalPath: `/destinations/${slug}`,
-    ogImage: heroPhoto !== PLACEHOLDER ? heroPhoto : undefined,
+    ogImage: heroPhoto,
   });
 
   if (!d) return <Navigate to="/destinations" replace />;
@@ -60,14 +73,26 @@ const DestinationDetail = () => {
             onClick={() => setLightbox(0)}
             className="relative col-span-2 group overflow-hidden bg-card aspect-[4/5] md:aspect-auto md:h-[480px]"
           >
-            <img src={heroPhoto} alt={d.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+            {heroPhoto ? (
+              <img src={heroPhoto} alt={d.name} loading="eager" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+            ) : (
+              <div className="w-full h-full bg-muted animate-pulse" />
+            )}
           </button>
           <div className="grid grid-rows-2 gap-1.5 md:gap-3 aspect-[1/2] md:aspect-auto md:h-[480px]">
             <button onClick={() => setLightbox(1)} className="relative group overflow-hidden bg-card">
-              <img src={sidePhoto1} alt={`${d.name} 2`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              {sidePhoto1 ? (
+                <img src={sidePhoto1} alt={`${d.name} 2`} loading="eager" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              ) : (
+                <div className="w-full h-full bg-muted animate-pulse" />
+              )}
             </button>
             <button onClick={() => setLightbox(2)} className="relative group overflow-hidden bg-card">
-              <img src={sidePhoto2} alt={`${d.name} 3`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              {sidePhoto2 ? (
+                <img src={sidePhoto2} alt={`${d.name} 3`} loading="eager" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              ) : (
+                <div className="w-full h-full bg-muted animate-pulse" />
+              )}
               {photos.length > 3 && (
                 <>
                   <span className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/60 to-ink/30" aria-hidden />
