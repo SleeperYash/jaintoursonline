@@ -67,11 +67,11 @@ const HowItWorks = () => {
             />
           </svg>
 
-          <ol className="grid md:grid-cols-4 gap-8 md:gap-6 relative">
+          <ol className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-9 md:gap-6 relative">
             {steps.map(({ n, icon: Icon, title, desc }, i) => (
               <li
                 key={n}
-                className="group text-center"
+                className="group text-center min-w-0"
                 style={{
                   opacity: active ? 1 : 0,
                   transform: active ? "translateY(0)" : "translateY(24px)",
@@ -79,14 +79,14 @@ const HowItWorks = () => {
                   transitionDelay: `${i * 180 + 200}ms`,
                 }}
               >
-                <div className="relative mx-auto w-16 h-16 rounded-full border-2 border-gold/60 bg-background transition-all duration-500 group-hover:border-gold group-hover:-translate-y-1 group-hover:shadow-gold flex items-center justify-center">
-                  <Icon className="w-5 h-5 text-gold" strokeWidth={1.25} />
-                  <span className="absolute -top-1.5 -right-1 px-2 py-0.5 rounded-full bg-gold text-primary-foreground text-[9px] font-semibold tracking-wide">
+                <div className="relative mx-auto w-14 h-14 md:w-16 md:h-16 rounded-full border-2 border-gold/60 bg-background transition-all duration-500 group-hover:border-gold group-hover:-translate-y-1 group-hover:shadow-gold flex items-center justify-center">
+                  <Icon className="w-4.5 h-4.5 md:w-5 md:h-5 text-gold" strokeWidth={1.25} />
+                  <span className="absolute -top-1.5 -right-1 px-1.5 md:px-2 py-0.5 rounded-full bg-gold text-primary-foreground text-[8px] md:text-[9px] font-semibold tracking-wide">
                     {n}
                   </span>
                 </div>
-                <h3 className="font-serif text-lg text-foreground mt-4 text-black font-normal">{title}</h3>
-                <p className="mt-2 text-xs text-muted-foreground leading-relaxed max-w-[220px] mx-auto text-black font-normal">
+                <h3 className="font-serif text-base md:text-lg text-foreground mt-3 md:mt-4 font-normal leading-snug">{title}</h3>
+                <p className="mt-2 text-[11px] md:text-xs text-muted-foreground leading-relaxed max-w-[160px] md:max-w-[220px] mx-auto font-normal break-words">
                   {desc}
                 </p>
               </li>
