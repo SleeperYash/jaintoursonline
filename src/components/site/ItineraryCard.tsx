@@ -82,11 +82,11 @@ const ItineraryCard = ({
           <img
             src={image}
             alt={cleanTitle}
-            loading="lazy"
+            loading="eager"
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-muted to-card" />
+          <div className="w-full h-full bg-muted animate-pulse" />
         )}
         <div className={`absolute bottom-0 left-0 right-0 h-[3px] ${accent.bar}`} />
       </div>
