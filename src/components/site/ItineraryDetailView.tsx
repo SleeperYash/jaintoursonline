@@ -629,6 +629,7 @@ const ItineraryDetailView = ({
                         destinationSlug={destinationSlug}
                         locationLabel={locationLabel}
                         index={i}
+                        initialPrice={it.starting_price ?? undefined}
                       />
                     </div>
                   ))}
