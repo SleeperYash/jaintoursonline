@@ -37,12 +37,4 @@ export const serviceGroups = [
       { icon: Building2, name: "Holiday Visa Packages", desc: "Bundled holiday + visa for stress-free planning." },
     ],
   },
-  {
-    title: "Ground & Support",
-    items: [
-      { icon: Car, name: "Car Rental", desc: "Self-drive and chauffeured cars across India and overseas." },
-      { icon: Bus, name: "Bus Booking & Routes", desc: "Inter-city and tourist bus reservations." },
-      { icon: Headphones, name: "24×7 Support", desc: "We pick up — day or night, wherever you are." },
-    ],
-  },
 ] as const;
