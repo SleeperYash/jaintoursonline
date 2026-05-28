@@ -336,40 +336,6 @@ Deno.serve(async (req) => {
       return json({ ok: true });
     }
 
-    if (action === "hide_default") {
-      const { destination_slug, image_url } = body ?? {};
-      if (!destination_slug || !image_url) {
-        return json({ error: "Missing fields" }, 400);
-      }
-      const { error: insErr } = await supabase
-        .from("hidden_defaults")
-        .insert({ destination_slug: String(destination_slug), image_url: String(image_url) })
-        .select()
-        .single();
-      if (insErr) {
-        // likely duplicate; treat as success
-        if (insErr.message?.includes("duplicate") || insErr.code === "23505") {
-          return json({ ok: true });
-        }
-        return json({ error: insErr.message }, 500);
-      }
-      return json({ ok: true });
-    }
-
-    if (action === "unhide_default") {
-      const { destination_slug, image_url } = body ?? {};
-      if (!destination_slug || !image_url) {
-        return json({ error: "Missing fields" }, 400);
-      }
-      const { error: delErr } = await supabase
-        .from("hidden_defaults")
-        .delete()
-        .eq("destination_slug", String(destination_slug))
-        .eq("image_url", String(image_url));
-      if (delErr) return json({ error: delErr.message }, 500);
-      return json({ ok: true });
-    }
-
     // ---------- CLIENT REVIEWS ----------
     if (action === "review_create") {
       const { name, destination, text, rating, date_label, file_base64, file_name, content_type } = body ?? {};
