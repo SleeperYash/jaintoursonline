@@ -169,7 +169,7 @@ const GlobeHero = () => {
 
         {/* Scroll cue */}
         <div className="mt-12 flex flex-col items-center gap-2 text-foreground/50">
-          <span className="text-[10px] tracking-luxe uppercase">Scroll to wander</span>
+          <span className="text-[10px] tracking-luxe uppercase text-slate-950">Scroll to wander</span>
           <ChevronDown className="w-4 h-4 animate-bounce-slow text-gold" />
         </div>
       </div>

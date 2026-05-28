@@ -51,7 +51,7 @@ const PremiumLoader = () => {
         </div>
         <div className="text-center">
           <p className="font-serif text-2xl text-foreground tracking-wide">
-            Jain <span className="text-gold italic font-bold text-sky-500">Tours & Travels</span>
+            Jain <span className="text-gold italic font-bold text-sky-400">Tours & Travels</span>
           </p>
           <p className="text-[10px] tracking-luxe uppercase text-muted-foreground mt-2">
             Crafting your journey…
