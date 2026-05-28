@@ -37,14 +37,14 @@ const whatWeDoImgs = [
 ];
 
 const believeImgs = [
-  "aa4e5476-e9d2-47a0-8445-80df99ab54f2.png",
-  "7365d92f-6c6c-44ef-90fa-d91dedb959a9.png",
-  "ff962a96-0847-42d3-8a4b-7d8d32c4610e.png",
-  "31a1d099-6b75-42d1-b894-7407797ded35.png",
-  "c08e4d7f-1e4b-4590-8511-f04c7421bbb3.png",
-  "bc7d7cd2-a04a-4810-8816-ec8e1bc949c7.png",
-  "1663c1ae-177d-4123-87b1-2863fcd1db84.png",
-  "59edf52e-ccef-4ff3-802a-07c94f68f090.png",
+  "https://tddtcsdbqrlabbqqotqd.supabase.co/storage/v1/object/public/itineraries/gallery/miracle-garden.png",
+  "https://tddtcsdbqrlabbqqotqd.supabase.co/storage/v1/object/public/itineraries/gallery/desert-safari.png",
+  "https://tddtcsdbqrlabbqqotqd.supabase.co/storage/v1/object/public/itineraries/gallery/colosseum.png",
+  "https://tddtcsdbqrlabbqqotqd.supabase.co/storage/v1/object/public/itineraries/gallery/bangkok-night.png",
+  "https://tddtcsdbqrlabbqqotqd.supabase.co/storage/v1/object/public/itineraries/gallery/balloon-photo.png",
+  "https://tddtcsdbqrlabbqqotqd.supabase.co/storage/v1/object/public/itineraries/gallery/group-hotel.png",
+  "https://tddtcsdbqrlabbqqotqd.supabase.co/storage/v1/object/public/itineraries/gallery/global-village.png",
+  "https://tddtcsdbqrlabbqqotqd.supabase.co/storage/v1/object/public/itineraries/gallery/team-event.png",
 ];
 
 const SectionHeading = ({ children }: { children: React.ReactNode }) => (
