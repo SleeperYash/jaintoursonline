@@ -382,10 +382,12 @@ const ManageDestinationDialog = ({
         file_size: itinFile.size,
         content_type: itinFile.type,
         file_base64,
+        starting_price: itinPrice.trim() || null,
       });
       toast({ title: "Uploaded", description: itinTitle });
       setItinTitle("");
       setItinFile(null);
+      setItinPrice("");
       const input = document.getElementById("manage-pdf-input") as HTMLInputElement | null;
       if (input) input.value = "";
       fetchItineraries();
@@ -404,6 +406,25 @@ const ManageDestinationDialog = ({
       fetchItineraries();
     } catch (err) {
       toast({ title: "Delete failed", description: (err as Error).message, variant: "destructive" });
+    }
+  };
+
+  const handleSavePrice = async (it: Itinerary) => {
+    const value = (priceDrafts[it.id] ?? it.starting_price ?? "").trim();
+    setSavingPriceId(it.id);
+    try {
+      await callAdmin("update_price", { id: it.id, starting_price: value || null });
+      toast({ title: "Price updated", description: it.title });
+      setPriceDrafts((p) => {
+        const next = { ...p };
+        delete next[it.id];
+        return next;
+      });
+      fetchItineraries();
+    } catch (err) {
+      toast({ title: "Update failed", description: (err as Error).message, variant: "destructive" });
+    } finally {
+      setSavingPriceId(null);
     }
   };
 
