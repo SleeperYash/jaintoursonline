@@ -2,7 +2,7 @@
 export const BRAND = {
   name: "Jain Tours & Travels",
   shortName: "Jain Tours",
-  phone: "+91 98212 35678",
+  phone: "​",
   phoneDigits: "919821235678", // for tel: and wa.me
   phoneDisplay: "​",
   whatsappMessage: "Hello Jain Tours, I'd like to plan a journey.",
