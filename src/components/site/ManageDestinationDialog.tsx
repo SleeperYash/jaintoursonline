@@ -702,10 +702,19 @@ const ManageDestinationDialog = ({
                                     type="button"
                                     disabled={busy || isCover}
                                     onClick={() => handleUseDefaultCover(url, isPrimary)}
-                                    className="w-full text-[10px] uppercase tracking-luxe px-2 py-1.5 border border-gold/60 text-gold hover:bg-gold/10 transition disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center justify-center gap-1"
+                                    className="flex-1 min-w-0 text-[10px] uppercase tracking-luxe px-2 py-1.5 border border-gold/60 text-gold hover:bg-gold/10 transition disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center justify-center gap-1"
                                     title={isPrimary ? "Use the default image as cover" : "Import this AI photo and set as cover"}
                                   >
                                     <Star className="w-3 h-3" /> {isPrimary ? "Cover" : "Use as cover"}
+                                  </button>
+                                  <button
+                                    type="button"
+                                    disabled={busy}
+                                    onClick={() => handleHideDefault(url)}
+                                    className="flex-1 min-w-0 text-[10px] uppercase tracking-luxe px-2 py-1.5 border border-destructive/60 text-destructive hover:bg-destructive/10 transition inline-flex items-center justify-center gap-1 disabled:opacity-40 disabled:cursor-not-allowed"
+                                    title="Remove this image from this destination"
+                                  >
+                                    <Trash2 className="w-3 h-3" /> Remove
                                   </button>
                                 </div>
                               </li>
