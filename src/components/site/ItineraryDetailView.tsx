@@ -136,7 +136,7 @@ const ItineraryDetailView = ({
   const tabsBarRef = useRef<HTMLDivElement>(null);
   const [activeSection, setActiveSection] = useState<string>("overview");
   const suppressObserverUntil = useRef<number>(0);
-  const [similar, setSimilar] = useState<{ id: string; title: string }[]>([]);
+  const [similar, setSimilar] = useState<{ id: string; title: string; starting_price: string | null }[]>([]);
 
   useEffect(() => {
     if (!destinationSlug) return;
@@ -144,12 +144,12 @@ const ItineraryDetailView = ({
     (async () => {
       const { data } = await supabase
         .from("itineraries")
-        .select("id,title")
+        .select("id,title,starting_price")
         .eq("destination_slug", destinationSlug)
         .neq("id", itineraryId)
         .order("created_at", { ascending: false })
         .limit(6);
-      if (!cancelled) setSimilar((data ?? []) as { id: string; title: string }[]);
+      if (!cancelled) setSimilar((data ?? []) as { id: string; title: string; starting_price: string | null }[]);
     })();
     return () => {
       cancelled = true;
