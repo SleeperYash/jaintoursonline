@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import SiteLayout from "@/components/site/SiteLayout";
 import ItineraryDetailView from "@/components/site/ItineraryDetailView";
 import { findDestination } from "@/data/destinations";
 import { useDestinationImages } from "@/hooks/useDestinationImages";
+import { useHiddenDefaultImages } from "@/hooks/useHiddenDefaultImages";
 import { adminPublicUrl } from "@/hooks/useAdminAuth";
 import { useSeo } from "@/hooks/useSeo";
 import { slugify } from "@/lib/slug";
@@ -55,12 +56,13 @@ type Itinerary = {
 const ItineraryDetailPage = () => {
   const { slug = "", itinerarySlug = "" } = useParams();
   const d = findDestination(slug);
-  const { coverUrl } = useDestinationImages(slug);
-  const heroPhoto = coverUrl ?? d?.image;
+  const { coverUrl, images: uploaded } = useDestinationImages(slug);
+  const { hidden } = useHiddenDefaultImages(slug);
   const { toast } = useToast();
 
   const [loading, setLoading] = useState(true);
   const [item, setItem] = useState<Itinerary | null>(null);
+  const [itemIndex, setItemIndex] = useState(0);
   const [notFound, setNotFound] = useState(false);
 
   const [enquiryOpen, setEnquiryOpen] = useState(false);
@@ -84,11 +86,13 @@ const ItineraryDetailPage = () => {
         .select("id,title,file_path,starting_price")
         .eq("destination_slug", slug);
       if (cancelled) return;
-      const match = (data ?? []).find((it) => slugify(it.title) === itinerarySlug);
-      if (!match) {
+      const list = (data ?? []) as Itinerary[];
+      const idx = list.findIndex((it) => slugify(it.title) === itinerarySlug);
+      if (idx === -1) {
         setNotFound(true);
       } else {
-        setItem(match);
+        setItem(list[idx]);
+        setItemIndex(idx);
       }
       setLoading(false);
     })();
@@ -96,6 +100,23 @@ const ItineraryDetailPage = () => {
       cancelled = true;
     };
   }, [slug, itinerarySlug]);
+
+  const imagePool = useMemo(() => {
+    const pool: string[] = [];
+    uploaded.forEach((img) => {
+      const url = adminPublicUrl(img.file_path);
+      if (url && !pool.includes(url)) pool.push(url);
+    });
+    (d?.gallery ?? []).forEach((url) => {
+      if (url && !hidden.has(url) && !pool.includes(url)) pool.push(url);
+    });
+    if (d?.image && !hidden.has(d.image) && !pool.includes(d.image)) {
+      pool.push(d.image);
+    }
+    return pool;
+  }, [uploaded, hidden, d]);
+
+  const heroPhoto = imagePool.length ? imagePool[itemIndex % imagePool.length] : coverUrl ?? d?.image;
 
   useSeo({
     title: item ? `${item.title} — ${d?.name ?? "Itinerary"}` : "Itinerary",
