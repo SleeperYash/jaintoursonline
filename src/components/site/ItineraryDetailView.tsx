@@ -382,7 +382,7 @@ const ItineraryDetailView = ({
               </h2>
               {parsed.overview ? (
                 <div className="rounded-2xl border border-border/60 bg-card p-6 md:p-8 shadow-luxe">
-                  <p className="text-base md:text-lg leading-relaxed text-foreground/85 font-light whitespace-pre-line">
+                  <p className="text-base md:text-lg leading-relaxed text-foreground font-semibold whitespace-pre-line">
                     {parsed.overview}
                   </p>
                 </div>
@@ -446,7 +446,7 @@ const ItineraryDetailView = ({
                       <AccordionContent className="px-4 md:px-6 pb-5">
                         <div className="pl-0 md:pl-14 min-w-0 break-words">
                           {d.body && (
-                            <p className="text-sm md:text-base text-foreground/80 font-light leading-relaxed whitespace-pre-line break-words [overflow-wrap:anywhere]">
+                            <p className="text-sm md:text-base text-foreground font-semibold leading-relaxed whitespace-pre-line break-words [overflow-wrap:anywhere]">
                               {d.body}
                             </p>
                           )}
@@ -457,7 +457,7 @@ const ItineraryDetailView = ({
                               </h4>
                               <ul className="space-y-1.5">
                                 {d.activities.map((a, ai) => (
-                                  <li key={ai} className="flex items-start gap-2 text-sm text-foreground/80 font-light break-words [overflow-wrap:anywhere]">
+                                  <li key={ai} className="flex items-start gap-2 text-sm text-foreground font-semibold break-words [overflow-wrap:anywhere]">
                                     <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-gold shrink-0" />
                                     <span>{a}</span>
                                   </li>
@@ -490,14 +490,14 @@ const ItineraryDetailView = ({
                     {parsed.inclusions?.length ? (
                       <ul className="space-y-2.5">
                         {parsed.inclusions.map((itm, k) => (
-                          <li key={k} className="flex items-start gap-2.5 text-sm text-foreground/85 font-light">
+                          <li key={k} className="flex items-start gap-2.5 text-sm text-foreground font-semibold">
                             <Check className="w-4 h-4 mt-0.5 text-gold shrink-0" aria-hidden />
                             <span>{itm}</span>
                           </li>
                         ))}
                       </ul>
                     ) : (
-                      <p className="text-sm text-muted-foreground font-light">Not Provided</p>
+                      <p className="text-sm text-muted-foreground font-medium">Not Provided</p>
                     )}
                   </div>
                   <div className="rounded-2xl border border-border/60 bg-card p-5 md:p-6 shadow-luxe">
@@ -507,14 +507,14 @@ const ItineraryDetailView = ({
                     {parsed.exclusions?.length ? (
                       <ul className="space-y-2.5">
                         {parsed.exclusions.map((itm, k) => (
-                          <li key={k} className="flex items-start gap-2.5 text-sm text-foreground/85 font-light">
+                          <li key={k} className="flex items-start gap-2.5 text-sm text-foreground font-semibold">
                             <XIcon className="w-4 h-4 mt-0.5 text-destructive shrink-0" aria-hidden />
                             <span>{itm}</span>
                           </li>
                         ))}
                       </ul>
                     ) : (
-                      <p className="text-sm text-muted-foreground font-light">Not Provided</p>
+                      <p className="text-sm text-muted-foreground font-medium">Not Provided</p>
                     )}
                   </div>
                 </div>
@@ -540,7 +540,7 @@ const ItineraryDetailView = ({
                           <span>{t.h}</span>
                         </h3>
                         {t.points.length === 1 ? (
-                          <p className="text-sm md:text-[15px] text-foreground/70 font-light leading-relaxed [overflow-wrap:anywhere]">
+                          <p className="text-sm md:text-[15px] text-foreground font-semibold leading-relaxed [overflow-wrap:anywhere]">
                             {t.points[0]}
                           </p>
                         ) : (
@@ -548,7 +548,7 @@ const ItineraryDetailView = ({
                             {t.points.map((p, pi) => (
                               <li
                                 key={pi}
-                                className="flex items-start gap-2.5 text-sm md:text-[15px] text-foreground/70 font-light leading-relaxed [overflow-wrap:anywhere]"
+                                className="flex items-start gap-2.5 text-sm md:text-[15px] text-foreground font-semibold leading-relaxed [overflow-wrap:anywhere]"
                               >
                                 <span className="mt-2 w-1.5 h-1.5 rounded-full bg-foreground/40 shrink-0" />
                                 <span>{p}</span>
@@ -572,11 +572,11 @@ const ItineraryDetailView = ({
                   </h2>
                   <div className="rounded-2xl border border-border/60 bg-card p-6 md:p-8 shadow-luxe">
                     {parsed.visa ? (
-                      <p className="text-base leading-relaxed text-foreground/85 font-light whitespace-pre-line">
+                      <p className="text-base leading-relaxed text-foreground font-semibold whitespace-pre-line">
                         {parsed.visa}
                       </p>
                     ) : (
-                      <p className="text-sm md:text-base text-foreground/75 font-light">
+                      <p className="text-sm md:text-base text-foreground font-semibold">
                         Visa information will be shared by our travel expert.
                       </p>
                     )}
