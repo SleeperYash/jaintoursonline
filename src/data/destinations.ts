@@ -49,6 +49,7 @@ const HERO: Record<string, string[]> = {
   bhutan: ["1544735716-392fe2489ffa", "1593069567131-53a0614dde1d", "1544735716-392fe2489ffa", "1593069567131-53a0614dde1d", "1605649487212-47bdab064df7"],
   "sri-lanka": ["1566296314736-6eaac1ca0cb6", "1586500036706-41963de24d8b", "1581420435100-a78b5cd6f4f9", "1602002418082-a4443e081dd1", "1566296314736-6eaac1ca0cb6"],
   nepal: ["1544735716-392fe2489ffa", "1591118216034-7e0a4e3c5f5a", "1605649487212-47bdab064df7", "1567606404875-8b6e4f6f9c0e", "1626621341517-bbf3d9990a23"],
+  "united-kingdom": ["1513635269975-59663e0ac1ad", "1486299267070-83823f5448dd", "1520986606214-8b456906c813", "1533929736458-ca588d08c8be", "1543832923-44667a44c804"],
 };
 
 // Stable seed-based fallback (always 200s — never broken cards).
@@ -299,6 +300,13 @@ const destinationsRaw: Destination[] = [
     "5 – 7 Nights",
     ["Pashupatinath & Boudhanath", "Phewa Lake boat ride", "Nagarkot Himalayan sunrise", "Bhaktapur Durbar Square", "Chitwan jungle safari"],
     ["1544735716-392fe2489ffa", "1591118216034-7e0a4e3c5f5a", "1605649487212-47bdab064df7", "1567606404875-8b6e4f6f9c0e", "1626621341517-bbf3d9990a23", "1591018653692-e6d6b7e5f7e9"]),
+
+  mk("united-kingdom", "United Kingdom", "International", "United Kingdom",
+    "Royal cities, rolling countryside, timeless charm.",
+    "From London's iconic landmarks and Edinburgh's medieval old town to the Cotswolds' postcard villages and the Scottish Highlands' wild beauty.",
+    "7 – 10 Nights",
+    ["London city tour & Thames cruise", "Edinburgh Castle & Royal Mile", "Cotswolds countryside drive", "Scottish Highlands & Loch Ness", "Stonehenge & Bath day trip"],
+    ["1513635269975-59663e0ac1ad", "1486299267070-83823f5448dd", "1520986606214-8b456906c813", "1533929736458-ca588d08c8be", "1543832923-44667a44c804", "1486299267070-83823f5448dd"]),
 ];
 
 // Strip AI-generated gallery photos from Domestic destinations.
