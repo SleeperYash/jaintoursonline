@@ -145,7 +145,6 @@ const About = () => {
               <div className="mt-10 grid grid-cols-2 gap-x-6 gap-y-6">
                 <IconStat Icon={Bookmark} title={`${YEARS}+ Years`} sub="of experience" />
                 <IconStat Icon={Smile} title="5000+" sub="Happy Families" />
-                <IconStat Icon={Users} title="50+ Team" sub="of Professionals" />
                 <IconStat Icon={ClipboardList} title="100+ Superb" sub="Itineraries" />
               </div>
             </Reveal>
