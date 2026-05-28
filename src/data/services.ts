@@ -1,6 +1,6 @@
 import {
   Plane, Hotel, Ship, Globe, Heart, Briefcase, FileCheck, ShieldCheck,
-  Car, Bus, Users, GraduationCap, Headphones, MapPin, Ticket, Building2,
+  Users, GraduationCap, MapPin, Ticket, Building2,
 } from "lucide-react";
 
 export const serviceGroups = [
