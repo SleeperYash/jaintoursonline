@@ -12,6 +12,9 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { BRAND, waLink } from "@/lib/brand";
 import ItineraryCard from "@/components/site/ItineraryCard";
 import { destinations } from "@/data/destinations";
+import { useDestinationImages } from "@/hooks/useDestinationImages";
+import { useHiddenDefaultImages } from "@/hooks/useHiddenDefaultImages";
+import { adminPublicUrl } from "@/hooks/useAdminAuth";
 import {
   Check,
   X as XIcon,
@@ -137,6 +140,25 @@ const ItineraryDetailView = ({
   const [activeSection, setActiveSection] = useState<string>("overview");
   const suppressObserverUntil = useRef<number>(0);
   const [similar, setSimilar] = useState<{ id: string; title: string; starting_price: string | null }[]>([]);
+  const { images: uploadedDestImages } = useDestinationImages(destinationSlug ?? "");
+  const { hidden: hiddenDestImages } = useHiddenDefaultImages(destinationSlug);
+
+  const similarImagePool = useMemo(() => {
+    const pool: string[] = [];
+    uploadedDestImages.forEach((img) => {
+      const url = adminPublicUrl(img.file_path);
+      if (url && !pool.includes(url)) pool.push(url);
+    });
+    const dest = destinations.find((d) => d.slug === destinationSlug);
+    (dest?.gallery ?? []).forEach((url) => {
+      if (url && !hiddenDestImages.has(url) && !pool.includes(url)) pool.push(url);
+    });
+    if (dest?.image && !hiddenDestImages.has(dest.image) && !pool.includes(dest.image)) {
+      pool.push(dest.image);
+    }
+    if (heroImage && !pool.includes(heroImage)) pool.push(heroImage);
+    return pool;
+  }, [uploadedDestImages, hiddenDestImages, destinationSlug, heroImage]);
 
   useEffect(() => {
     if (!destinationSlug) return;
@@ -637,7 +659,7 @@ const ItineraryDetailView = ({
                       <ItineraryCard
                         id={it.id}
                         title={it.title}
-                        image={heroImage}
+                        image={similarImagePool.length ? similarImagePool[(i + 1) % similarImagePool.length] : heroImage}
                         destinationSlug={destinationSlug}
                         locationLabel={locationLabel}
                         index={i}
