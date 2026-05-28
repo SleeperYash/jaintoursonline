@@ -46,13 +46,8 @@ const HeroTrustBadges = () => {
       <p className="text-center text-[10px] tracking-luxe uppercase text-gold/80 mb-3 opacity-0 group-hover:opacity-100 transition-opacity">
         Built on Trust · Tap to read guest reviews
       </p>
-      {/* Mobile: marquee matched to desktop speed */}
-      <div className="md:hidden flex animate-marquee-x pause-on-hover">
-        <div className="flex shrink-0"><Row /></div>
-        <div className="flex shrink-0" aria-hidden><Row /></div>
-      </div>
-      {/* Desktop: standard marquee speed */}
-      <div className="hidden md:flex animate-marquee-x pause-on-hover">
+      {/* Mobile + Desktop: same fast marquee speed */}
+      <div className="flex animate-marquee-x pause-on-hover" style={{ animationDuration: "12s" }}>
         <div className="flex shrink-0"><Row /></div>
         <div className="flex shrink-0" aria-hidden><Row /></div>
       </div>
