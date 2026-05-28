@@ -212,10 +212,13 @@ const ItineraryDetailView = ({
   const scrollToSection = (id: string) => {
     const el = document.getElementById(`section-${id}`);
     if (!el) return;
-    const offset = (tabsBarRef.current?.offsetHeight ?? 60) + 80;
-    const top = el.getBoundingClientRect().top + window.scrollY - offset;
+    const headerOffset =
+      (tabsBarRef.current?.getBoundingClientRect().height ?? 60) +
+      (window.innerWidth >= 768 ? 80 : 64) +
+      12;
+    const top = el.getBoundingClientRect().top + window.scrollY - headerOffset;
     setActiveSection(id);
-    suppressObserverUntil.current = Date.now() + 900;
+    suppressObserverUntil.current = Date.now() + 1400;
     window.scrollTo({ top, behavior: "smooth" });
   };
 
@@ -224,14 +227,23 @@ const ItineraryDetailView = ({
     const observer = new IntersectionObserver(
       (entries) => {
         if (Date.now() < suppressObserverUntil.current) return;
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (visible?.target?.id) {
-          setActiveSection(visible.target.id.replace("section-", ""));
-        }
+        const triggerY =
+          (tabsBarRef.current?.getBoundingClientRect().bottom ?? 120) + 20;
+        let bestId: string | null = null;
+        let bestDist = Number.POSITIVE_INFINITY;
+        sections.forEach((s) => {
+          const el = document.getElementById(`section-${s.id}`);
+          if (!el) return;
+          const top = el.getBoundingClientRect().top;
+          const dist = triggerY - top;
+          if (dist >= 0 && dist < bestDist) {
+            bestDist = dist;
+            bestId = s.id;
+          }
+        });
+        if (bestId) setActiveSection(bestId);
       },
-      { rootMargin: "-30% 0px -55% 0px", threshold: [0, 0.25, 0.5, 0.75, 1] },
+      { rootMargin: "-20% 0px -60% 0px", threshold: [0, 0.1, 0.25, 0.5, 0.75, 1] },
     );
     sections.forEach((s) => {
       const el = document.getElementById(`section-${s.id}`);
