@@ -35,6 +35,7 @@ import {
   type DestinationImage,
 } from "@/hooks/useDestinationImages";
 import { useClientReviews, type DbClientReview } from "@/hooks/useClientReviews";
+import { useHiddenDefaultImages } from "@/hooks/useHiddenDefaultImages";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { destinations as ALL_DESTINATIONS } from "@/data/destinations";
@@ -76,6 +77,8 @@ const ManageDestinationDialog = ({
   const destinationSlug = currentSlug;
   const destinationName = currentName;
   const { images, refetch: refetchImages } = useDestinationImages(destinationSlug);
+  const { hidden: hiddenDefaults, refetch: refetchHiddenDefaults } =
+    useHiddenDefaultImages(destinationSlug);
 
   const [open, setOpen] = useState(false);
   const [verifying, setVerifying] = useState(false);
