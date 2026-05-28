@@ -25,6 +25,7 @@ const COORDS: Record<string, { lat: number; lng: number }> = {
   "north-east": { lat: 26.20, lng: 92.93 },
   "tamil-nadu": { lat: 11.12, lng: 78.65 },
   "nepal": { lat: 27.7172, lng: 85.3240 },
+  "united-kingdom": { lat: 51.5074, lng: -0.1278 },
   "gujarat": { lat: 23.02, lng: 72.57 },
   "madhya-pradesh": { lat: 23.25, lng: 77.41 },
   "char-dham": { lat: 30.73, lng: 79.06 },
