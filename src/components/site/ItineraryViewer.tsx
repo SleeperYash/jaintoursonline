@@ -27,8 +27,9 @@ const ItineraryViewer = ({
 }) => {
   const [items, setItems] = useState<Itinerary[]>([]);
   const [loading, setLoading] = useState(true);
-  const { images: uploaded } = useDestinationImages(destinationSlug);
-  const { hidden } = useHiddenDefaultImages(destinationSlug);
+  const { images: uploaded, loading: uploadedLoading } = useDestinationImages(destinationSlug);
+  const { hidden, loading: hiddenLoading } = useHiddenDefaultImages(destinationSlug);
+  const imagesReady = !uploadedLoading && !hiddenLoading;
 
   const imagePool = useMemo(() => {
     const pool: string[] = [];
@@ -123,7 +124,7 @@ const ItineraryViewer = ({
                     <ItineraryCard
                       id={it.id}
                       title={it.title}
-                      image={imagePool.length ? imagePool[i % imagePool.length] : fallbackImage}
+                      image={imagesReady && imagePool.length ? imagePool[i % imagePool.length] : undefined}
                       destinationSlug={destinationSlug}
                       locationLabel={locationLabel}
                       index={i}
