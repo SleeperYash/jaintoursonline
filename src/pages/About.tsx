@@ -59,7 +59,7 @@ const SectionHeading = ({ children }: { children: React.ReactNode }) => (
 );
 
 const SubHeading = ({ children }: { children: React.ReactNode }) => (
-  <h3 className="font-serif text-[22px] tracking-[0.15em] text-foreground mb-6 md:text-sm">
+  <h3 className="font-serif text-[22px] tracking-[0.15em] text-foreground mb-6 md:text-base">
     {children}
   </h3>
 );
@@ -144,7 +144,7 @@ const About = () => {
 
               <div className="mt-10 grid grid-cols-2 gap-x-6 gap-y-6">
                 <IconStat Icon={Bookmark} title={`${YEARS}+ Years`} sub="of experience" />
-                <IconStat Icon={Smile} title="5000+" sub="Happy Families" />
+                <IconStat Icon={Smile} title="10000+" sub="Happy Travellers" />
                 <IconStat Icon={ClipboardList} title="100+ Superb" sub="Itineraries" />
               </div>
             </Reveal>
@@ -255,7 +255,7 @@ const About = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-y-10 gap-x-6 text-center">
             {[
               { n: `${YEARS}+`, l: "Years Experience" },
-              { n: "5000+", l: "Happy Families" },
+              { n: "10000+", l: "Happy Travellers" },
               { n: "100+", l: "Superb Itineraries" },
               { n: "50+", l: "Team of Professionals" },
             ].map((s) => (
