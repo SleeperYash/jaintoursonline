@@ -50,6 +50,7 @@ type Props = {
   destinationName: string;
   destinationSlug?: string;
   isDomestic?: boolean;
+  priceOverride?: string;
   onEnquire?: () => void;
   onDownload?: () => void;
 };
