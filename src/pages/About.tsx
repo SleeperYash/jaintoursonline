@@ -39,14 +39,14 @@ const whatWeDoImgs = [
 ];
 
 const believeImgs = [
-  "https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&q=80&w=600",
-  "https://images.unsplash.com/photo-1517760444937-f6397edcbbcd?auto=format&fit=crop&q=80&w=600",
-  "https://images.unsplash.com/photo-1530789253388-582c481c54b0?auto=format&fit=crop&q=80&w=600",
-  "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&q=80&w=600",
-  "https://images.unsplash.com/photo-1504457047772-27faf1c00561?auto=format&fit=crop&q=80&w=600",
-  "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&q=80&w=600",
-  "https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&q=80&w=600",
-  "https://images.unsplash.com/photo-1493558103817-58b2924bce98?auto=format&fit=crop&q=80&w=600",
+  "/gallery/miracle-garden.png",
+  "/gallery/desert-safari.png",
+  "/gallery/colosseum.png",
+  "/gallery/bangkok-night.png",
+  "/gallery/balloon-photo.png",
+  "/gallery/group-hotel.png",
+  "/gallery/global-village.png",
+  "/gallery/team-event.png",
 ];
 
 const SectionHeading = ({ children }: { children: React.ReactNode }) => (
