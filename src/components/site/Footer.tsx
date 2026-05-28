@@ -74,26 +74,27 @@ const Footer = () => {
           </div>
         </div>
 
-        <div>
-          <h4 className="uppercase tracking-luxe mb-6 text-sm text-teal-400">Explore</h4>
-          <ul className="space-y-3 text-sm text-muted-foreground">
-            
-            <li><Link to="/destinations" className="hover:text-foreground transition text-slate-300">Destinations</Link></li>
-            <li><Link to="/services" className="hover:text-foreground transition text-slate-300">Services</Link></li>
-            <li><Link to="/reviews" className="hover:text-foreground transition text-slate-300">Reviews</Link></li>
-            <li><Link to="/about" className="hover:text-foreground transition text-slate-300">About</Link></li>
-          </ul>
-        </div>
+        <div className="grid grid-cols-2 gap-8 md:contents">
+          <div>
+            <h4 className="uppercase tracking-luxe mb-6 text-sm text-teal-400">Explore</h4>
+            <ul className="space-y-3 text-sm text-muted-foreground">
+              <li><Link to="/destinations" className="hover:text-foreground transition text-slate-300">Destinations</Link></li>
+              <li><Link to="/services" className="hover:text-foreground transition text-slate-300">Services</Link></li>
+              <li><Link to="/reviews" className="hover:text-foreground transition text-slate-300">Reviews</Link></li>
+              <li><Link to="/about" className="hover:text-foreground transition text-slate-300">About</Link></li>
+            </ul>
+          </div>
 
-        <div>
-          <h4 className="uppercase tracking-luxe mb-6 text-sm text-teal-400">Services</h4>
-          <ul className="space-y-3 text-sm text-muted-foreground">
-            <li className="text-slate-300">International & Domestic Holidays</li>
-            <li className="text-slate-300">Honeymoon Packages</li>
-            <li className="text-slate-300">Cruise Bookings</li>
-            <li className="text-slate-300">Corporate Travel</li>
-            <li className="text-slate-300">Visa & Travel Insurance</li>
-          </ul>
+          <div>
+            <h4 className="uppercase tracking-luxe mb-6 text-sm text-teal-400">Services</h4>
+            <ul className="space-y-3 text-sm text-muted-foreground">
+              <li className="text-slate-300">International & Domestic Holidays</li>
+              <li className="text-slate-300">Honeymoon Packages</li>
+              <li className="text-slate-300">Cruise Bookings</li>
+              <li className="text-slate-300">Corporate Travel</li>
+              <li className="text-slate-300">Visa & Travel Insurance</li>
+            </ul>
+          </div>
         </div>
 
         <div>
