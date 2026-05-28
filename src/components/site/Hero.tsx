@@ -47,6 +47,8 @@ const Hero = () => {
             width={1920}
             height={1080}
             loading={idx === 0 ? "eager" : "lazy"}
+            fetchPriority={idx === 0 ? "high" : "auto"}
+            decoding={idx === 0 ? "sync" : "async"}
           />
           <div className="absolute inset-0 gradient-hero" />
         </div>
