@@ -56,8 +56,9 @@ type Itinerary = {
 const ItineraryDetailPage = () => {
   const { slug = "", itinerarySlug = "" } = useParams();
   const d = findDestination(slug);
-  const { coverUrl, images: uploaded } = useDestinationImages(slug);
-  const { hidden } = useHiddenDefaultImages(slug);
+  const { coverUrl, images: uploaded, loading: uploadedLoading } = useDestinationImages(slug);
+  const { hidden, loading: hiddenLoading } = useHiddenDefaultImages(slug);
+  const imagesReady = !uploadedLoading && !hiddenLoading;
   const { toast } = useToast();
 
   const [loading, setLoading] = useState(true);
@@ -116,7 +117,9 @@ const ItineraryDetailPage = () => {
     return pool;
   }, [uploaded, hidden, d]);
 
-  const heroPhoto = imagePool.length ? imagePool[itemIndex % imagePool.length] : coverUrl ?? d?.image;
+  const heroPhoto = imagesReady
+    ? (imagePool.length ? imagePool[itemIndex % imagePool.length] : coverUrl ?? undefined)
+    : undefined;
 
   useSeo({
     title: item ? `${item.title} — ${d?.name ?? "Itinerary"}` : "Itinerary",
