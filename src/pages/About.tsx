@@ -255,7 +255,6 @@ const About = () => {
               { n: `${YEARS}+`, l: "Years Experience" },
               { n: "10000+", l: "Happy Travellers" },
               { n: "100+", l: "Superb Itineraries" },
-              { n: "50+", l: "Team of Professionals" },
             ].map((s) => (
               <Reveal key={s.l}>
                 <div className="font-serif text-[40px] md:text-[56px] font-bold text-foreground leading-none">{s.n}</div>
