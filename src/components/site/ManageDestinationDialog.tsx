@@ -124,7 +124,7 @@ const ManageDestinationDialog = ({
   const fetchItineraries = useCallback(async () => {
     const { data } = await supabase
       .from("itineraries")
-      .select("id,title,file_path,file_size")
+      .select("id,title,file_path,file_size,starting_price")
       .eq("destination_slug", destinationSlug)
       .order("created_at", { ascending: false });
     setItineraries(data ?? []);
