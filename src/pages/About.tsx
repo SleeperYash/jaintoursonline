@@ -250,15 +250,15 @@ const About = () => {
         <div className="container max-w-6xl">
           <Reveal><SectionHeading>OUR STRENGTH</SectionHeading></Reveal>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-y-10 gap-x-6 text-center">
+          <div className="grid grid-cols-3 md:grid-cols-4 gap-y-10 gap-x-3 md:gap-x-6 text-center">
             {[
               { n: `${YEARS}+`, l: "Years Experience" },
               { n: "10000+", l: "Happy Travellers" },
               { n: "100+", l: "Superb Itineraries" },
             ].map((s) => (
               <Reveal key={s.l}>
-                <div className="font-serif text-[40px] md:text-[56px] font-bold text-foreground leading-none">{s.n}</div>
-                <div className="mt-3 text-[14px] md:text-[15px] text-foreground/75">{s.l}</div>
+                <div className="font-serif text-[24px] md:text-[56px] font-bold text-foreground leading-none">{s.n}</div>
+                <div className="mt-2 md:mt-3 text-[11px] md:text-[15px] text-foreground/75 leading-tight">{s.l}</div>
               </Reveal>
             ))}
           </div>
