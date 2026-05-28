@@ -96,7 +96,10 @@ const ManageDestinationDialog = ({
   const [itineraries, setItineraries] = useState<Itinerary[]>([]);
   const [itinTitle, setItinTitle] = useState("");
   const [itinFile, setItinFile] = useState<File | null>(null);
+  const [itinPrice, setItinPrice] = useState("");
   const [uploadingItin, setUploadingItin] = useState(false);
+  const [priceDrafts, setPriceDrafts] = useState<Record<string, string>>({});
+  const [savingPriceId, setSavingPriceId] = useState<string | null>(null);
 
   // Reviews
   const { reviews, refetch: refetchReviews } = useClientReviews();
