@@ -129,7 +129,7 @@ const HomeHero = () => {
 
       {/* Scroll cue */}
       <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 hidden md:flex flex-col items-center gap-2 text-foreground/60">
-        <span className="text-[10px] tracking-luxe uppercase">Scroll to wander</span>
+        <span className="text-[10px] tracking-luxe uppercase text-slate-950">Scroll to wander</span>
         <ChevronDown className="w-4 h-4 animate-bounce-slow text-gold" />
       </div>
     </section>

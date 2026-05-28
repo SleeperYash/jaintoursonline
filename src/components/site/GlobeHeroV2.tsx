@@ -94,7 +94,7 @@ const GlobeHeroV2 = () => {
 
       {/* Scroll cue (bottom-right) */}
       <div className="absolute bottom-6 right-4 md:right-8 z-20 hidden md:flex flex-col items-center gap-2 text-foreground/50 pointer-events-none">
-        <span className="text-[10px] tracking-luxe uppercase">Scroll</span>
+        <span className="text-[10px] tracking-luxe uppercase text-slate-950">Scroll</span>
         <ChevronDown className="w-4 h-4 animate-bounce-slow text-gold" />
       </div>
 

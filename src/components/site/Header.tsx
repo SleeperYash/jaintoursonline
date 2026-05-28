@@ -67,10 +67,10 @@ const Header = () => {
             <span className="absolute -inset-0.5 rounded-full border border-gold/0 group-hover:border-gold/30 group-hover:scale-110 transition-all duration-500" />
           </div>
           <div className="flex flex-col leading-none">
-            <span className="font-serif text-sm md:text-lg lg:text-xl tracking-wide text-foreground">
-              Jain <span className="text-gold italic font-bold text-sky-500">Tours & Travels</span>
+            <span className="font-serif md:text-lg lg:text-xl tracking-wide text-foreground text-base text-sky-400">
+              Jain <span className="text-gold italic font-bold text-sky-400">Tours & Travels</span>
             </span>
-            <span className="tracking-luxe uppercase text-muted-foreground mt-1 md:text-[9px] lg:text-[10px] text-black text-xs">
+            <span className="tracking-luxe uppercase text-muted-foreground mt-1 md:text-[9px] lg:text-[10px] text-xs text-slate-950">
               Mumbai ·
             </span>
           </div>

@@ -61,7 +61,7 @@ const HeroLuxe = () => {
 
       {/* Scroll indicator */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 text-muted-foreground">
-        <span className="text-[10px] tracking-luxe uppercase">Scroll</span>
+        <span className="text-[10px] tracking-luxe uppercase text-slate-950">Scroll</span>
         <div className="w-px h-12 bg-gradient-to-b from-gold to-transparent animate-pulse" />
       </div>
     </section>
