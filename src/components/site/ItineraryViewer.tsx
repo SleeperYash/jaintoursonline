@@ -1,8 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { FileText, Loader2 } from "lucide-react";
 import ItineraryCard from "@/components/site/ItineraryCard";
-import { destinations } from "@/data/destinations";
+import { destinations, findDestination } from "@/data/destinations";
+import { useDestinationImages } from "@/hooks/useDestinationImages";
+import { useHiddenDefaultImages } from "@/hooks/useHiddenDefaultImages";
+import { adminPublicUrl } from "@/hooks/useAdminAuth";
 
 type Itinerary = {
   id: string;
@@ -24,6 +27,27 @@ const ItineraryViewer = ({
 }) => {
   const [items, setItems] = useState<Itinerary[]>([]);
   const [loading, setLoading] = useState(true);
+  const { images: uploaded } = useDestinationImages(destinationSlug);
+  const { hidden } = useHiddenDefaultImages(destinationSlug);
+
+  const imagePool = useMemo(() => {
+    const pool: string[] = [];
+    // Prefer user-uploaded destination photos first
+    uploaded.forEach((img) => {
+      const url = adminPublicUrl(img.file_path);
+      if (url && !pool.includes(url)) pool.push(url);
+    });
+    // Then fall back to the destination's default gallery (minus hidden ones)
+    const dest = findDestination(destinationSlug);
+    (dest?.gallery ?? []).forEach((url) => {
+      if (url && !hidden.has(url) && !pool.includes(url)) pool.push(url);
+    });
+    if (dest?.image && !hidden.has(dest.image) && !pool.includes(dest.image)) {
+      pool.push(dest.image);
+    }
+    if (fallbackImage && !pool.includes(fallbackImage)) pool.push(fallbackImage);
+    return pool;
+  }, [uploaded, hidden, destinationSlug, fallbackImage]);
 
   useEffect(() => {
     let cancelled = false;
@@ -99,7 +123,7 @@ const ItineraryViewer = ({
                     <ItineraryCard
                       id={it.id}
                       title={it.title}
-                      image={fallbackImage}
+                      image={imagePool.length ? imagePool[i % imagePool.length] : fallbackImage}
                       destinationSlug={destinationSlug}
                       locationLabel={locationLabel}
                       index={i}
