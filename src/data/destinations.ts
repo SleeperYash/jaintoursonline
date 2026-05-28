@@ -94,7 +94,7 @@ const mk = (
   };
 };
 
-export const destinations: Destination[] = [
+const destinationsRaw: Destination[] = [
   // ───────────── DOMESTIC ─────────────
   mk("andaman", "Andaman", "Domestic", "India",
     "Crystal coves and coral whispers.",
@@ -300,6 +300,12 @@ export const destinations: Destination[] = [
     ["Sigiriya rock fortress", "Kandy Temple of Tooth", "Nuwara Eliya tea trains", "Yala leopard safari", "Galle Fort sunset"],
     ["1566296314736-6eaac1ca0cb6", "1586500036706-41963de24d8b", "1581420435100-a78b5cd6f4f9", "1602002418082-a4443e081dd1", "1546412414-e1885259563a", "1566296314736-6eaac1ca0cb6"]),
 ];
+
+// Strip AI-generated gallery photos from Domestic destinations.
+// Only admin-uploaded images will appear; hero cover is preserved for cards.
+export const destinations: Destination[] = destinationsRaw.map((d) =>
+  d.region === "Domestic" ? { ...d, gallery: [] } : d,
+);
 
 export const findDestination = (slug: string) =>
   destinations.find((d) => d.slug === slug);
