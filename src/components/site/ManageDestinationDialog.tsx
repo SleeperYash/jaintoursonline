@@ -87,8 +87,6 @@ const ManageDestinationDialog = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const replaceInputRef = useRef<HTMLInputElement>(null);
   const [replaceTarget, setReplaceTarget] = useState<DestinationImage | null>(null);
-  const [hiddenDefaults, setHiddenDefaults] = useState<string[]>([]);
-  const [showHidden, setShowHidden] = useState(false);
 
   // Itineraries
   const [itineraries, setItineraries] = useState<Itinerary[]>([]);
@@ -128,26 +126,11 @@ const ManageDestinationDialog = ({
     setItineraries(data ?? []);
   }, [destinationSlug]);
 
-  const fetchHiddenDefaults = useCallback(async () => {
-    const { data } = await supabase
-      .from("hidden_defaults")
-      .select("image_url")
-      .eq("destination_slug", destinationSlug);
-    setHiddenDefaults((data ?? []).map((d) => d.image_url));
-  }, [destinationSlug]);
-
   useEffect(() => {
     if (open && authed) {
       fetchItineraries();
-      fetchHiddenDefaults();
     }
-  }, [open, authed, fetchItineraries, fetchHiddenDefaults]);
-
-  useEffect(() => {
-    if (open && authed) {
-      fetchHiddenDefaults();
-    }
-  }, [destinationSlug, open, authed, fetchHiddenDefaults]);
+  }, [open, authed, fetchItineraries]);
 
   const handleSubmitReview = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -299,33 +282,6 @@ const ManageDestinationDialog = ({
       await callAdmin("image_delete", { id: img.id });
       await refetchImages();
       toast({ title: "Removed" });
-    } catch (err) {
-      toast({ title: "Failed", description: (err as Error).message, variant: "destructive" });
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  const handleHideDefault = async (url: string) => {
-    if (!confirm("Hide this default image from the destination page?")) return;
-    setBusy(true);
-    try {
-      await callAdmin("hide_default", { destination_slug: destinationSlug, image_url: url });
-      await fetchHiddenDefaults();
-      toast({ title: "Hidden" });
-    } catch (err) {
-      toast({ title: "Failed", description: (err as Error).message, variant: "destructive" });
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  const handleUnhideDefault = async (url: string) => {
-    setBusy(true);
-    try {
-      await callAdmin("unhide_default", { destination_slug: destinationSlug, image_url: url });
-      await fetchHiddenDefaults();
-      toast({ title: "Restored" });
     } catch (err) {
       toast({ title: "Failed", description: (err as Error).message, variant: "destructive" });
     } finally {
