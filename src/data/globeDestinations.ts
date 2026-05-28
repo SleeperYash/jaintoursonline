@@ -24,7 +24,7 @@ const COORDS: Record<string, { lat: number; lng: number }> = {
   "uttarakhand": { lat: 30.07, lng: 79.01 },
   "north-east": { lat: 26.20, lng: 92.93 },
   "tamil-nadu": { lat: 11.12, lng: 78.65 },
-  "spiti": { lat: 32.24, lng: 78.03 },
+  "nepal": { lat: 27.7172, lng: 85.3240 },
   "gujarat": { lat: 23.02, lng: 72.57 },
   "madhya-pradesh": { lat: 23.25, lng: 77.41 },
   "char-dham": { lat: 30.73, lng: 79.06 },
