@@ -617,8 +617,7 @@ const ManageDestinationDialog = ({
                   {(() => {
                     const dest = ALL_DESTINATIONS.find((x) => x.slug === destinationSlug);
                     const allDefaults = dest ? [dest.image, ...(dest.gallery ?? [])].filter(Boolean) : [];
-                    const defaults = allDefaults.filter((u) => !hiddenDefaults.includes(u));
-                    const hidden = allDefaults.filter((u) => hiddenDefaults.includes(u));
+                    const defaults = allDefaults;
                     const hasDbCover = images.some((i) => i.is_cover);
                     const primaryDefaultIsCover = !hasDbCover;
 
@@ -683,19 +682,10 @@ const ManageDestinationDialog = ({
                                     type="button"
                                     disabled={busy || isCover}
                                     onClick={() => handleUseDefaultCover(url, isPrimary)}
-                                    className="flex-1 min-w-0 text-[10px] uppercase tracking-luxe px-2 py-1.5 border border-gold/60 text-gold hover:bg-gold/10 transition disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center justify-center gap-1"
+                                    className="w-full text-[10px] uppercase tracking-luxe px-2 py-1.5 border border-gold/60 text-gold hover:bg-gold/10 transition disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center justify-center gap-1"
                                     title={isPrimary ? "Use the default image as cover" : "Import this AI photo and set as cover"}
                                   >
                                     <Star className="w-3 h-3" /> {isPrimary ? "Cover" : "Use as cover"}
-                                  </button>
-                                  <button
-                                    type="button"
-                                    disabled={busy}
-                                    onClick={() => handleHideDefault(url)}
-                                    className="flex-1 min-w-0 text-[10px] uppercase tracking-luxe px-2 py-1.5 border border-destructive/60 text-destructive hover:bg-destructive/10 transition inline-flex items-center justify-center gap-1"
-                                    title="Remove from display"
-                                  >
-                                    <Trash2 className="w-3 h-3" /> Remove
                                   </button>
                                 </div>
                               </li>
@@ -765,46 +755,6 @@ const ManageDestinationDialog = ({
                           ))}
                         </ul>
 
-                        {hidden.length > 0 && (
-                          <div className="border border-border/60 rounded-md p-3">
-                            <button
-                              type="button"
-                              onClick={() => setShowHidden((s) => !s)}
-                              className="flex items-center justify-between w-full text-xs uppercase tracking-luxe text-muted-foreground hover:text-foreground transition"
-                            >
-                              <span>Hidden defaults ({hidden.length})</span>
-                              <span className="text-[10px]">{showHidden ? "Collapse" : "Expand"}</span>
-                            </button>
-                            {showHidden && (
-                              <ul className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-3">
-                                {hidden.map((url, idx) => (
-                                  <li
-                                    key={`hidden-${idx}`}
-                                    className="relative group border border-border/60 rounded-md overflow-hidden bg-background opacity-60"
-                                  >
-                                    <div className="aspect-[4/5] relative">
-                                      <img src={url} alt="" className="w-full h-full object-cover" />
-                                      <span className="absolute top-2 right-2 bg-ink/70 text-foreground text-[10px] uppercase tracking-luxe px-2 py-1 rounded">
-                                        Hidden
-                                      </span>
-                                    </div>
-                                    <div className="p-2 flex flex-wrap gap-1 bg-card">
-                                      <button
-                                        type="button"
-                                        disabled={busy}
-                                        onClick={() => handleUnhideDefault(url)}
-                                        className="flex-1 min-w-0 text-[10px] uppercase tracking-luxe px-2 py-1.5 border border-gold/60 text-gold hover:bg-gold/10 transition inline-flex items-center justify-center gap-1"
-                                        title="Restore to display"
-                                      >
-                                        <Star className="w-3 h-3" /> Restore
-                                      </button>
-                                    </div>
-                                  </li>
-                                ))}
-                              </ul>
-                            )}
-                          </div>
-                        )}
                       </div>
                     );
                   })()}
