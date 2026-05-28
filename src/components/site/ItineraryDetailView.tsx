@@ -642,13 +642,13 @@ const ItineraryDetailView = ({
       {/* Sticky bottom price + Enquire CTA */}
       <div className="sticky bottom-0 left-0 right-0 z-30 border-t border-border/60 bg-background/95 backdrop-blur px-3 md:px-6 py-3 flex items-center justify-between gap-3">
         <div className="min-w-0">
-          {parsed?.starting_price ? (
+          {(priceOverride || parsed?.starting_price) ? (
             <>
               <p className="text-[10px] md:text-xs uppercase tracking-luxe text-foreground/60">
                 Starting from
               </p>
               <p className="font-serif text-lg md:text-2xl text-gold leading-tight truncate">
-                {parsed.starting_price}
+                {priceOverride || parsed?.starting_price}
                 <span className="text-xs md:text-sm text-foreground/60 font-sans ml-1.5">
                   / per person
                 </span>
