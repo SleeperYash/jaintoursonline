@@ -68,7 +68,7 @@ const Header = () => {
           </div>
           <div className="flex flex-col leading-none">
             <span className="font-serif md:text-lg lg:text-xl tracking-wide text-foreground text-base text-yellow-400">
-              Jain <span className="italic font-bold text-sky-300 dark:text-sky-500">Tours & Travels</span>
+              Jain <span className="italic font-bold text-sky-400">Tours & Travels</span>
             </span>
             <span className="tracking-luxe uppercase text-muted-foreground mt-1 md:text-[9px] lg:text-[10px] text-xs text-slate-950">
               Mumbai ·
