@@ -26,7 +26,6 @@ const HERO: Record<string, string[]> = {
   gujarat: ["1597149959998-b7b1a4b2c8e1", "1606298855672-3efb63017be8", "1605649487212-47bdab064df7", "1582719471384-894fbb16e074", "1602216056096-3b40cc0c9944"],
   himachal: ["1626621341517-bbf3d9990a23", "1567606404875-8b6e4f6f9c0e", "1623674388651-2ec732bd71d8", "1591018653692-e6d6b7e5f7e9", "1605649487212-47bdab064df7"],
   kashmir: ["1566837945700-30057527ade0", "1605649487212-47bdab064df7", "1591018653692-e6d6b7e5f7e9", "1623674388651-2ec732bd71d8", "1626621341517-bbf3d9990a23"],
-  spiti: ["1567606404875-8b6e4f6f9c0e", "1626621341517-bbf3d9990a23", "1605649487212-47bdab064df7", "1591018653692-e6d6b7e5f7e9", "1610019883449-9d1e4ec8b1e8"],
   "leh-ladakh": ["1605649487212-47bdab064df7", "1567606404875-8b6e4f6f9c0e", "1591018653692-e6d6b7e5f7e9", "1610019883449-9d1e4ec8b1e8", "1626621341517-bbf3d9990a23"],
   "madhya-pradesh": ["1582510003544-4d00b7f74220", "1602216056096-3b40cc0c9944", "1623674388651-2ec732bd71d8", "1591018653692-e6d6b7e5f7e9", "1626621341517-bbf3d9990a23"],
   "north-east": ["1591018653692-e6d6b7e5f7e9", "1623674388651-2ec732bd71d8", "1626621341517-bbf3d9990a23", "1605649487212-47bdab064df7", "1610019883449-9d1e4ec8b1e8"],
@@ -49,6 +48,7 @@ const HERO: Record<string, string[]> = {
   maldives: ["1514282401047-d79a71a590c8", "1540202404-a2f29016b523", "1519046904884-53103b34b206", "1583212292454-1fe6229603b7", "1540202404-a2f29016b523"],
   bhutan: ["1544735716-392fe2489ffa", "1593069567131-53a0614dde1d", "1544735716-392fe2489ffa", "1593069567131-53a0614dde1d", "1605649487212-47bdab064df7"],
   "sri-lanka": ["1566296314736-6eaac1ca0cb6", "1586500036706-41963de24d8b", "1581420435100-a78b5cd6f4f9", "1602002418082-a4443e081dd1", "1566296314736-6eaac1ca0cb6"],
+  nepal: ["1544735716-392fe2489ffa", "1591118216034-7e0a4e3c5f5a", "1605649487212-47bdab064df7", "1567606404875-8b6e4f6f9c0e", "1626621341517-bbf3d9990a23"],
 };
 
 // Stable seed-based fallback (always 200s — never broken cards).
@@ -137,13 +137,6 @@ const destinationsRaw: Destination[] = [
     "6 – 8 Nights",
     ["Houseboat on Dal Lake", "Gulmarg gondola", "Pahalgam meadows", "Sonmarg day trip", "Mughal gardens"],
     ["1566837945700-30057527ade0", "1605649487212-47bdab064df7", "1610019883449-9d1e4ec8b1e8", "1591018653692-e6d6b7e5f7e9", "1623674388651-2ec732bd71d8", "1626621341517-bbf3d9990a23"]),
-
-  mk("spiti", "Spiti", "Domestic", "India",
-    "A cold desert sky, painted indigo.",
-    "Monasteries clinging to cliffs, fossil villages and high-altitude lakes — a journey into Little Tibet.",
-    "7 – 9 Nights",
-    ["Key Monastery", "Chandratal lake", "Langza fossils", "Kibber wildlife", "Tabo caves"],
-    ["1626621341382-8aa6c54e3cdd", "1567606404875-8b6e4f6f9c0e", "1626621341517-bbf3d9990a23", "1605649487212-47bdab064df7", "1591018653692-e6d6b7e5f7e9", "1610019883449-9d1e4ec8b1e8"]),
 
   mk("leh-ladakh", "Leh Ladakh", "Domestic", "India",
     "Where the mountains touch the gods.",
@@ -299,6 +292,13 @@ const destinationsRaw: Destination[] = [
     "6 – 8 Nights",
     ["Sigiriya rock fortress", "Kandy Temple of Tooth", "Nuwara Eliya tea trains", "Yala leopard safari", "Galle Fort sunset"],
     ["1566296314736-6eaac1ca0cb6", "1586500036706-41963de24d8b", "1581420435100-a78b5cd6f4f9", "1602002418082-a4443e081dd1", "1546412414-e1885259563a", "1566296314736-6eaac1ca0cb6"]),
+
+  mk("nepal", "Nepal", "International", "Nepal",
+    "Himalayan kingdoms and prayer-flag winds.",
+    "Kathmandu's heritage squares, Pokhara's serene Phewa Lake and sunrise over the Annapurna range from Nagarkot.",
+    "5 – 7 Nights",
+    ["Pashupatinath & Boudhanath", "Phewa Lake boat ride", "Nagarkot Himalayan sunrise", "Bhaktapur Durbar Square", "Chitwan jungle safari"],
+    ["1544735716-392fe2489ffa", "1591118216034-7e0a4e3c5f5a", "1605649487212-47bdab064df7", "1567606404875-8b6e4f6f9c0e", "1626621341517-bbf3d9990a23", "1591018653692-e6d6b7e5f7e9"]),
 ];
 
 // Strip AI-generated gallery photos from Domestic destinations.
