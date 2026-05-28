@@ -8,11 +8,10 @@ import { useSeo } from "@/hooks/useSeo";
 import { useDestinationImages } from "@/hooks/useDestinationImages";
 import { useHiddenDefaultImages } from "@/hooks/useHiddenDefaultImages";
 import { adminPublicUrl } from "@/hooks/useAdminAuth";
+import { generateEstimatedPrice, formatINR } from "@/lib/estimatedPrice";
 import { Camera, ChevronLeft, ChevronRight, X } from "lucide-react";
 
 const PLACEHOLDER = "/placeholder.svg";
-
-const DUMMY_PRICE = 89999;
 
 const DestinationDetail = () => {
   const { slug = "" } = useParams();
@@ -53,6 +52,8 @@ const DestinationDetail = () => {
   });
 
   if (!d) return <Navigate to="/destinations" replace />;
+
+  const startingPrice = generateEstimatedPrice(d.slug, d.region);
 
   const waMessage = encodeURIComponent(`Hi, I'm interested in the ${d.name} tour. Please share pricing.`);
   const waUrl = `https://wa.me/9821235678?text=${waMessage}`;
@@ -126,23 +127,14 @@ const DestinationDetail = () => {
               <div className="bg-card border border-gold/30 rounded-2xl p-6 shadow-luxe">
                 <p className="text-xs uppercase tracking-luxe text-foreground/60">Starting from</p>
                 <div className="mt-1 flex items-baseline gap-2">
-                  <span className="font-serif text-4xl text-foreground">₹{DUMMY_PRICE.toLocaleString("en-IN")}</span>
+                  <span className="font-serif text-4xl text-emerald-600 dark:text-emerald-400">{formatINR(startingPrice)}/-</span>
                   <span className="text-xs text-foreground/60">/ person</span>
                 </div>
                 <p className="mt-1 text-xs text-foreground/60">twin sharing</p>
 
-                <a
-                  href={waUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="mt-5 w-full inline-flex items-center justify-center px-6 py-3 rounded-full bg-gold text-primary-foreground text-sm uppercase tracking-luxe hover:bg-gold/90 transition shadow-md"
-                >
-                  Book this tour
-                </a>
-
                 <Link
                   to="/contact"
-                  className="mt-3 w-full inline-flex items-center justify-center px-6 py-3 rounded-full border border-border text-sm uppercase tracking-luxe text-foreground hover:border-gold/40 transition"
+                  className="mt-5 w-full inline-flex items-center justify-center px-6 py-3 rounded-full border border-border text-sm uppercase tracking-luxe text-foreground hover:border-gold/40 transition"
                 >
                   Customise enquiry
                 </Link>
