@@ -21,32 +21,30 @@ import {
 const FOUNDED = 1996;
 const YEARS = new Date().getFullYear() - FOUNDED;
 
-const heroImg =
-  "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&q=80&w=1920";
-const whoImg =
-  "https://images.unsplash.com/photo-1523580494863-6f3031224c94?auto=format&fit=crop&q=80&w=1200";
+const heroImg = "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&q=80&w=1920";
+const whoImg = "https://images.unsplash.com/photo-1523580494863-6f3031224c94?auto=format&fit=crop&q=80&w=1200";
 
 const whatWeDoImgs = [
-  "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&q=80&w=600", // Paris
-  "https://images.unsplash.com/photo-1539037116277-4db20889f2d4?auto=format&fit=crop&q=80&w=600", // Spain
-  "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&q=80&w=600", // Bali
-  "/src/assets/rajasthan-jaipur.jpg", // Jaipur
-  "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&q=80&w=600", // London
-  "https://images.unsplash.com/photo-1545569341-9eb8b30979d9?auto=format&fit=crop&q=80&w=600", // Japan
-  "https://images.unsplash.com/photo-1552733407-5d5c46c3bb3b?auto=format&fit=crop&q=80&w=600", // Vietnam
-  "https://images.unsplash.com/photo-1431274172761-fca41d930114?auto=format&fit=crop&q=80&w=600", // Louvre
-  "https://images.unsplash.com/photo-1555993539-1732b0258235?auto=format&fit=crop&q=80&w=600", // Greece
+  "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&q=80&w=600",
+  "https://images.unsplash.com/photo-1539037116277-4db20889f2d4?auto=format&fit=crop&q=80&w=600",
+  "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&q=80&w=600",
+  "/src/assets/rajasthan-jaipur.jpg",
+  "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&q=80&w=600",
+  "https://images.unsplash.com/photo-1545569341-9eb8b30979d9?auto=format&fit=crop&q=80&w=600",
+  "https://images.unsplash.com/photo-1552733407-5d5c46c3bb3b?auto=format&fit=crop&q=80&w=600",
+  "https://images.unsplash.com/photo-1431274172761-fca41d930114?auto=format&fit=crop&q=80&w=600",
+  "https://images.unsplash.com/photo-1555993539-1732b0258235?auto=format&fit=crop&q=80&w=600",
 ];
 
 const believeImgs = [
-  "/gallery/miracle-garden.png",
-  "/gallery/desert-safari.png",
-  "/gallery/colosseum.png",
-  "/gallery/bangkok-night.png",
-  "/gallery/balloon-photo.png",
-  "/gallery/group-hotel.png",
-  "/gallery/global-village.png",
-  "/gallery/team-event.png",
+  "aa4e5476-e9d2-47a0-8445-80df99ab54f2.png",
+  "7365d92f-6c6c-44ef-90fa-d91dedb959a9.png",
+  "ff962a96-0847-42d3-8a4b-7d8d32c4610e.png",
+  "31a1d099-6b75-42d1-b894-7407797ded35.png",
+  "c08e4d7f-1e4b-4590-8511-f04c7421bbb3.png",
+  "bc7d7cd2-a04a-4810-8816-ec8e1bc949c7.png",
+  "1663c1ae-177d-4123-87b1-2863fcd1db84.png",
+  "59edf52e-ccef-4ff3-802a-07c94f68f090.png",
 ];
 
 const SectionHeading = ({ children }: { children: React.ReactNode }) => (
