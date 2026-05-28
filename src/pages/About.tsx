@@ -21,32 +21,30 @@ import {
 const FOUNDED = 1996;
 const YEARS = new Date().getFullYear() - FOUNDED;
 
-const heroImg =
-  "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&q=80&w=1920";
-const whoImg =
-  "https://images.unsplash.com/photo-1523580494863-6f3031224c94?auto=format&fit=crop&q=80&w=1200";
+const heroImg = "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&q=80&w=1920";
+const whoImg = "https://images.unsplash.com/photo-1523580494863-6f3031224c94?auto=format&fit=crop&q=80&w=1200";
 
 const whatWeDoImgs = [
-  "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&q=80&w=600", // Paris
-  "https://images.unsplash.com/photo-1539037116277-4db20889f2d4?auto=format&fit=crop&q=80&w=600", // Spain
-  "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&q=80&w=600", // Bali
-  "/src/assets/rajasthan-jaipur.jpg", // Jaipur
-  "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&q=80&w=600", // London
-  "https://images.unsplash.com/photo-1545569341-9eb8b30979d9?auto=format&fit=crop&q=80&w=600", // Japan
-  "https://images.unsplash.com/photo-1552733407-5d5c46c3bb3b?auto=format&fit=crop&q=80&w=600", // Vietnam
-  "https://images.unsplash.com/photo-1431274172761-fca41d930114?auto=format&fit=crop&q=80&w=600", // Louvre
-  "https://images.unsplash.com/photo-1555993539-1732b0258235?auto=format&fit=crop&q=80&w=600", // Greece
+  "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&q=80&w=600",
+  "https://images.unsplash.com/photo-1539037116277-4db20889f2d4?auto=format&fit=crop&q=80&w=600",
+  "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&q=80&w=600",
+  "/src/assets/rajasthan-jaipur.jpg",
+  "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&q=80&w=600",
+  "https://images.unsplash.com/photo-1545569341-9eb8b30979d9?auto=format&fit=crop&q=80&w=600",
+  "https://images.unsplash.com/photo-1552733407-5d5c46c3bb3b?auto=format&fit=crop&q=80&w=600",
+  "https://images.unsplash.com/photo-1431274172761-fca41d930114?auto=format&fit=crop&q=80&w=600",
+  "https://images.unsplash.com/photo-1555993539-1732b0258235?auto=format&fit=crop&q=80&w=600",
 ];
 
 const believeImgs = [
-  "https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&q=80&w=600",
-  "https://images.unsplash.com/photo-1517760444937-f6397edcbbcd?auto=format&fit=crop&q=80&w=600",
-  "https://images.unsplash.com/photo-1530789253388-582c481c54b0?auto=format&fit=crop&q=80&w=600",
-  "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&q=80&w=600",
-  "https://images.unsplash.com/photo-1504457047772-27faf1c00561?auto=format&fit=crop&q=80&w=600",
-  "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&q=80&w=600",
-  "https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&q=80&w=600",
-  "https://images.unsplash.com/photo-1493558103817-58b2924bce98?auto=format&fit=crop&q=80&w=600",
+  "https://tddtcsdbqrlabbqqotqd.supabase.co/storage/v1/object/public/itineraries/gallery/miracle-garden.png",
+  "https://tddtcsdbqrlabbqqotqd.supabase.co/storage/v1/object/public/itineraries/gallery/desert-safari.png",
+  "https://tddtcsdbqrlabbqqotqd.supabase.co/storage/v1/object/public/itineraries/gallery/colosseum.png",
+  "https://tddtcsdbqrlabbqqotqd.supabase.co/storage/v1/object/public/itineraries/gallery/bangkok-night.png",
+  "https://tddtcsdbqrlabbqqotqd.supabase.co/storage/v1/object/public/itineraries/gallery/balloon-photo.png",
+  "https://tddtcsdbqrlabbqqotqd.supabase.co/storage/v1/object/public/itineraries/gallery/group-hotel.png",
+  "https://tddtcsdbqrlabbqqotqd.supabase.co/storage/v1/object/public/itineraries/gallery/global-village.png",
+  "https://tddtcsdbqrlabbqqotqd.supabase.co/storage/v1/object/public/itineraries/gallery/team-event.png",
 ];
 
 const SectionHeading = ({ children }: { children: React.ReactNode }) => (
