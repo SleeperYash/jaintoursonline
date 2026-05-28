@@ -107,14 +107,6 @@ const Header = () => {
 
         {/* CTA + phone */}
         <div className="hidden lg:flex items-center gap-4">
-          <a
-            href={`tel:${BRAND.phoneDigits}`}
-            className="flex items-center gap-2 text-[11px] uppercase tracking-luxe text-foreground/70 hover:text-gold transition-colors"
-            aria-label="Call us"
-          >
-            <Phone className="w-0 h-0" />
-            <span className="tabular-nums">{BRAND.phoneDisplay}</span>
-          </a>
           <Link
             to="/contact"
             className="relative inline-flex items-center px-6 py-2.5 text-[11px] uppercase tracking-luxe text-primary-foreground bg-gradient-to-r from-gold to-gold-deep hover:shadow-gold transition-all duration-500 rounded-full overflow-hidden group"
@@ -173,12 +165,6 @@ const Header = () => {
           >
             Plan Journey
           </Link>
-          <a
-            href={`tel:${BRAND.phoneDigits}`}
-            className="mt-2 flex items-center justify-center gap-2 text-xs text-muted-foreground hover:text-gold transition"
-          >
-            <Phone className="w-0 h-0" /> {BRAND.phoneDisplay}
-          </a>
         </nav>
       </div>
     </header>
