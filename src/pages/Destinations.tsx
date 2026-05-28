@@ -151,7 +151,7 @@ const DestinationsContent = ({ filter, query }: { filter: FilterKey; query: stri
     (filter === "domestic" && domestic.length === 0) ||
     (filter === "international" && international.length === 0);
   return (
-    <div key={filter} className="transition-opacity duration-500 animate-in fade-in">
+    <div className="transition-opacity duration-300">
       {noResults && (
         <div className="container py-20 text-center text-muted-foreground">
           No destinations match "{query}".
@@ -229,7 +229,7 @@ const DestinationGroup = ({
             <img
               src={covers[d.slug] ?? d.image}
               alt={`${d.name} — luxury travel by Jain Tours`}
-              loading="eager"
+              loading="lazy"
               decoding="async"
               onError={(e) => {
                 const img = e.currentTarget;
@@ -238,7 +238,7 @@ const DestinationGroup = ({
                   img.src = `https://picsum.photos/seed/${encodeURIComponent(d.slug)}/800/1000`;
                 }
               }}
-              className="w-full h-full object-cover transition-all duration-[1200ms] ease-out group-hover:scale-110 group-hover:brightness-110"
+              className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
             />
             <span className={`absolute top-3 left-3 inline-flex items-center gap-1 px-2.5 py-1 text-[9px] uppercase tracking-luxe rounded-full backdrop-blur-sm ${styles.bgSoft} ${styles.text}`}>
               <Icon className="w-2.5 h-2.5" />
