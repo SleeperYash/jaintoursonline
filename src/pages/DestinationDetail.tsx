@@ -18,11 +18,12 @@ const DestinationDetail = () => {
   const d = findDestination(slug);
   const { images, coverUrl } = useDestinationImages(slug);
 
-  // Build photo list: prefer uploaded images; fall back to default + gallery
+  // Build photo list: ONLY admin-uploaded images. Default/AI gallery photos
+  // are never used as filler — if nothing is uploaded we just show the hero.
   const photos = useMemo(() => {
     if (images.length > 0) return images.map((i) => adminPublicUrl(i.file_path));
     if (!d) return [];
-    return [d.image, ...(d.gallery ?? [])];
+    return [d.image];
   }, [images, d]);
 
   const heroPhoto = coverUrl ?? d?.image ?? PLACEHOLDER;
