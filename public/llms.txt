@@ -1,0 +1,21 @@
+# Jain Tours & Travels
+
+> Mumbai-based travel agency curating premium domestic and international holiday packages since 2008. 4.9★ on Google with 142+ reviews.
+
+## Pages
+
+- [Home](/): Curated luxury journeys from Mumbai.
+- [Destinations](/destinations): Domestic and international holiday destinations.
+- [Services](/services): Flights, visas, cruises, insurance, and corporate travel.
+- [Reviews](/reviews): Guest reviews and testimonials.
+- [About](/about): Our story, philosophy, and team.
+- [Contact](/contact): Phone, WhatsApp, email, and Mumbai office address.
+
+## Featured destinations
+
+- [Kerala](/destinations/kerala): Backwaters, houseboats, and tea estates.
+- [Kashmir](/destinations/kashmir): Dal Lake houseboats and Gulmarg snow.
+- [Rajasthan](/destinations/rajasthan): Forts, palaces, and desert camps.
+- [Maldives](/destinations/maldives): Overwater villas and reef snorkelling.
+- [Dubai](/destinations/dubai): City breaks, desert safaris, luxury stays.
+- [Europe](/destinations/europe): Multi-country curated itineraries.
