@@ -585,17 +585,47 @@ const ManageDestinationDialog = ({
                       {itineraries.map((it) => (
                         <div
                           key={it.id}
-                          className="flex items-center gap-3 border border-border/60 p-3 rounded-md"
+                          className="flex flex-col sm:flex-row sm:items-center gap-3 border border-border/60 p-3 rounded-md"
                         >
-                          <FileText className="w-4 h-4 text-gold shrink-0" />
-                          <p className="text-sm text-foreground flex-1 truncate">{it.title}</p>
-                          <button
-                            onClick={() => handleDeleteItin(it)}
-                            className="p-2 text-foreground/60 hover:text-destructive"
-                            title="Delete"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
+                          <div className="flex items-center gap-3 flex-1 min-w-0">
+                            <FileText className="w-4 h-4 text-gold shrink-0" />
+                            <p className="text-sm text-foreground flex-1 truncate">{it.title}</p>
+                          </div>
+                          <div className="flex items-center gap-2 sm:w-auto w-full">
+                            <Input
+                              value={priceDrafts[it.id] ?? it.starting_price ?? ""}
+                              onChange={(e) =>
+                                setPriceDrafts((p) => ({ ...p, [it.id]: e.target.value }))
+                              }
+                              placeholder="₹ price"
+                              maxLength={40}
+                              className="h-9 w-full sm:w-36 text-sm"
+                            />
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="secondary"
+                              disabled={
+                                savingPriceId === it.id ||
+                                (priceDrafts[it.id] ?? it.starting_price ?? "") ===
+                                  (it.starting_price ?? "")
+                              }
+                              onClick={() => handleSavePrice(it)}
+                            >
+                              {savingPriceId === it.id ? (
+                                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                              ) : (
+                                "Save"
+                              )}
+                            </Button>
+                            <button
+                              onClick={() => handleDeleteItin(it)}
+                              className="p-2 text-foreground/60 hover:text-destructive"
+                              title="Delete"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
                         </div>
                       ))}
                     </div>
