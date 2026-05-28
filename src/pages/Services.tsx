@@ -7,7 +7,7 @@ import { useReveal } from "@/hooks/useReveal";
 
 const Services = () => {
   useSeo({
-    title: "Travel Services — Flights, Visas, Cruises, Insurance | Jain Tours",
+    title: "Travel Services: Flights, Visas & Cruises | Jain Tours",
     description:
       "Full-service travel partner: flights, hotels, visas, cruises, corporate travel, insurance and 24×7 support. Mumbai-based, globally trusted.",
     canonicalPath: "/services",
