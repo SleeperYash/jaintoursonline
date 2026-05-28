@@ -542,6 +542,21 @@ const ManageDestinationDialog = ({
                       className="mt-2"
                     />
                   </div>
+                  <div>
+                    <Label className="text-xs uppercase tracking-luxe text-foreground/70">
+                      Starting price (optional)
+                    </Label>
+                    <Input
+                      value={itinPrice}
+                      onChange={(e) => setItinPrice(e.target.value)}
+                      placeholder="e.g. ₹45,999"
+                      maxLength={40}
+                      className="mt-2"
+                    />
+                    <p className="text-[10px] text-foreground/50 mt-1">
+                      Shown as the "Starting from" price on the itinerary page. Leave blank to use the PDF / auto value.
+                    </p>
+                  </div>
                   <Button
                     type="submit"
                     disabled={uploadingItin}
