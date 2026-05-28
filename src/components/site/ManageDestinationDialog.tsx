@@ -48,6 +48,7 @@ type Itinerary = {
   title: string;
   file_path: string;
   file_size: number | null;
+  starting_price: string | null;
 };
 
 type Props = {
