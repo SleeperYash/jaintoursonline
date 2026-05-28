@@ -9,6 +9,7 @@ import {
 import { useDestinationCovers } from "@/hooks/useDestinationCovers";
 import { useReveal } from "@/hooks/useReveal";
 import { packages } from "@/data/packages";
+import { generateEstimatedPrice, formatINR } from "@/lib/estimatedPrice";
 
 type Tab = "domestic" | "international";
 
@@ -42,9 +43,6 @@ const HandpickedPackages = () => {
     }
     return map;
   }, []);
-
-  const formatINR = (n: number) =>
-    `₹${n.toLocaleString("en-IN")}`;
 
   return (
     <section className="py-20 md:py-28 bg-background pt-[112px]">
@@ -96,7 +94,7 @@ const HandpickedPackages = () => {
             const s = stats[d.slug];
             const count = s?.count ?? 0;
             const displayCount = count > 0 ? `${count}+ Packages` : "On request";
-            const priceLabel = s?.min ? `From ${formatINR(s.min)}` : "On request";
+            const priceValue = s?.min ?? generateEstimatedPrice(d.slug, d.region);
             return (
               <motion.div
                 key={d.slug}
@@ -122,9 +120,15 @@ const HandpickedPackages = () => {
                     <h3 className="font-serif text-base sm:text-lg md:text-xl text-foreground leading-tight truncate">
                       {d.name}
                     </h3>
-                    <p className="mt-1 text-xs md:text-sm text-muted-foreground">{displayCount}</p>
-                    <p className="mt-1 text-sm md:text-base font-semibold text-emerald-600 dark:text-emerald-400">
-                      {priceLabel}
+                    <p className="mt-1 text-[10px] md:text-xs text-muted-foreground">{displayCount}</p>
+                    <p className="mt-2 text-[9px] md:text-[10px] tracking-luxe uppercase text-muted-foreground/80">
+                      Starting From
+                    </p>
+                    <p className="mt-0.5 text-sm md:text-base font-bold text-emerald-600 dark:text-emerald-400 whitespace-nowrap">
+                      {formatINR(priceValue)}/-
+                      <span className="ml-1 text-[10px] md:text-[11px] font-normal text-muted-foreground">
+                        per person
+                      </span>
                     </p>
                   </div>
                 </Link>
