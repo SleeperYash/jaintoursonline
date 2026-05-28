@@ -255,7 +255,7 @@ const About = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-y-10 gap-x-6 text-center">
             {[
               { n: `${YEARS}+`, l: "Years Experience" },
-              { n: "5000+", l: "Happy Families" },
+              { n: "10000+", l: "Happy Travellers" },
               { n: "100+", l: "Superb Itineraries" },
               { n: "50+", l: "Team of Professionals" },
             ].map((s) => (
