@@ -336,6 +336,36 @@ Deno.serve(async (req) => {
       return json({ ok: true });
     }
 
+    // ---------- HIDDEN DEFAULT (AI / built-in) IMAGES ----------
+    if (action === "default_image_hide") {
+      const { destination_slug, image_url } = body ?? {};
+      if (!destination_slug || !image_url) {
+        return json({ error: "Missing destination_slug or image_url" }, 400);
+      }
+      const { error: insErr } = await supabase
+        .from("hidden_default_images")
+        .upsert(
+          { destination_slug, image_url },
+          { onConflict: "destination_slug,image_url" },
+        );
+      if (insErr) return json({ error: insErr.message }, 500);
+      return json({ ok: true });
+    }
+
+    if (action === "default_image_unhide") {
+      const { destination_slug, image_url } = body ?? {};
+      if (!destination_slug || !image_url) {
+        return json({ error: "Missing destination_slug or image_url" }, 400);
+      }
+      const { error: delErr } = await supabase
+        .from("hidden_default_images")
+        .delete()
+        .eq("destination_slug", destination_slug)
+        .eq("image_url", image_url);
+      if (delErr) return json({ error: delErr.message }, 500);
+      return json({ ok: true });
+    }
+
     // ---------- CLIENT REVIEWS ----------
     if (action === "review_create") {
       const { name, destination, text, rating, date_label, file_base64, file_name, content_type } = body ?? {};
