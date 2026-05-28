@@ -620,7 +620,7 @@ const ManageDestinationDialog = ({
                   {(() => {
                     const dest = ALL_DESTINATIONS.find((x) => x.slug === destinationSlug);
                     const allDefaults = dest ? [dest.image, ...(dest.gallery ?? [])].filter(Boolean) : [];
-                    const defaults = allDefaults;
+                    const defaults = allDefaults.filter((url) => !hiddenDefaults.has(url));
                     const hasDbCover = images.some((i) => i.is_cover);
                     const primaryDefaultIsCover = !hasDbCover;
 
@@ -648,6 +648,23 @@ const ManageDestinationDialog = ({
                         }
                         await refetchImages();
                         toast({ title: "Cover updated" });
+                      } catch (err) {
+                        toast({ title: "Failed", description: (err as Error).message, variant: "destructive" });
+                      } finally {
+                        setBusy(false);
+                      }
+                    };
+
+                    const handleHideDefault = async (url: string) => {
+                      if (!confirm("Remove this image from this destination? This can be reversed later by clearing the entry from the database.")) return;
+                      setBusy(true);
+                      try {
+                        await callAdmin("default_image_hide", {
+                          destination_slug: destinationSlug,
+                          image_url: url,
+                        });
+                        await refetchHiddenDefaults();
+                        toast({ title: "Image removed" });
                       } catch (err) {
                         toast({ title: "Failed", description: (err as Error).message, variant: "destructive" });
                       } finally {
