@@ -49,6 +49,7 @@ type Itinerary = {
   id: string;
   title: string;
   file_path: string;
+  starting_price: string | null;
 };
 
 const ItineraryDetailPage = () => {
@@ -80,7 +81,7 @@ const ItineraryDetailPage = () => {
       setLoading(true);
       const { data } = await supabase
         .from("itineraries")
-        .select("id,title,file_path")
+        .select("id,title,file_path,starting_price")
         .eq("destination_slug", slug);
       if (cancelled) return;
       const match = (data ?? []).find((it) => slugify(it.title) === itinerarySlug);
@@ -190,6 +191,7 @@ const ItineraryDetailPage = () => {
           destinationName={d.name}
           destinationSlug={slug}
           isDomestic={d.region === "Domestic"}
+          priceOverride={item.starting_price ?? undefined}
           onDownload={requestDownload}
           onEnquire={() => {
             setPendingDownload(false);

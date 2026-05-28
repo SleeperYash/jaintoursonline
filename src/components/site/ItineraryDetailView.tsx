@@ -50,6 +50,7 @@ type Props = {
   destinationName: string;
   destinationSlug?: string;
   isDomestic?: boolean;
+  priceOverride?: string;
   onEnquire?: () => void;
   onDownload?: () => void;
 };
@@ -122,6 +123,7 @@ const ItineraryDetailView = ({
   destinationName,
   destinationSlug,
   isDomestic = false,
+  priceOverride,
   onEnquire,
   onDownload,
 }: Props) => {
@@ -134,7 +136,7 @@ const ItineraryDetailView = ({
   const tabsBarRef = useRef<HTMLDivElement>(null);
   const [activeSection, setActiveSection] = useState<string>("overview");
   const suppressObserverUntil = useRef<number>(0);
-  const [similar, setSimilar] = useState<{ id: string; title: string }[]>([]);
+  const [similar, setSimilar] = useState<{ id: string; title: string; starting_price: string | null }[]>([]);
 
   useEffect(() => {
     if (!destinationSlug) return;
@@ -142,12 +144,12 @@ const ItineraryDetailView = ({
     (async () => {
       const { data } = await supabase
         .from("itineraries")
-        .select("id,title")
+        .select("id,title,starting_price")
         .eq("destination_slug", destinationSlug)
         .neq("id", itineraryId)
         .order("created_at", { ascending: false })
         .limit(6);
-      if (!cancelled) setSimilar((data ?? []) as { id: string; title: string }[]);
+      if (!cancelled) setSimilar((data ?? []) as { id: string; title: string; starting_price: string | null }[]);
     })();
     return () => {
       cancelled = true;
@@ -627,6 +629,7 @@ const ItineraryDetailView = ({
                         destinationSlug={destinationSlug}
                         locationLabel={locationLabel}
                         index={i}
+                        initialPrice={it.starting_price ?? undefined}
                       />
                     </div>
                   ))}
@@ -640,13 +643,13 @@ const ItineraryDetailView = ({
       {/* Sticky bottom price + Enquire CTA */}
       <div className="sticky bottom-0 left-0 right-0 z-30 border-t border-border/60 bg-background/95 backdrop-blur px-3 md:px-6 py-3 flex items-center justify-between gap-3">
         <div className="min-w-0">
-          {parsed?.starting_price ? (
+          {(priceOverride || parsed?.starting_price) ? (
             <>
               <p className="text-[10px] md:text-xs uppercase tracking-luxe text-foreground/60">
                 Starting from
               </p>
               <p className="font-serif text-lg md:text-2xl text-gold leading-tight truncate">
-                {parsed.starting_price}
+                {priceOverride || parsed?.starting_price}
                 <span className="text-xs md:text-sm text-foreground/60 font-sans ml-1.5">
                   / per person
                 </span>
