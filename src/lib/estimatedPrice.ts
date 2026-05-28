@@ -37,6 +37,7 @@ const OVERRIDES: Record<string, number> = {
   japan: 119999,
   europe: 125999,
   australia: 124999,
+  "united-kingdom": 119999,
 };
 
 // Stable string hash → bounded integer.
