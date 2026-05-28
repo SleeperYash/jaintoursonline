@@ -123,6 +123,7 @@ const ItineraryDetailView = ({
   destinationName,
   destinationSlug,
   isDomestic = false,
+  priceOverride,
   onEnquire,
   onDownload,
 }: Props) => {
