@@ -151,7 +151,7 @@ const DestinationsContent = ({ filter, query }: { filter: FilterKey; query: stri
     (filter === "domestic" && domestic.length === 0) ||
     (filter === "international" && international.length === 0);
   return (
-    <div key={filter} className="transition-opacity duration-500 animate-in fade-in">
+    <div className="transition-opacity duration-300">
       {noResults && (
         <div className="container py-20 text-center text-muted-foreground">
           No destinations match "{query}".
