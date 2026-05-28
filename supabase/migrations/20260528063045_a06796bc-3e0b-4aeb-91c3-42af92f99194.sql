@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS public.hidden_defaults; DROP TABLE IF EXISTS public.chat_leads;
