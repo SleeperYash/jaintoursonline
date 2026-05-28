@@ -219,6 +219,7 @@ export type Database = {
           parse_error: string | null
           parsed_at: string | null
           parsed_data: Json | null
+          starting_price: string | null
           title: string
           updated_at: string
           uploaded_by: string | null
@@ -232,6 +233,7 @@ export type Database = {
           parse_error?: string | null
           parsed_at?: string | null
           parsed_data?: Json | null
+          starting_price?: string | null
           title: string
           updated_at?: string
           uploaded_by?: string | null
@@ -245,6 +247,7 @@ export type Database = {
           parse_error?: string | null
           parsed_at?: string | null
           parsed_data?: Json | null
+          starting_price?: string | null
           title?: string
           updated_at?: string
           uploaded_by?: string | null
