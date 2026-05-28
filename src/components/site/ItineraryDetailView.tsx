@@ -140,8 +140,9 @@ const ItineraryDetailView = ({
   const [activeSection, setActiveSection] = useState<string>("overview");
   const suppressObserverUntil = useRef<number>(0);
   const [similar, setSimilar] = useState<{ id: string; title: string; starting_price: string | null }[]>([]);
-  const { images: uploadedDestImages } = useDestinationImages(destinationSlug ?? "");
-  const { hidden: hiddenDestImages } = useHiddenDefaultImages(destinationSlug);
+  const { images: uploadedDestImages, loading: uploadedDestLoading } = useDestinationImages(destinationSlug ?? "");
+  const { hidden: hiddenDestImages, loading: hiddenDestLoading } = useHiddenDefaultImages(destinationSlug);
+  const similarImagesReady = !uploadedDestLoading && !hiddenDestLoading;
 
   const similarImagePool = useMemo(() => {
     const pool: string[] = [];
@@ -659,7 +660,7 @@ const ItineraryDetailView = ({
                       <ItineraryCard
                         id={it.id}
                         title={it.title}
-                        image={similarImagePool.length ? similarImagePool[(i + 1) % similarImagePool.length] : heroImage}
+                        image={similarImagesReady && similarImagePool.length ? similarImagePool[(i + 1) % similarImagePool.length] : undefined}
                         destinationSlug={destinationSlug}
                         locationLabel={locationLabel}
                         index={i}
