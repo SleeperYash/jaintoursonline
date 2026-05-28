@@ -1,6 +1,5 @@
 import { useParams, Navigate, Link } from "react-router-dom";
-import { useMemo, useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { useMemo, useState } from "react";
 import SiteLayout from "@/components/site/SiteLayout";
 import ItineraryViewer from "@/components/site/ItineraryViewer";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
@@ -18,23 +17,13 @@ const DestinationDetail = () => {
   const { slug = "" } = useParams();
   const d = findDestination(slug);
   const { images, coverUrl } = useDestinationImages(slug);
-  const [hiddenDefaults, setHiddenDefaults] = useState<string[]>([]);
 
-  useEffect(() => {
-    if (!slug) return;
-    supabase
-      .from("hidden_defaults")
-      .select("image_url")
-      .eq("destination_slug", slug)
-      .then(({ data }) => setHiddenDefaults((data ?? []).map((x) => x.image_url)));
-  }, [slug]);
-
-  // Build photo list: prefer uploaded images; fall back to default + gallery minus hidden
+  // Build photo list: prefer uploaded images; fall back to default + gallery
   const photos = useMemo(() => {
     if (images.length > 0) return images.map((i) => adminPublicUrl(i.file_path));
     if (!d) return [];
-    return [d.image, ...(d.gallery ?? [])].filter((u) => !hiddenDefaults.includes(u));
-  }, [images, d, hiddenDefaults]);
+    return [d.image, ...(d.gallery ?? [])];
+  }, [images, d]);
 
   const heroPhoto = coverUrl ?? d?.image ?? PLACEHOLDER;
   const sidePhoto1 = photos[1] ?? photos[0] ?? PLACEHOLDER;
