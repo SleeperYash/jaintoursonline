@@ -2,6 +2,7 @@ import { useParams, Navigate, Link } from "react-router-dom";
 import { useMemo, useState } from "react";
 import SiteLayout from "@/components/site/SiteLayout";
 import ItineraryViewer from "@/components/site/ItineraryViewer";
+import JsonLd from "@/components/site/JsonLd";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { findDestination } from "@/data/destinations";
 import { useSeo } from "@/hooks/useSeo";
@@ -61,6 +62,29 @@ const DestinationDetail = () => {
 
   return (
     <SiteLayout>
+      <JsonLd
+        id="ld-destination"
+        data={{
+          "@context": "https://schema.org",
+          "@type": "TouristTrip",
+          name: `${d.name} Tour Package`,
+          description: d.overview ?? `Curated ${d.name} tour by Jain Tours & Travels.`,
+          image: photos.length ? photos.slice(0, 5) : undefined,
+          touristType: d.region === "domestic" ? "Domestic traveller" : "International traveller",
+          provider: {
+            "@type": "TravelAgency",
+            name: "Jain Tours & Travels",
+            url: "https://travelstest.lovable.app",
+          },
+          offers: {
+            "@type": "Offer",
+            price: startingPrice,
+            priceCurrency: "INR",
+            availability: "https://schema.org/InStock",
+            url: `https://travelstest.lovable.app/destinations/${slug}`,
+          },
+        }}
+      />
       {/* Photo grid */}
       <section className="container pt-24 md:pt-32">
         <Link
