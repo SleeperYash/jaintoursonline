@@ -469,7 +469,7 @@ const ItineraryDetailView = ({
                       <AccordionContent className="px-4 md:px-6 pb-5">
                         <div className="pl-0 md:pl-14 min-w-0 break-words">
                           {d.body && (
-                            <p className="text-sm md:text-base text-foreground font-semibold leading-relaxed whitespace-pre-line break-words [overflow-wrap:anywhere]">
+                            <p className="text-sm md:text-base text-foreground font-normal leading-relaxed whitespace-pre-line break-words [overflow-wrap:anywhere]">
                               {d.body}
                             </p>
                           )}
