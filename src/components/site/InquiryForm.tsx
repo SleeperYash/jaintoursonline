@@ -59,7 +59,7 @@ const InquiryForm = () => {
   };
 
   const inputCls =
-    "w-full bg-transparent border-b border-border/60 focus:border-gold outline-none px-0 py-3 text-sm text-foreground placeholder:text-muted-foreground/60 transition-colors";
+    "w-full bg-transparent border-b border-border/60 focus:border-gold outline-none px-0 py-3 text-sm text-foreground placeholder:text-muted-foreground transition-colors";
   const labelCls =
     "text-[10px] uppercase tracking-luxe text-muted-foreground";
   const errCls = "text-xs text-destructive mt-1";
