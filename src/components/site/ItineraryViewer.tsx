@@ -14,6 +14,7 @@ type Itinerary = {
   file_size: number | null;
   parsed_data: { days?: { title: string }[] } | null;
   starting_price: string | null;
+  duration: string | null;
 };
 
 const ItineraryViewer = ({
@@ -56,7 +57,7 @@ const ItineraryViewer = ({
       setLoading(true);
       const { data } = await supabase
         .from("itineraries")
-        .select("id,title,file_path,file_size,parsed_data,starting_price")
+        .select("id,title,file_path,file_size,parsed_data,starting_price,duration")
         .eq("destination_slug", destinationSlug)
         .order("created_at", { ascending: false });
       if (!cancelled) {
@@ -129,6 +130,7 @@ const ItineraryViewer = ({
                       locationLabel={locationLabel}
                       index={i}
                       initialPrice={it.starting_price ?? undefined}
+                      durationOverride={it.duration ?? undefined}
                     />
                   </div>
                 ))}
