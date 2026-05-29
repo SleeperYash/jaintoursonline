@@ -25,6 +25,13 @@ Deno.serve(async (req) => {
   const { name, country, duration, highlights } = body ?? {};
   if (!name) return json({ error: "Missing name" }, 400);
 
+  // Input validation: cap lengths to prevent prompt-token inflation abuse.
+  const safeName = String(name).slice(0, 100);
+  const safeCountry = String(country ?? "").slice(0, 100);
+  const safeHighlights = Array.isArray(highlights)
+    ? highlights.slice(0, 20).map((h: any) => String(h).slice(0, 60))
+    : [];
+
   // Pick a sensible day count from "5 – 7 Nights" → middle of the range.
   let dayCount = 5;
   const m = String(duration ?? "").match(/(\d+)\s*[–-]\s*(\d+)/);
@@ -38,8 +45,8 @@ Deno.serve(async (req) => {
   const sys = `You are an expert travel curator for Indian families and honeymooners.
 Reply with ONLY valid JSON, no prose, no markdown fences.`;
 
-  const user = `Create a day-by-day itinerary for "${name}" (${country ?? ""}), ${dayCount} days total.
-Highlights to weave in: ${(highlights ?? []).join(", ")}.
+  const user = `Create a day-by-day itinerary for "${safeName}" (${safeCountry}), ${dayCount} days total.
+Highlights to weave in: ${safeHighlights.join(", ")}.
 
 Tone: warm, premium, written for Indian travellers (mention vegetarian/Jain food options, temples, family-friendly sightseeing, local shopping bazaars, practical tips like SIM, currency, weather).
 
@@ -78,6 +85,7 @@ Rules:
           { role: "user", content: user },
         ],
         response_format: { type: "json_object" },
+        max_tokens: 2000,
       }),
     });
 

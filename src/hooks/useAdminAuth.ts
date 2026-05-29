@@ -1,32 +1,7 @@
-import { useEffect, useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 
-const ADMIN_KEY = "jt_admin_pwd";
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string;
 const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
-
-const getSavedAdminPassword = () => {
-  try {
-    return sessionStorage.getItem(ADMIN_KEY) ?? "";
-  } catch {
-    return "";
-  }
-};
-
-const saveAdminPassword = (value: string) => {
-  try {
-    sessionStorage.setItem(ADMIN_KEY, value);
-  } catch {
-    // Session storage can be unavailable in privacy-restricted browsers.
-  }
-};
-
-const clearAdminPassword = () => {
-  try {
-    sessionStorage.removeItem(ADMIN_KEY);
-  } catch {
-    // Session storage can be unavailable in privacy-restricted browsers.
-  }
-};
 
 const adminHeaders = (password: string) => {
   const headers: Record<string, string> = {
@@ -64,19 +39,10 @@ export const useAdminAuth = () => {
   const [pwd, setPwd] = useState("");
   const [authed, setAuthed] = useState(false);
 
-  useEffect(() => {
-    const saved = getSavedAdminPassword();
-    if (saved) {
-      setPwd(saved);
-      setAuthed(true);
-    }
-  }, []);
-
   const callAdmin = useCallback(
     async (action: string, payload: Record<string, unknown> = {}, overridePwd?: string) => {
-      const usePwd = overridePwd ?? (getSavedAdminPassword() || pwd);
+      const usePwd = overridePwd ?? pwd;
       if (!usePwd) {
-        clearAdminPassword();
         setAuthed(false);
         throw new Error("Admin session expired. Please unlock the panel again.");
       }
@@ -87,14 +53,12 @@ export const useAdminAuth = () => {
       });
       const data = await res.json().catch(() => ({}));
       if (data?.ok === false) {
-        clearAdminPassword();
         setPwd("");
         setAuthed(false);
         throw new Error(data?.error ?? "Request failed");
       }
       if (!res.ok) {
         if (res.status === 401 || res.status === 403) {
-          clearAdminPassword();
           setPwd("");
           setAuthed(false);
         }
@@ -116,7 +80,6 @@ export const useAdminAuth = () => {
       const data = await res.json().catch(() => ({}));
       if (data?.ok === false) throw new Error(data?.error ?? "Invalid password");
       if (!res.ok) throw new Error(data?.error ?? "Invalid password");
-      saveAdminPassword(candidatePwd);
       setPwd(candidatePwd);
       setAuthed(true);
     },

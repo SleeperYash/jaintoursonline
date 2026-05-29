@@ -81,14 +81,23 @@ Deno.serve(async (req) => {
     return json({ error: "Server not configured" }, 500);
   }
 
-  let body: { itinerary_id?: string; force?: boolean };
+  let body: { itinerary_id?: string; force?: boolean; admin_password?: string };
   try {
     body = await req.json();
   } catch {
     return json({ error: "Invalid JSON" }, 400);
   }
-  const { itinerary_id, force } = body;
+  const { itinerary_id } = body;
   if (!itinerary_id) return json({ error: "Missing itinerary_id" }, 400);
+
+  // Only honor `force` when a valid admin password (header or body) is presented.
+  // This prevents anonymous callers from bypassing the parsed_data cache and
+  // triggering repeated paid AI invocations.
+  const ADMIN_PASSWORD = Deno.env.get("ADMIN_PASSWORD") ?? "";
+  const providedPwd =
+    req.headers.get("x-admin-password") ?? body.admin_password ?? "";
+  const isAdmin = !!ADMIN_PASSWORD && providedPwd === ADMIN_PASSWORD;
+  const force = isAdmin && body.force === true;
 
   const supabase = createClient(SUPABASE_URL, SERVICE_ROLE);
 
