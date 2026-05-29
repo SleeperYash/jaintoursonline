@@ -1,0 +1,1 @@
+ALTER TABLE public.itineraries ADD COLUMN IF NOT EXISTS duration text;

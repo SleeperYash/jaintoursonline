@@ -77,7 +77,7 @@ Deno.serve(async (req) => {
 
     // ---------- ITINERARIES (existing) ----------
     if (action === "upload") {
-      const { destination_slug, title, file_base64, file_name, file_size, content_type, starting_price } = body ?? {};
+      const { destination_slug, title, file_base64, file_name, file_size, content_type, starting_price, duration } = body ?? {};
       if (!destination_slug || !title || !file_base64 || !file_name) {
         return json({ error: "Missing fields" }, 400);
       }
@@ -107,6 +107,10 @@ Deno.serve(async (req) => {
             typeof starting_price === "string" && starting_price.trim()
               ? starting_price.trim().slice(0, 40)
               : null,
+          duration:
+            typeof duration === "string" && duration.trim()
+              ? duration.trim().slice(0, 40)
+              : null,
         })
         .select()
         .single();
@@ -127,6 +131,21 @@ Deno.serve(async (req) => {
       const { error: updErr } = await supabase
         .from("itineraries")
         .update({ starting_price: value })
+        .eq("id", id);
+      if (updErr) return json({ error: updErr.message }, 500);
+      return json({ ok: true });
+    }
+
+    if (action === "update_duration") {
+      const { id, duration } = body ?? {};
+      if (!id) return json({ error: "Missing id" }, 400);
+      const value =
+        typeof duration === "string" && duration.trim()
+          ? duration.trim().slice(0, 40)
+          : null;
+      const { error: updErr } = await supabase
+        .from("itineraries")
+        .update({ duration: value })
         .eq("id", id);
       if (updErr) return json({ error: updErr.message }, 500);
       return json({ ok: true });

@@ -49,6 +49,7 @@ type Itinerary = {
   file_path: string;
   file_size: number | null;
   starting_price: string | null;
+  duration: string | null;
 };
 
 type Props = {
@@ -97,9 +98,12 @@ const ManageDestinationDialog = ({
   const [itinTitle, setItinTitle] = useState("");
   const [itinFile, setItinFile] = useState<File | null>(null);
   const [itinPrice, setItinPrice] = useState("");
+  const [itinDuration, setItinDuration] = useState("");
   const [uploadingItin, setUploadingItin] = useState(false);
   const [priceDrafts, setPriceDrafts] = useState<Record<string, string>>({});
   const [savingPriceId, setSavingPriceId] = useState<string | null>(null);
+  const [durationDrafts, setDurationDrafts] = useState<Record<string, string>>({});
+  const [savingDurationId, setSavingDurationId] = useState<string | null>(null);
 
   // Reviews
   const { reviews, refetch: refetchReviews } = useClientReviews();
@@ -127,7 +131,7 @@ const ManageDestinationDialog = ({
   const fetchItineraries = useCallback(async () => {
     const { data } = await supabase
       .from("itineraries")
-      .select("id,title,file_path,file_size,starting_price")
+      .select("id,title,file_path,file_size,starting_price,duration")
       .eq("destination_slug", destinationSlug)
       .order("created_at", { ascending: false });
     setItineraries(data ?? []);
@@ -383,11 +387,13 @@ const ManageDestinationDialog = ({
         content_type: itinFile.type,
         file_base64,
         starting_price: itinPrice.trim() || null,
+        duration: itinDuration.trim() || null,
       });
       toast({ title: "Uploaded", description: itinTitle });
       setItinTitle("");
       setItinFile(null);
       setItinPrice("");
+      setItinDuration("");
       const input = document.getElementById("manage-pdf-input") as HTMLInputElement | null;
       if (input) input.value = "";
       fetchItineraries();
@@ -425,6 +431,25 @@ const ManageDestinationDialog = ({
       toast({ title: "Update failed", description: (err as Error).message, variant: "destructive" });
     } finally {
       setSavingPriceId(null);
+    }
+  };
+
+  const handleSaveDuration = async (it: Itinerary) => {
+    const value = (durationDrafts[it.id] ?? it.duration ?? "").trim();
+    setSavingDurationId(it.id);
+    try {
+      await callAdmin("update_duration", { id: it.id, duration: value || null });
+      toast({ title: "Duration updated", description: it.title });
+      setDurationDrafts((p) => {
+        const next = { ...p };
+        delete next[it.id];
+        return next;
+      });
+      fetchItineraries();
+    } catch (err) {
+      toast({ title: "Update failed", description: (err as Error).message, variant: "destructive" });
+    } finally {
+      setSavingDurationId(null);
     }
   };
 
@@ -557,6 +582,21 @@ const ManageDestinationDialog = ({
                       Shown as the "Starting from" price on the itinerary page. Leave blank to use the PDF / auto value.
                     </p>
                   </div>
+                  <div>
+                    <Label className="text-xs uppercase tracking-luxe text-foreground/70">
+                      Nights / Days (optional)
+                    </Label>
+                    <Input
+                      value={itinDuration}
+                      onChange={(e) => setItinDuration(e.target.value)}
+                      placeholder="e.g. 5 Nights / 6 Days"
+                      maxLength={40}
+                      className="mt-2"
+                    />
+                    <p className="text-[10px] text-foreground/50 mt-1">
+                      Shown as the duration badge on the itinerary card. Leave blank to auto-detect from the PDF.
+                    </p>
+                  </div>
                   <Button
                     type="submit"
                     disabled={uploadingItin}
@@ -585,13 +625,21 @@ const ManageDestinationDialog = ({
                       {itineraries.map((it) => (
                         <div
                           key={it.id}
-                          className="flex flex-col sm:flex-row sm:items-center gap-3 border border-border/60 p-3 rounded-md"
+                          className="flex flex-col gap-3 border border-border/60 p-3 rounded-md"
                         >
-                          <div className="flex items-center gap-3 flex-1 min-w-0">
+                          <div className="flex items-center gap-3 min-w-0">
                             <FileText className="w-4 h-4 text-gold shrink-0" />
                             <p className="text-sm text-foreground flex-1 truncate">{it.title}</p>
+                            <button
+                              onClick={() => handleDeleteItin(it)}
+                              className="p-2 text-foreground/60 hover:text-destructive"
+                              title="Delete"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
                           </div>
-                          <div className="flex items-center gap-2 sm:w-auto w-full">
+                          <div className="flex flex-col sm:flex-row gap-2">
+                            <div className="flex items-center gap-2 flex-1">
                             <Input
                               value={priceDrafts[it.id] ?? it.starting_price ?? ""}
                               onChange={(e) =>
@@ -599,7 +647,7 @@ const ManageDestinationDialog = ({
                               }
                               placeholder="₹ price"
                               maxLength={40}
-                              className="h-9 w-full sm:w-36 text-sm"
+                              className="h-9 flex-1 text-sm"
                             />
                             <Button
                               type="button"
@@ -618,13 +666,35 @@ const ManageDestinationDialog = ({
                                 "Save"
                               )}
                             </Button>
-                            <button
-                              onClick={() => handleDeleteItin(it)}
-                              className="p-2 text-foreground/60 hover:text-destructive"
-                              title="Delete"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
+                            </div>
+                            <div className="flex items-center gap-2 flex-1">
+                              <Input
+                                value={durationDrafts[it.id] ?? it.duration ?? ""}
+                                onChange={(e) =>
+                                  setDurationDrafts((p) => ({ ...p, [it.id]: e.target.value }))
+                                }
+                                placeholder="e.g. 5N / 6D"
+                                maxLength={40}
+                                className="h-9 flex-1 text-sm"
+                              />
+                              <Button
+                                type="button"
+                                size="sm"
+                                variant="secondary"
+                                disabled={
+                                  savingDurationId === it.id ||
+                                  (durationDrafts[it.id] ?? it.duration ?? "") ===
+                                    (it.duration ?? "")
+                                }
+                                onClick={() => handleSaveDuration(it)}
+                              >
+                                {savingDurationId === it.id ? (
+                                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                ) : (
+                                  "Save"
+                                )}
+                              </Button>
+                            </div>
                           </div>
                         </div>
                       ))}
