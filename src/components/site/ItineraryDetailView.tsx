@@ -694,14 +694,24 @@ const ItineraryDetailView = ({
             <p className="text-xs md:text-sm text-foreground/70">Best price on request</p>
           )}
         </div>
-        <a
-          href={waLink(`Hi Jain Tours, I'd like to enquire about ${displayTitle}.`)}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="shrink-0 inline-flex items-center justify-center gap-2 px-5 md:px-7 py-3 rounded-full bg-[#25D366] text-white text-xs md:text-sm font-medium uppercase tracking-luxe hover:opacity-90 transition shadow-sm"
-        >
-          <MessageCircle className="w-4 h-4" /> Enquire Now
-        </a>
+        <div className="shrink-0 flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => onDownload?.()}
+            className="inline-flex items-center justify-center gap-2 px-3 md:px-5 py-3 rounded-full border border-border bg-background text-foreground text-xs md:text-sm font-medium uppercase tracking-luxe hover:border-gold hover:text-gold transition"
+            aria-label="Download itinerary PDF"
+          >
+            <Download className="w-4 h-4" /> <span className="hidden xs:inline sm:inline">PDF</span>
+          </button>
+          <a
+            href={waLink(`Hi Jain Tours, I'd like to enquire about ${displayTitle}.`)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 px-4 md:px-7 py-3 rounded-full bg-[#25D366] text-white text-xs md:text-sm font-medium uppercase tracking-luxe hover:opacity-90 transition shadow-sm"
+          >
+            <MessageCircle className="w-4 h-4" /> Enquire
+          </a>
+        </div>
       </div>
     </div>
   );
