@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import SiteLayout from "@/components/site/SiteLayout";
 import PageHero from "@/components/site/PageHero";
 import InquiryBand from "@/components/site/InquiryBand";
+import JsonLd from "@/components/site/JsonLd";
 import { domesticDestinations, internationalDestinations, type Destination } from "@/data/destinations";
 import { useSeo } from "@/hooks/useSeo";
 import { useReveal } from "@/hooks/useReveal";
@@ -80,6 +81,21 @@ const Destinations = () => {
 
   return (
     <SiteLayout>
+      <JsonLd
+        id="ld-destinations-list"
+        data={{
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          name: "Destinations by Jain Tours & Travels",
+          numberOfItems: [...domesticDestinations, ...internationalDestinations].length,
+          itemListElement: [...domesticDestinations, ...internationalDestinations].map((dest, i) => ({
+            "@type": "ListItem",
+            position: i + 1,
+            url: `https://travelstest.lovable.app/destinations/${dest.slug}`,
+            name: dest.name,
+          })),
+        }}
+      />
       <PageHero title="DESTINATIONS" crumb="Destinations" />
 
       {/* Floating search + filter card, half overlapping hero */}
