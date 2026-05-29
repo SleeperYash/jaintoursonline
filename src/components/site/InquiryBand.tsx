@@ -29,6 +29,9 @@ const InquiryBand = () => {
                 <img 
                   src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&q=80&w=800" 
                   alt="Paris" 
+                  width={800}
+                  height={1000}
+                  loading="lazy"
                   className="w-full h-[180px] md:h-[280px] object-cover rounded-[2px]"
                 />
                 {/* Location Pill */}
@@ -47,6 +50,9 @@ const InquiryBand = () => {
               <img 
                 src="https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&q=80&w=600" 
                 alt="Rome" 
+                width={600}
+                height={750}
+                loading="lazy"
                 className="w-full h-[140px] md:h-[220px] object-cover rounded-[2px]"
               />
             </div>
