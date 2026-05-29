@@ -150,7 +150,7 @@ const About = () => {
 
             <Reveal className="lg:pt-2">
               <div className="overflow-hidden rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
-                <img src={whoImg} alt={`${BRAND.name} team`} className="w-full h-[360px] md:h-[460px] object-cover border-8" loading="lazy" />
+                <img src={whoImg} alt={`${BRAND.name} team`} width={1200} height={800} className="w-full h-[360px] md:h-[460px] object-cover border-8" loading="lazy" />
               </div>
             </Reveal>
           </div>
