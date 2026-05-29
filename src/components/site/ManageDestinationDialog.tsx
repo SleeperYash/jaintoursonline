@@ -49,6 +49,7 @@ type Itinerary = {
   file_path: string;
   file_size: number | null;
   starting_price: string | null;
+  duration: string | null;
 };
 
 type Props = {
@@ -97,9 +98,12 @@ const ManageDestinationDialog = ({
   const [itinTitle, setItinTitle] = useState("");
   const [itinFile, setItinFile] = useState<File | null>(null);
   const [itinPrice, setItinPrice] = useState("");
+  const [itinDuration, setItinDuration] = useState("");
   const [uploadingItin, setUploadingItin] = useState(false);
   const [priceDrafts, setPriceDrafts] = useState<Record<string, string>>({});
   const [savingPriceId, setSavingPriceId] = useState<string | null>(null);
+  const [durationDrafts, setDurationDrafts] = useState<Record<string, string>>({});
+  const [savingDurationId, setSavingDurationId] = useState<string | null>(null);
 
   // Reviews
   const { reviews, refetch: refetchReviews } = useClientReviews();
@@ -127,7 +131,7 @@ const ManageDestinationDialog = ({
   const fetchItineraries = useCallback(async () => {
     const { data } = await supabase
       .from("itineraries")
-      .select("id,title,file_path,file_size,starting_price")
+      .select("id,title,file_path,file_size,starting_price,duration")
       .eq("destination_slug", destinationSlug)
       .order("created_at", { ascending: false });
     setItineraries(data ?? []);
@@ -383,11 +387,13 @@ const ManageDestinationDialog = ({
         content_type: itinFile.type,
         file_base64,
         starting_price: itinPrice.trim() || null,
+        duration: itinDuration.trim() || null,
       });
       toast({ title: "Uploaded", description: itinTitle });
       setItinTitle("");
       setItinFile(null);
       setItinPrice("");
+      setItinDuration("");
       const input = document.getElementById("manage-pdf-input") as HTMLInputElement | null;
       if (input) input.value = "";
       fetchItineraries();
@@ -425,6 +431,25 @@ const ManageDestinationDialog = ({
       toast({ title: "Update failed", description: (err as Error).message, variant: "destructive" });
     } finally {
       setSavingPriceId(null);
+    }
+  };
+
+  const handleSaveDuration = async (it: Itinerary) => {
+    const value = (durationDrafts[it.id] ?? it.duration ?? "").trim();
+    setSavingDurationId(it.id);
+    try {
+      await callAdmin("update_duration", { id: it.id, duration: value || null });
+      toast({ title: "Duration updated", description: it.title });
+      setDurationDrafts((p) => {
+        const next = { ...p };
+        delete next[it.id];
+        return next;
+      });
+      fetchItineraries();
+    } catch (err) {
+      toast({ title: "Update failed", description: (err as Error).message, variant: "destructive" });
+    } finally {
+      setSavingDurationId(null);
     }
   };
 
