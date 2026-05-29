@@ -480,7 +480,7 @@ const ItineraryDetailView = ({
                               </h4>
                               <ul className="space-y-1.5">
                                 {d.activities.map((a, ai) => (
-                                  <li key={ai} className="flex items-start gap-2 text-sm text-foreground font-semibold break-words [overflow-wrap:anywhere]">
+                                  <li key={ai} className="flex items-start gap-2 text-sm text-foreground font-normal break-words [overflow-wrap:anywhere]">
                                     <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-gold shrink-0" />
                                     <span>{a}</span>
                                   </li>
