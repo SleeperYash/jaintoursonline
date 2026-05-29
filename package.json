@@ -9,6 +9,7 @@
     "prebuild": "bunx tsx scripts/generate-sitemap.ts",
     "build": "vite build",
     "build:dev": "vite build --mode development",
+    "seo:check": "bunx tsx scripts/seo-check.ts",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
