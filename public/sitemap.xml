@@ -179,6 +179,10 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://travelstest.lovable.app/destinations/dubai/dubai-fun-5-days</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://travelstest.lovable.app/destinations/united-kingdom/uk-scotland-6-nights-7-days</loc>
     <priority>0.6</priority>
   </url>
@@ -195,7 +199,7 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://travelstest.lovable.app/destinations/dubai/dubai-fun-5-days</loc>
+    <loc>https://travelstest.lovable.app/destinations/bhutan/amazing-bhutan-8-days</loc>
     <priority>0.6</priority>
   </url>
   <url>
@@ -207,11 +211,31 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://travelstest.lovable.app/destinations/bhutan/amazing-bhutan-8-days</loc>
+    <loc>https://travelstest.lovable.app/destinations/japan/japan-extravenga-8n-9d</loc>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://travelstest.lovable.app/destinations/japan/japan-extravenga-8n-9d</loc>
+    <loc>https://travelstest.lovable.app/destinations/thailand/2n-krabi-4n-phuket-2n-bangkok</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://travelstest.lovable.app/destinations/thailand/phuket-3n</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://travelstest.lovable.app/destinations/thailand/2n-phuket-2n-krabi</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://travelstest.lovable.app/destinations/dubai/amazing-dubai-6-days</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://travelstest.lovable.app/destinations/bali/amazing-bali-7-days</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://travelstest.lovable.app/destinations/georgia/2n-gabala-4n-baku</loc>
     <priority>0.6</priority>
   </url>
 </urlset>
