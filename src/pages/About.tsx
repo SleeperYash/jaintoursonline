@@ -3,6 +3,7 @@ import { useSeo } from "@/hooks/useSeo";
 import { useReveal } from "@/hooks/useReveal";
 import { BRAND } from "@/lib/brand";
 import { Link } from "react-router-dom";
+import nepalTempleImg from "@/assets/nepal-temple.jpg";
 import {
   Smile,
   Bookmark,
