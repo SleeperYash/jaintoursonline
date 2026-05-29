@@ -20,6 +20,7 @@ type Props = {
   locationLabel: string;
   index?: number;
   initialPrice?: string | null;
+  durationOverride?: string | null;
 };
 
 const ItineraryCard = ({
@@ -30,6 +31,7 @@ const ItineraryCard = ({
   locationLabel,
   index = 0,
   initialPrice = null,
+  durationOverride = null,
 }: Props) => {
   const accent = ACCENTS[index % ACCENTS.length];
   const [price, setPrice] = useState<string | null>(initialPrice);
@@ -65,12 +67,13 @@ const ItineraryCard = ({
     .reduce((sum, mm) => sum + parseInt(mm[1], 10), 0);
   const nights = totalNights || (m ? parseInt(m[1], 10) : 0);
   const days = m && m[2] ? parseInt(m[2], 10) : nights ? nights + 1 : 0;
-  const duration =
+  const autoDuration =
     nights && days
       ? `${nights} Night${nights > 1 ? "s" : ""} · ${days} Day${days > 1 ? "s" : ""}`
       : days
         ? `${days} Day${days > 1 ? "s" : ""}`
         : null;
+  const duration = durationOverride?.trim() || autoDuration;
 
   // Strip any "2N", "03N / 04D", "Nights/Days" fragments anywhere in the title
   const cleanTitle = title
