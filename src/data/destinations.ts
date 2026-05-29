@@ -1,3 +1,5 @@
+import nepalTempleImg from "@/assets/nepal-temple.jpg";
+
 export type Destination = {
   slug: string;
   name: string;
