@@ -111,7 +111,7 @@ const ReviewsCardStack = () => {
                         />
                       ) : (
                         <div className="w-full h-full bg-slate-200 dark:bg-muted flex items-center justify-center">
-                          <MapPin className="w-8 h-8 text-slate-600 dark:text-muted-foreground" />
+                          <MapPin className="w-8 h-8 text-slate-400 dark:text-muted-foreground" />
                         </div>
                       )}
                       
@@ -147,7 +147,7 @@ const ReviewsCardStack = () => {
                         </span>
                         {/* Optional Date if available */}
                         {review.date && (
-                          <span className="text-[10px] text-slate-600 dark:text-muted-foreground uppercase tracking-wider font-medium">
+                          <span className="text-[10px] text-slate-400 dark:text-muted-foreground uppercase tracking-wider font-medium">
                             {review.date}
                           </span>
                         )}
