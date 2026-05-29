@@ -675,6 +675,7 @@ const ItineraryDetailView = ({
                         locationLabel={locationLabel}
                         index={i}
                         initialPrice={it.starting_price ?? undefined}
+                        durationOverride={it.duration ?? undefined}
                       />
                     </div>
                   ))}
