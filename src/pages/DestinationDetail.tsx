@@ -70,7 +70,7 @@ const DestinationDetail = () => {
           name: `${d.name} Tour Package`,
           description: d.overview ?? `Curated ${d.name} tour by Jain Tours & Travels.`,
           image: photos.length ? photos.slice(0, 5) : undefined,
-          touristType: d.region === "domestic" ? "Domestic traveller" : "International traveller",
+          touristType: d.region === "Domestic" ? "Domestic traveller" : "International traveller",
           provider: {
             "@type": "TravelAgency",
             name: "Jain Tours & Travels",
