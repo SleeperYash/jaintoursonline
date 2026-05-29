@@ -66,7 +66,7 @@ const TopTrending = () => {
               >
               <img
                 src={covers[d.slug] ?? d.image}
-                alt={d.name}
+                alt={`${d.name} luxury travel destination`}
                 loading="lazy"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
               />

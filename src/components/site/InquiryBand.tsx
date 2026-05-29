@@ -28,7 +28,7 @@ const InquiryBand = () => {
               <div className="relative">
                 <img 
                   src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&q=80&w=800" 
-                  alt="Paris" 
+                  alt="Paris cityscape with Eiffel Tower — luxury travel destination" 
                   width={800}
                   height={1000}
                   loading="lazy"
@@ -49,7 +49,7 @@ const InquiryBand = () => {
             >
               <img 
                 src="https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&q=80&w=600" 
-                alt="Rome" 
+                alt="Rome Colosseum ancient architecture — luxury travel destination" 
                 width={600}
                 height={750}
                 loading="lazy"
