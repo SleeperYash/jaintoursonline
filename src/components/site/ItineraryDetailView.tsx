@@ -139,7 +139,7 @@ const ItineraryDetailView = ({
   const tabsBarRef = useRef<HTMLDivElement>(null);
   const [activeSection, setActiveSection] = useState<string>("overview");
   const suppressObserverUntil = useRef<number>(0);
-  const [similar, setSimilar] = useState<{ id: string; title: string; starting_price: string | null }[]>([]);
+  const [similar, setSimilar] = useState<{ id: string; title: string; starting_price: string | null; duration: string | null }[]>([]);
   const { images: uploadedDestImages, loading: uploadedDestLoading } = useDestinationImages(destinationSlug ?? "");
   const { hidden: hiddenDestImages, loading: hiddenDestLoading } = useHiddenDefaultImages(destinationSlug);
   const similarImagesReady = !uploadedDestLoading && !hiddenDestLoading;
@@ -167,12 +167,12 @@ const ItineraryDetailView = ({
     (async () => {
       const { data } = await supabase
         .from("itineraries")
-        .select("id,title,starting_price")
+        .select("id,title,starting_price,duration")
         .eq("destination_slug", destinationSlug)
         .neq("id", itineraryId)
         .order("created_at", { ascending: false })
         .limit(6);
-      if (!cancelled) setSimilar((data ?? []) as { id: string; title: string; starting_price: string | null }[]);
+      if (!cancelled) setSimilar((data ?? []) as { id: string; title: string; starting_price: string | null; duration: string | null }[]);
     })();
     return () => {
       cancelled = true;
