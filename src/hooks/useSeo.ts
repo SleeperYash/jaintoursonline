@@ -9,11 +9,13 @@ export function useSeo({
   description,
   canonicalPath,
   ogImage,
+  ogType = "website",
 }: {
   title: string;
   description: string;
   canonicalPath?: string;
   ogImage?: string;
+  ogType?: "website" | "article" | "product" | "profile";
 }) {
   useEffect(() => {
     document.title = title;
@@ -40,7 +42,7 @@ export function useSeo({
     };
     setProp("og:title", title);
     setProp("og:description", description);
-    setProp("og:type", "website");
+    setProp("og:type", ogType);
     setProp("og:url", `${window.location.origin}${canonicalPath ?? window.location.pathname}`);
     if (ogImage) setProp("og:image", ogImage);
 
@@ -65,5 +67,5 @@ export function useSeo({
       document.head.appendChild(link);
     }
     link.setAttribute("href", `${window.location.origin}${path}`);
-  }, [title, description, canonicalPath, ogImage]);
+  }, [title, description, canonicalPath, ogImage, ogType]);
 }

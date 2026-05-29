@@ -126,6 +126,7 @@ const ItineraryDetailPage = () => {
     description: d?.overview ?? "Curated itinerary by Jain Tours & Travels.",
     canonicalPath: `/destinations/${slug}/${itinerarySlug}`,
     ogImage: heroPhoto,
+    ogType: "article",
   });
 
   if (!d) return <Navigate to="/destinations" replace />;
