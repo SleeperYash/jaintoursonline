@@ -167,11 +167,27 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://travelstest.lovable.app/destinations/thailand/pattaya-3n-bangkok-2n-6days</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://travelstest.lovable.app/destinations/vietnam/unbeatable-vietnam-8-days</loc>
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://travelstest.lovable.app/destinations/thailand/phuket-3n</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://travelstest.lovable.app/destinations/thailand/2n-krabi-4n-phuket-2n-bangkok</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://travelstest.lovable.app/destinations/bali/unreal-bali</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://travelstest.lovable.app/destinations/thailand/2n-phuket-2n-krabi</loc>
     <priority>0.6</priority>
   </url>
   <url>
@@ -180,6 +196,10 @@
   </url>
   <url>
     <loc>https://travelstest.lovable.app/destinations/uttarakhand/7n-hills-and-wildlife-of-uttarakhand</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://travelstest.lovable.app/destinations/thailand/premium-3n-phuket-2n-krabi-3n-bangkok</loc>
     <priority>0.6</priority>
   </url>
   <url>
@@ -192,14 +212,6 @@
   </url>
   <url>
     <loc>https://travelstest.lovable.app/destinations/singapore-malaysia/vietnam-adventure-quest-7-days</loc>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://travelstest.lovable.app/destinations/thailand/premium-3n-phuket-2n-krabi-3n-bangkok</loc>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://travelstest.lovable.app/destinations/thailand/pattaya-3n-bangkok-2n-6days</loc>
     <priority>0.6</priority>
   </url>
   <url>
@@ -216,18 +228,6 @@
   </url>
   <url>
     <loc>https://travelstest.lovable.app/destinations/japan/japan-extravenga-8n-9d</loc>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://travelstest.lovable.app/destinations/thailand/2n-krabi-4n-phuket-2n-bangkok</loc>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://travelstest.lovable.app/destinations/thailand/phuket-3n</loc>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://travelstest.lovable.app/destinations/thailand/2n-phuket-2n-krabi</loc>
     <priority>0.6</priority>
   </url>
   <url>

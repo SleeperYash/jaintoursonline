@@ -59,10 +59,12 @@ const ItineraryCard = ({
     };
   }, [id, initialPrice]);
 
-  // Duration parse from title e.g. "Amazing Dubai 03N / 04D"
-  const m = title.match(/(\d+)\s*N(?:ights?)?\s*\/?\s*(\d+)?\s*D?/i);
-  const nights = m ? parseInt(m[1], 10) : null;
-  const days = m && m[2] ? parseInt(m[2], 10) : nights ? nights + 1 : null;
+  // Duration parse from title e.g. "Amazing Dubai 03N / 04D" or "2N Phuket & 2N Krabi"
+  const m = title.match(/(\d+)\s*N(?:ights?)?\s*\/?\s*(\d+)?\s*D(?:ays?)?/i);
+  const totalNights = Array.from(title.matchAll(/(\d+)\s*N(?:ights?)?/gi))
+    .reduce((sum, mm) => sum + parseInt(mm[1], 10), 0);
+  const nights = totalNights || (m ? parseInt(m[1], 10) : 0);
+  const days = m && m[2] ? parseInt(m[2], 10) : nights ? nights + 1 : 0;
   const duration =
     nights && days
       ? `${nights} Night${nights > 1 ? "s" : ""} · ${days} Day${days > 1 ? "s" : ""}`
@@ -70,7 +72,14 @@ const ItineraryCard = ({
         ? `${days} Day${days > 1 ? "s" : ""}`
         : null;
 
-  const cleanTitle = title.replace(/\s*\d+\s*N(?:ights?)?\s*\/?\s*\d*\s*D?\s*$/i, "").trim() || title;
+  // Strip any "2N", "03N / 04D", "Nights/Days" fragments anywhere in the title
+  const cleanTitle = title
+    .replace(/\d+\s*N(?:ights?)?\s*\/?\s*\d*\s*D(?:ays?)?/gi, "")
+    .replace(/\d+\s*N(?:ights?)?/gi, "")
+    .replace(/\s*&\s*&\s*/g, " & ")
+    .replace(/^[\s&·,-]+|[\s&·,-]+$/g, "")
+    .replace(/\s{2,}/g, " ")
+    .trim() || title;
 
   return (
     <Link
@@ -102,11 +111,11 @@ const ItineraryCard = ({
             {duration ?? "Custom duration"}
           </span>
           <span
-            className={`inline-flex items-center justify-center min-w-[72px] px-3 py-1.5 rounded-full text-white text-xs md:text-sm font-semibold ${accent.pill} transition-opacity duration-500 ${
+            className={`inline-flex items-center justify-center min-w-[88px] px-3 py-1.5 rounded-full text-white text-xs md:text-sm font-semibold ${accent.pill} transition-opacity duration-500 ${
               loadingPrice ? "opacity-60" : "opacity-100"
             }`}
           >
-            {loadingPrice ? "···" : price ?? "On request"}
+            {loadingPrice ? "···" : price ?? "Price on request"}
           </span>
         </div>
       </div>
