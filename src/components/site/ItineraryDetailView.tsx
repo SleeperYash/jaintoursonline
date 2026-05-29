@@ -676,7 +676,7 @@ const ItineraryDetailView = ({
       </div>
 
       {/* Sticky bottom price + Enquire CTA */}
-      <div className="sticky bottom-0 left-0 right-0 z-30 border-t border-border/60 bg-background/95 backdrop-blur px-3 md:px-6 py-3 flex items-center justify-between gap-3">
+      <div className="sticky bottom-0 left-0 right-0 z-50 border-t border-border/60 bg-background/95 backdrop-blur px-3 md:px-6 py-3 pr-20 md:pr-24 flex items-center justify-between gap-2 md:gap-3">
         <div className="min-w-0">
           {(priceOverride || parsed?.starting_price) ? (
             <>
@@ -698,10 +698,10 @@ const ItineraryDetailView = ({
           <button
             type="button"
             onClick={() => onDownload?.()}
-            className="inline-flex items-center justify-center gap-2 px-3 md:px-5 py-3 rounded-full border border-border bg-background text-foreground text-xs md:text-sm font-medium uppercase tracking-luxe hover:border-gold hover:text-gold transition"
+            className="inline-flex items-center justify-center gap-1.5 px-3 md:px-5 py-3 rounded-full border border-border bg-background text-foreground text-xs md:text-sm font-medium uppercase tracking-luxe hover:border-gold hover:text-gold transition"
             aria-label="Download itinerary PDF"
           >
-            <Download className="w-4 h-4" /> <span className="hidden xs:inline sm:inline">PDF</span>
+            <Download className="w-4 h-4" /> PDF
           </button>
           <a
             href={waLink(`Hi Jain Tours, I'd like to enquire about ${displayTitle}.`)}
