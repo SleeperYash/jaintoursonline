@@ -1,6 +1,7 @@
 import SiteLayout from "@/components/site/SiteLayout";
 import PageHero from "@/components/site/PageHero";
 import InquiryBand from "@/components/site/InquiryBand";
+import JsonLd from "@/components/site/JsonLd";
 import { reviews, ratingDistribution } from "@/data/reviews";
 import { BRAND } from "@/lib/brand";
 import { useSeo } from "@/hooks/useSeo";
@@ -24,6 +25,29 @@ const Reviews = () => {
 
   return (
     <SiteLayout>
+      <JsonLd
+        id="ld-reviews"
+        data={{
+          "@context": "https://schema.org",
+          "@type": "TravelAgency",
+          name: "Jain Tours & Travels",
+          url: "https://travelstest.lovable.app/reviews",
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: BRAND.rating,
+            reviewCount: BRAND.reviewCount,
+            bestRating: 5,
+            worstRating: 1,
+          },
+          review: reviews.slice(0, 10).map((r) => ({
+            "@type": "Review",
+            author: { "@type": "Person", name: r.name },
+            reviewRating: { "@type": "Rating", ratingValue: r.rating, bestRating: 5 },
+            reviewBody: r.text,
+            publisher: { "@type": "Organization", name: r.source },
+          })),
+        }}
+      />
       <PageHero title="GUEST REVIEWS" crumb="Reviews" />
       <div className="container pt-12 md:pt-16 flex justify-center">
         <GoogleRatingBadge rating={BRAND.rating} count={BRAND.reviewCount} />
