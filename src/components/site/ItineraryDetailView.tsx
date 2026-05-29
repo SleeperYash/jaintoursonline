@@ -475,7 +475,7 @@ const ItineraryDetailView = ({
                           )}
                           {d.activities?.length ? (
                             <div className="mt-4">
-                              <h4 className="text-[11px] uppercase tracking-luxe text-gold mb-2">
+                              <h4 className="text-[11px] uppercase tracking-luxe text-gold mb-2 font-bold">
                                 Activities
                               </h4>
                               <ul className="space-y-1.5">
