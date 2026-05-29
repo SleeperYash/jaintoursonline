@@ -151,11 +151,19 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://travelstest.lovable.app/destinations/dubai/majestic-dubai</loc>
+    <loc>https://travelstest.lovable.app/destinations/vietnam/vietnam-adventure-quest-7-days</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://travelstest.lovable.app/destinations/vietnam/vietnam-adventure-quest-with-halong-bay-7-days</loc>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://travelstest.lovable.app/destinations/himachal/scenic-shimla-manali</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://travelstest.lovable.app/destinations/vietnam/unbeatable-vietnam-8-days</loc>
     <priority>0.6</priority>
   </url>
   <url>
@@ -171,11 +179,39 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://travelstest.lovable.app/destinations/dubai/fantastic-dubai-05-nights-06-days</loc>
+    <loc>https://travelstest.lovable.app/destinations/united-kingdom/uk-scotland-6-nights-7-days</loc>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://travelstest.lovable.app/destinations/dubai/amazing-dubai-03-nights-04-days</loc>
+    <loc>https://travelstest.lovable.app/destinations/singapore-malaysia/vietnam-adventure-quest-7-days</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://travelstest.lovable.app/destinations/thailand/premium-3n-phuket-2n-krabi-3n-bangkok</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://travelstest.lovable.app/destinations/thailand/pattaya-3n-bangkok-2n-6days</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://travelstest.lovable.app/destinations/dubai/dubai-fun-5-days</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://travelstest.lovable.app/destinations/dubai/dubai-extravaganza-6-days</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://travelstest.lovable.app/destinations/dubai/fascinating-dubai-with-abu-dhabi-7-days</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://travelstest.lovable.app/destinations/bhutan/amazing-bhutan-8-days</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://travelstest.lovable.app/destinations/japan/japan-extravenga-8n-9d</loc>
     <priority>0.6</priority>
   </url>
 </urlset>
