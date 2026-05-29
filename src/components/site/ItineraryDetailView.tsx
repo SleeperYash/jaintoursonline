@@ -634,14 +634,24 @@ const ItineraryDetailView = ({
               <span className="text-sm md:text-base">{BRAND.email}</span>
             </a>
           </div>
-          <a
-            href={waLink(`Hello Jain Tours, I'd like help with ${displayTitle}.`)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-full bg-[#25D366] text-white text-sm md:text-base font-medium hover:opacity-90 transition shadow-sm"
-          >
-            <MessageCircle className="w-5 h-5" /> Enquire on WhatsApp
-          </a>
+          <div className="flex items-center gap-2">
+            <a
+              href={waLink(`Hello Jain Tours, I'd like help with ${displayTitle}.`)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-full bg-[#25D366] text-white text-sm md:text-base font-medium hover:opacity-90 transition shadow-sm"
+            >
+              <MessageCircle className="w-5 h-5" /> Enquire
+            </a>
+            <button
+              type="button"
+              onClick={() => onDownload?.()}
+              className="shrink-0 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-full border border-border bg-background text-foreground text-sm font-medium hover:border-gold hover:text-gold transition"
+              aria-label="Download itinerary PDF"
+            >
+              <Download className="w-4 h-4" /> PDF
+            </button>
+          </div>
         </div>
 
         {/* Similar tours */}
@@ -676,7 +686,7 @@ const ItineraryDetailView = ({
       </div>
 
       {/* Sticky bottom price + Enquire CTA */}
-      <div className="sticky bottom-0 left-0 right-0 z-50 border-t border-border/60 bg-background/95 backdrop-blur px-3 md:px-6 py-3 pr-20 md:pr-24 flex items-center justify-between gap-2 md:gap-3">
+      <div className="sticky bottom-0 left-0 right-0 z-30 border-t border-border/60 bg-background/95 backdrop-blur px-3 md:px-6 py-3 flex items-center justify-between gap-3">
         <div className="min-w-0">
           {(priceOverride || parsed?.starting_price) ? (
             <>
@@ -695,14 +705,6 @@ const ItineraryDetailView = ({
           )}
         </div>
         <div className="shrink-0 flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => onDownload?.()}
-            className="inline-flex items-center justify-center gap-1.5 px-3 md:px-5 py-3 rounded-full border border-border bg-background text-foreground text-xs md:text-sm font-medium uppercase tracking-luxe hover:border-gold hover:text-gold transition"
-            aria-label="Download itinerary PDF"
-          >
-            <Download className="w-4 h-4" /> PDF
-          </button>
           <a
             href={waLink(`Hi Jain Tours, I'd like to enquire about ${displayTitle}.`)}
             target="_blank"
