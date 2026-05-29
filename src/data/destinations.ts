@@ -80,13 +80,19 @@ const mk = (
 ): Destination => {
   const ids = HERO[slug] ?? galleryIds;
   const heroId = ids[0];
+  
+  let image = heroId ? u(heroId) : fallback(slug);
+  if (slug === "rajasthan") {
+    image = nepalTempleImg;
+  }
+
   return {
     slug,
     name,
     region,
     country,
     // Curated Unsplash hero — direct CDN, no search redirects
-    image: heroId ? u(heroId) : fallback(slug),
+    image,
     tagline,
     overview,
     duration,
