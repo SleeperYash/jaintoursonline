@@ -13,6 +13,10 @@ const HeroLuxe = () => {
           alt="Tropical beach at sunset with palm trees and turquoise water — luxury travel"
           className="w-full h-full object-cover object-center animate-[ken-burns_20s_ease-in-out_infinite_alternate]"
           loading="eager"
+          fetchPriority="high"
+          decoding="sync"
+          width={1920}
+          height={1080}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/35 to-black/55" />
         <div
