@@ -634,14 +634,24 @@ const ItineraryDetailView = ({
               <span className="text-sm md:text-base">{BRAND.email}</span>
             </a>
           </div>
-          <a
-            href={waLink(`Hello Jain Tours, I'd like help with ${displayTitle}.`)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-full bg-[#25D366] text-white text-sm md:text-base font-medium hover:opacity-90 transition shadow-sm"
-          >
-            <MessageCircle className="w-5 h-5" /> Enquire on WhatsApp
-          </a>
+          <div className="flex items-center gap-2">
+            <a
+              href={waLink(`Hello Jain Tours, I'd like help with ${displayTitle}.`)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-full bg-[#25D366] text-white text-sm md:text-base font-medium hover:opacity-90 transition shadow-sm"
+            >
+              <MessageCircle className="w-5 h-5" /> Enquire
+            </a>
+            <button
+              type="button"
+              onClick={() => onDownload?.()}
+              className="shrink-0 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-full border border-border bg-background text-foreground text-sm font-medium hover:border-gold hover:text-gold transition"
+              aria-label="Download itinerary PDF"
+            >
+              <Download className="w-4 h-4" /> PDF
+            </button>
+          </div>
         </div>
 
         {/* Similar tours */}
