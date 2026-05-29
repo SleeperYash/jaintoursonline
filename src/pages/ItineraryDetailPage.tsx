@@ -3,6 +3,7 @@ import { Link, Navigate, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import SiteLayout from "@/components/site/SiteLayout";
 import ItineraryDetailView from "@/components/site/ItineraryDetailView";
+import JsonLd from "@/components/site/JsonLd";
 import { findDestination } from "@/data/destinations";
 import { useDestinationImages } from "@/hooks/useDestinationImages";
 import { useHiddenDefaultImages } from "@/hooks/useHiddenDefaultImages";
@@ -194,6 +195,34 @@ const ItineraryDetailPage = () => {
 
   return (
     <SiteLayout>
+      {item && (
+        <JsonLd
+          id="ld-itinerary"
+          data={{
+            "@context": "https://schema.org",
+            "@type": "TouristTrip",
+            name: item.title,
+            description: d.overview ?? `${item.title} itinerary by Jain Tours & Travels.`,
+            image: heroPhoto ? [heroPhoto] : undefined,
+            touristType: d.region === "Domestic" ? "Domestic traveller" : "International traveller",
+            itinerary: { "@type": "ItemList", name: `${item.title} day-by-day` },
+            provider: {
+              "@type": "TravelAgency",
+              name: "Jain Tours & Travels",
+              url: "https://travelstest.lovable.app",
+            },
+            offers: item.starting_price
+              ? {
+                  "@type": "Offer",
+                  price: item.starting_price,
+                  priceCurrency: "INR",
+                  availability: "https://schema.org/InStock",
+                  url: `https://travelstest.lovable.app/destinations/${slug}/${itinerarySlug}`,
+                }
+              : undefined,
+          }}
+        />
+      )}
       <div className="container pt-24 md:pt-28">
         <Link
           to={`/destinations/${slug}`}
