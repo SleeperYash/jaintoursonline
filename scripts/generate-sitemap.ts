@@ -1,8 +1,22 @@
 // Runs before `vite dev` and `vite build` (predev/prebuild hooks); writes public/sitemap.xml.
 import { writeFileSync } from "fs";
 import { resolve } from "path";
-import { destinations } from "../src/data/destinations";
-import { slugify } from "../src/lib/slug";
+const slugify = (str: string): string =>
+  str
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 80);
+
+const DESTINATION_SLUGS = [
+  "andaman","tamil-nadu","goa","gujarat","kerala","kashmir","leh-ladakh",
+  "madhya-pradesh","north-east","himachal","rajasthan","uttarakhand",
+  "char-dham","delhi","europe","georgia","hongkong","japan","mauritius",
+  "australia","dubai","thailand","singapore-malaysia","bali","vietnam",
+  "maldives","bhutan","sri-lanka","nepal","united-kingdom",
+];
 
 const BASE_URL = "https://travelstest.lovable.app";
 const SUPABASE_URL = "https://tddtcsdbqrlabbqqotqd.supabase.co";
@@ -60,8 +74,8 @@ function render(entries: Entry[]) {
 async function main() {
   const entries: Entry[] = [...staticEntries];
 
-  for (const d of destinations) {
-    entries.push({ path: `/destinations/${d.slug}`, priority: "0.7" });
+  for (const slug of DESTINATION_SLUGS) {
+    entries.push({ path: `/destinations/${slug}`, priority: "0.7" });
   }
 
   const itineraries = await fetchItineraries();
