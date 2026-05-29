@@ -28,6 +28,7 @@ import {
   Crop as CropIcon,
   X,
   Tag,
+  Eye,
 } from "lucide-react";
 import { useAdminAuth, fileToBase64, adminPublicUrl } from "@/hooks/useAdminAuth";
 import {
@@ -630,6 +631,15 @@ const ManageDestinationDialog = ({
                           <div className="flex items-center gap-3 min-w-0">
                             <FileText className="w-4 h-4 text-gold shrink-0" />
                             <p className="text-sm text-foreground flex-1 truncate">{it.title}</p>
+                            <a
+                              href={adminPublicUrl(it.file_path)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="p-2 text-foreground/60 hover:text-gold"
+                              title="Preview PDF"
+                            >
+                              <Eye className="w-4 h-4" />
+                            </a>
                             <button
                               onClick={() => handleDeleteItin(it)}
                               className="p-2 text-foreground/60 hover:text-destructive"
