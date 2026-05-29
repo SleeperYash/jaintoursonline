@@ -461,7 +461,7 @@ const ItineraryDetailView = ({
                           <span className="shrink-0 inline-flex items-center justify-center w-9 h-9 md:w-10 md:h-10 rounded-full bg-gold/10 text-gold text-xs md:text-sm font-medium border border-gold/20 group-hover:bg-gold group-hover:text-primary-foreground transition">
                             {i + 1}
                           </span>
-                          <h3 className="font-serif text-base md:text-lg text-foreground break-words flex-1 min-w-0 text-left">
+                          <h3 className="font-serif text-base md:text-lg font-bold text-foreground break-words flex-1 min-w-0 text-left">
                             {d.title}
                           </h3>
                         </div>
