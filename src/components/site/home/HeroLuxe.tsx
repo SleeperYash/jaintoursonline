@@ -38,8 +38,8 @@ const HeroLuxe = () => {
         </div>
 
         <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-foreground leading-[1.05] tracking-tight">
-          Luxury Travel Agency —{" "}
-          <span className="text-gold italic font-medium text-sky-600 dark:text-sky-300">Journeys Crafted in Gold.</span>
+          &nbsp;
+          <span className="text-gold italic font-medium text-yellow-500">Journeys Crafted in Gold.</span>
         </h1>
 
          <p className="mt-8 max-w-2xl mx-auto text-base md:text-lg leading-relaxed font-medium shadow-md text-slate-50">
