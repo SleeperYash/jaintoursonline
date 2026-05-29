@@ -582,6 +582,21 @@ const ManageDestinationDialog = ({
                       Shown as the "Starting from" price on the itinerary page. Leave blank to use the PDF / auto value.
                     </p>
                   </div>
+                  <div>
+                    <Label className="text-xs uppercase tracking-luxe text-foreground/70">
+                      Nights / Days (optional)
+                    </Label>
+                    <Input
+                      value={itinDuration}
+                      onChange={(e) => setItinDuration(e.target.value)}
+                      placeholder="e.g. 5 Nights / 6 Days"
+                      maxLength={40}
+                      className="mt-2"
+                    />
+                    <p className="text-[10px] text-foreground/50 mt-1">
+                      Shown as the duration badge on the itinerary card. Leave blank to auto-detect from the PDF.
+                    </p>
+                  </div>
                   <Button
                     type="submit"
                     disabled={uploadingItin}
