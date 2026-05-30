@@ -456,6 +456,20 @@ const ManageDestinationDialog = ({
     }
   };
 
+  const handleReparse = async (it: Itinerary) => {
+    if (!confirm(`Re-run AI parsing for "${it.title}"? This calls Gemini and overwrites the day-by-day, hotels, inclusions and exclusions for this itinerary.`)) return;
+    setReparsingId(it.id);
+    try {
+      await callAdmin("reparse", { id: it.id });
+      toast({ title: "Re-parsed", description: it.title });
+      fetchItineraries();
+    } catch (err) {
+      toast({ title: "Re-parse failed", description: (err as Error).message, variant: "destructive" });
+    } finally {
+      setReparsingId(null);
+    }
+  };
+
   return (
     <>
       <button
