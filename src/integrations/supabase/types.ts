@@ -211,51 +211,212 @@ export type Database = {
       }
       itineraries: {
         Row: {
+          ai_processed: boolean
           created_at: string
+          destination: string | null
           destination_slug: string
           duration: string | null
           file_path: string
           file_size: number | null
           id: string
+          overview: string | null
           parse_error: string | null
           parsed_at: string | null
           parsed_data: Json | null
+          slug: string | null
           starting_price: string | null
+          terms_conditions: string | null
           title: string
           updated_at: string
           uploaded_by: string | null
+          visa_information: string | null
         }
         Insert: {
+          ai_processed?: boolean
           created_at?: string
+          destination?: string | null
           destination_slug: string
           duration?: string | null
           file_path: string
           file_size?: number | null
           id?: string
+          overview?: string | null
           parse_error?: string | null
           parsed_at?: string | null
           parsed_data?: Json | null
+          slug?: string | null
           starting_price?: string | null
+          terms_conditions?: string | null
           title: string
           updated_at?: string
           uploaded_by?: string | null
+          visa_information?: string | null
         }
         Update: {
+          ai_processed?: boolean
           created_at?: string
+          destination?: string | null
           destination_slug?: string
           duration?: string | null
           file_path?: string
           file_size?: number | null
           id?: string
+          overview?: string | null
           parse_error?: string | null
           parsed_at?: string | null
           parsed_data?: Json | null
+          slug?: string | null
           starting_price?: string | null
+          terms_conditions?: string | null
           title?: string
           updated_at?: string
           uploaded_by?: string | null
+          visa_information?: string | null
         }
         Relationships: []
+      }
+      itinerary_days: {
+        Row: {
+          created_at: string
+          day_number: number
+          description: string
+          id: string
+          itinerary_id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          day_number: number
+          description?: string
+          id?: string
+          itinerary_id: string
+          title?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          day_number?: number
+          description?: string
+          id?: string
+          itinerary_id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "itinerary_days_itinerary_id_fkey"
+            columns: ["itinerary_id"]
+            isOneToOne: false
+            referencedRelation: "itineraries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      itinerary_exclusions: {
+        Row: {
+          created_at: string
+          exclusion_text: string
+          id: string
+          itinerary_id: string
+          position: number
+        }
+        Insert: {
+          created_at?: string
+          exclusion_text: string
+          id?: string
+          itinerary_id: string
+          position?: number
+        }
+        Update: {
+          created_at?: string
+          exclusion_text?: string
+          id?: string
+          itinerary_id?: string
+          position?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "itinerary_exclusions_itinerary_id_fkey"
+            columns: ["itinerary_id"]
+            isOneToOne: false
+            referencedRelation: "itineraries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      itinerary_hotels: {
+        Row: {
+          city: string
+          created_at: string
+          hotel_name: string
+          id: string
+          itinerary_id: string
+          nights: number | null
+          position: number
+          updated_at: string
+        }
+        Insert: {
+          city?: string
+          created_at?: string
+          hotel_name?: string
+          id?: string
+          itinerary_id: string
+          nights?: number | null
+          position?: number
+          updated_at?: string
+        }
+        Update: {
+          city?: string
+          created_at?: string
+          hotel_name?: string
+          id?: string
+          itinerary_id?: string
+          nights?: number | null
+          position?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "itinerary_hotels_itinerary_id_fkey"
+            columns: ["itinerary_id"]
+            isOneToOne: false
+            referencedRelation: "itineraries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      itinerary_inclusions: {
+        Row: {
+          created_at: string
+          id: string
+          inclusion_text: string
+          itinerary_id: string
+          position: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          inclusion_text: string
+          itinerary_id: string
+          position?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          inclusion_text?: string
+          itinerary_id?: string
+          position?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "itinerary_inclusions_itinerary_id_fkey"
+            columns: ["itinerary_id"]
+            isOneToOne: false
+            referencedRelation: "itineraries"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       stamp_photos: {
         Row: {
