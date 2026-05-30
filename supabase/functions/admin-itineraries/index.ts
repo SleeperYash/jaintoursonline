@@ -60,6 +60,29 @@ Deno.serve(async (req) => {
 
   const supabase = createClient(SUPABASE_URL, SERVICE_ROLE);
 
+  // Helper: invoke parse-itinerary (admin-gated) for a given itinerary id.
+  const runParser = async (itinerary_id: string) => {
+    try {
+      const res = await fetch(
+        `${SUPABASE_URL}/functions/v1/parse-itinerary`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-admin-password": ADMIN_PASSWORD,
+            apikey: SERVICE_ROLE,
+            Authorization: `Bearer ${SERVICE_ROLE}`,
+          },
+          body: JSON.stringify({ itinerary_id }),
+        },
+      );
+      const data = await res.json().catch(() => ({}));
+      return { ok: res.ok && data?.ok !== false, data };
+    } catch (e) {
+      return { ok: false, data: { error: (e as Error).message } };
+    }
+  };
+
   let body: any;
   try {
     body = await req.json();
