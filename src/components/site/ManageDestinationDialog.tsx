@@ -29,6 +29,7 @@ import {
   X,
   Tag,
   Eye,
+  Sparkles,
 } from "lucide-react";
 import { useAdminAuth, fileToBase64, adminPublicUrl } from "@/hooks/useAdminAuth";
 import {
@@ -105,6 +106,7 @@ const ManageDestinationDialog = ({
   const [savingPriceId, setSavingPriceId] = useState<string | null>(null);
   const [durationDrafts, setDurationDrafts] = useState<Record<string, string>>({});
   const [savingDurationId, setSavingDurationId] = useState<string | null>(null);
+  const [reparsingId, setReparsingId] = useState<string | null>(null);
 
   // Reviews
   const { reviews, refetch: refetchReviews } = useClientReviews();
