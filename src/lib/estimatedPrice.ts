@@ -22,7 +22,7 @@ const OVERRIDES: Record<string, number> = {
   gujarat: 10499,
   delhi: 5999,
 
-  thailand: 32999,
+  thailand: 28999,
   dubai: 44999,
   bali: 48999,
   vietnam: 42999,
