@@ -64,27 +64,6 @@ const ItineraryViewer = ({
         const list = (data ?? []) as Itinerary[];
         setItems(list);
         setLoading(false);
-        // Lazy-parse any itineraries that don't yet have parsed_data
-        // so day counts populate automatically after upload.
-        const unparsed = list.filter((it) => !it.parsed_data);
-        if (unparsed.length) {
-          Promise.all(
-            unparsed.map((it) =>
-              supabase.functions
-                .invoke("parse-itinerary", { body: { itinerary_id: it.id } })
-                .then((res) => ({ id: it.id, parsed: res.data?.parsed ?? null }))
-                .catch(() => ({ id: it.id, parsed: null })),
-            ),
-          ).then((results) => {
-            if (cancelled) return;
-            setItems((prev) =>
-              prev.map((p) => {
-                const r = results.find((x) => x.id === p.id);
-                return r?.parsed ? { ...p, parsed_data: r.parsed } : p;
-              }),
-            );
-          });
-        }
       }
     })();
     return () => {
