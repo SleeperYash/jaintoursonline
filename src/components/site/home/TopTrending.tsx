@@ -13,7 +13,7 @@ const PRICES: Record<string, number> = {
   bali: 49999,
   kashmir: 29999,
   georgia: 69999,
-  thailand: 39999,
+  thailand: 28999,
   kerala: 19999,
   hongkong: 59999,
 };
