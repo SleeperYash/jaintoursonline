@@ -382,7 +382,7 @@ const ManageDestinationDialog = ({
     setUploadingItin(true);
     try {
       const file_base64 = await fileToBase64(itinFile);
-      await callAdmin("upload", {
+      const res = await callAdmin("upload", {
         destination_slug: destinationSlug,
         title: itinTitle.trim(),
         file_name: itinFile.name,
@@ -392,7 +392,14 @@ const ManageDestinationDialog = ({
         starting_price: itinPrice.trim() || null,
         duration: itinDuration.trim() || null,
       });
-      toast({ title: "Uploaded", description: itinTitle });
+      toast({
+        title: res?.parsed ? "Uploaded & parsed" : "Uploaded",
+        description: res?.parsed
+          ? `${itinTitle} — AI extracted day-by-day, hotels & inclusions.`
+          : res?.parse_error
+            ? `${itinTitle} — uploaded, but AI parse failed: ${res.parse_error}. Use the ✨ button to retry.`
+            : itinTitle,
+      });
       setItinTitle("");
       setItinFile(null);
       setItinPrice("");
