@@ -1,6 +1,4 @@
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import { slugify } from "@/lib/slug";
 
 const ACCENTS = [
@@ -34,32 +32,8 @@ const ItineraryCard = ({
   durationOverride = null,
 }: Props) => {
   const accent = ACCENTS[index % ACCENTS.length];
-  const [price, setPrice] = useState<string | null>(initialPrice);
-  const [loadingPrice, setLoadingPrice] = useState(!initialPrice);
-
-  useEffect(() => {
-    if (initialPrice) {
-      setPrice(initialPrice);
-      setLoadingPrice(false);
-      return;
-    }
-    let cancelled = false;
-    setLoadingPrice(true);
-    supabase.functions
-      .invoke("parse-itinerary", { body: { itinerary_id: id } })
-      .then((res) => {
-        if (cancelled) return;
-        const p = res.data?.parsed?.starting_price ?? null;
-        setPrice(p);
-      })
-      .catch(() => {})
-      .finally(() => {
-        if (!cancelled) setLoadingPrice(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [id, initialPrice]);
+  // Price comes directly from the itinerary row. Never trigger AI from a card.
+  const price = initialPrice;
 
   // Duration parse from title e.g. "Amazing Dubai 03N / 04D" or "2N Phuket & 2N Krabi"
   const m = title.match(/(\d+)\s*N(?:ights?)?\s*\/?\s*(\d+)?\s*D(?:ays?)?/i);
@@ -115,10 +89,10 @@ const ItineraryCard = ({
           </span>
           <span
             className={`inline-flex items-center justify-center min-w-[88px] px-3 py-1.5 rounded-full text-white text-xs md:text-sm font-semibold ${accent.pill} transition-opacity duration-500 ${
-              loadingPrice ? "opacity-60" : "opacity-100"
+              "opacity-100"
             }`}
           >
-            {loadingPrice ? "···" : price ?? "Price on request"}
+            {price ?? "Price on request"}
           </span>
         </div>
       </div>
