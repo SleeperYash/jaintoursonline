@@ -1,11 +1,14 @@
-// Parse an uploaded itinerary PDF into structured JSON (overview, days, inclusions, exclusions, visa)
-// using unpdf for text extraction + Lovable AI Gateway for structuring. Caches result on the row.
+// Parse an uploaded itinerary PDF into normalized, editable Supabase rows.
+// ADMIN-ONLY: requires the admin password (header `x-admin-password` or body
+// `admin_password`). This is invoked from `admin-itineraries` immediately
+// after an admin uploads or replaces a PDF — never from visitor pages.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { extractText, getDocumentProxy } from "https://esm.sh/unpdf@0.12.1";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type, x-admin-password",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
@@ -17,24 +20,32 @@ const json = (body: unknown, status = 200) =>
 
 type Parsed = {
   title: string | null;
+  destination: string | null;
+  duration: string | null;
   starting_price: string | null;
   overview: string | null;
-  days: { title: string; body: string; activities?: string[] }[];
+  visa_information: string | null;
+  terms_conditions: string | null;
+  days: { day_number: number; title: string; description: string }[];
+  hotels: { city: string; hotel_name: string; nights: number | null }[];
   inclusions: string[];
   exclusions: string[];
-  visa: string | null;
 };
 
 const SYSTEM = `You are a precise travel-itinerary parser. You receive raw text extracted from a tour itinerary PDF.
 Return STRICT JSON using the provided tool. Rules:
-- "title": the package / tour title exactly as printed on the PDF (e.g. "Majestic Dubai 5N/6D"). null if not found.
-- "starting_price": the lowest "starting from" / "per person" price exactly as printed, including currency symbol (e.g. "₹49,999", "INR 1,25,000", "$899"). null if not found.
+- "title": package/tour title as printed (e.g. "Majestic Dubai 5N/6D"). null if not found.
+- "destination": the main destination/country (e.g. "Dubai", "Thailand"). null if not clear.
+- "duration": as printed (e.g. "5 Nights / 6 Days", "4N/5D"). null if not present.
+- "starting_price": lowest "starting from" / "per person" price exactly as printed with currency (e.g. "₹49,999"). null if not found.
 - "overview": 2-4 short sentences describing the trip. null if not present.
-- "days": array. One entry per day. "title" like "Day 1 - Arrival in Dubai". "body" is the full descriptive paragraph for that day (clean line breaks). "activities" is an optional list of bullet activities for that day if clearly listed.
-- "inclusions": clean bullet strings of what's included.
-- "exclusions": clean bullet strings of what's NOT included.
-- "visa": short paragraph about visa if mentioned, else null.
-Never invent content. If a section is missing, return empty array or null. Strip bullets/markers like "•", "-", "✔".`;
+- "visa_information": short paragraph about visa if mentioned, else null.
+- "terms_conditions": full terms & conditions / cancellation / payment terms text if printed, else null.
+- "days": array, one entry per day. day_number is 1-based. title like "Arrival in Dubai". description is the full paragraph for that day with activities merged in.
+- "hotels": array of accommodations. For each: city, hotel_name (use "TBD" or hotel category if exact name not printed), nights (integer or null).
+- "inclusions": clean bullet strings of what is included.
+- "exclusions": clean bullet strings of what is NOT included.
+Never invent content. If a section is missing, return empty array or null. Strip markers like "•", "-", "✔".`;
 
 const TOOL = {
   type: "function",
@@ -46,26 +57,54 @@ const TOOL = {
       additionalProperties: false,
       properties: {
         title: { type: ["string", "null"] },
+        destination: { type: ["string", "null"] },
+        duration: { type: ["string", "null"] },
         starting_price: { type: ["string", "null"] },
         overview: { type: ["string", "null"] },
+        visa_information: { type: ["string", "null"] },
+        terms_conditions: { type: ["string", "null"] },
         days: {
           type: "array",
           items: {
             type: "object",
             additionalProperties: false,
             properties: {
+              day_number: { type: "number" },
               title: { type: "string" },
-              body: { type: "string" },
-              activities: { type: "array", items: { type: "string" } },
+              description: { type: "string" },
             },
-            required: ["title", "body"],
+            required: ["day_number", "title", "description"],
+          },
+        },
+        hotels: {
+          type: "array",
+          items: {
+            type: "object",
+            additionalProperties: false,
+            properties: {
+              city: { type: "string" },
+              hotel_name: { type: "string" },
+              nights: { type: ["number", "null"] },
+            },
+            required: ["city", "hotel_name", "nights"],
           },
         },
         inclusions: { type: "array", items: { type: "string" } },
         exclusions: { type: "array", items: { type: "string" } },
-        visa: { type: ["string", "null"] },
       },
-      required: ["title", "starting_price", "overview", "days", "inclusions", "exclusions", "visa"],
+      required: [
+        "title",
+        "destination",
+        "duration",
+        "starting_price",
+        "overview",
+        "visa_information",
+        "terms_conditions",
+        "days",
+        "hotels",
+        "inclusions",
+        "exclusions",
+      ],
     },
   },
 };
@@ -77,46 +116,36 @@ Deno.serve(async (req) => {
   const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
   const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
   const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-  if (!SUPABASE_URL || !SERVICE_ROLE || !LOVABLE_API_KEY) {
+  const ADMIN_PASSWORD = Deno.env.get("ADMIN_PASSWORD") ?? "";
+  if (!SUPABASE_URL || !SERVICE_ROLE || !LOVABLE_API_KEY || !ADMIN_PASSWORD) {
     return json({ error: "Server not configured" }, 500);
   }
 
-  let body: { itinerary_id?: string; force?: boolean; admin_password?: string };
+  let body: { itinerary_id?: string; admin_password?: string };
   try {
     body = await req.json();
   } catch {
     return json({ error: "Invalid JSON" }, 400);
   }
-  const { itinerary_id } = body;
-  if (!itinerary_id) return json({ error: "Missing itinerary_id" }, 400);
 
-  // Only honor `force` when a valid admin password (header or body) is presented.
-  // This prevents anonymous callers from bypassing the parsed_data cache and
-  // triggering repeated paid AI invocations.
-  const ADMIN_PASSWORD = Deno.env.get("ADMIN_PASSWORD") ?? "";
+  // ADMIN-ONLY. Visitors must never reach Gemini.
   const providedPwd =
     req.headers.get("x-admin-password") ?? body.admin_password ?? "";
-  const isAdmin = !!ADMIN_PASSWORD && providedPwd === ADMIN_PASSWORD;
-  const force = isAdmin && body.force === true;
+  if (providedPwd !== ADMIN_PASSWORD) {
+    return json({ error: "Forbidden" }, 403);
+  }
+
+  const { itinerary_id } = body;
+  if (!itinerary_id) return json({ error: "Missing itinerary_id" }, 400);
 
   const supabase = createClient(SUPABASE_URL, SERVICE_ROLE);
 
   const { data: row, error: rowErr } = await supabase
     .from("itineraries")
-    .select("id,file_path,parsed_data,parsed_at")
+    .select("id,file_path,starting_price,duration")
     .eq("id", itinerary_id)
     .maybeSingle();
   if (rowErr || !row) return json({ error: rowErr?.message ?? "Not found" }, 404);
-
-  // Return cache if present, not forced, AND already has the latest fields
-  const cached = row.parsed_data as Partial<Parsed> | null;
-  const cacheIsFresh =
-    cached &&
-    Object.prototype.hasOwnProperty.call(cached, "title") &&
-    Object.prototype.hasOwnProperty.call(cached, "starting_price");
-  if (!force && cacheIsFresh) {
-    return json({ ok: true, cached: true, parsed: cached });
-  }
 
   // Download PDF
   const { data: file, error: dlErr } = await supabase.storage
@@ -136,10 +165,8 @@ Deno.serve(async (req) => {
     return json({ error: msg }, 500);
   }
 
-  // Clip to keep token use sane
-  const clipped = rawText.slice(0, 60000);
+  const clipped = rawText.slice(0, 80000);
 
-  // Call Lovable AI Gateway (OpenAI-compatible)
   const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
     method: "POST",
     headers: {
@@ -174,10 +201,76 @@ Deno.serve(async (req) => {
     return json({ error: "Bad JSON from AI" }, 502);
   }
 
-  await supabase
-    .from("itineraries")
-    .update({ parsed_data: parsed, parsed_at: new Date().toISOString(), parse_error: null })
-    .eq("id", itinerary_id);
+  // Write scalar fields. Don't overwrite manual price/duration edits if the
+  // admin already supplied them on upload (row.starting_price / row.duration).
+  const scalarUpdate: Record<string, unknown> = {
+    overview: parsed.overview ?? null,
+    visa_information: parsed.visa_information ?? null,
+    terms_conditions: parsed.terms_conditions ?? null,
+    destination: parsed.destination ?? null,
+    ai_processed: true,
+    parsed_at: new Date().toISOString(),
+    parse_error: null,
+    // Keep legacy parsed_data populated for any old reader still around
+    parsed_data: parsed,
+  };
+  if (!row.starting_price && parsed.starting_price) {
+    scalarUpdate.starting_price = parsed.starting_price;
+  }
+  if (!row.duration && parsed.duration) {
+    scalarUpdate.duration = parsed.duration;
+  }
+  if (parsed.title) {
+    // Only update title if admin left it empty — not the case at upload time,
+    // but defensive. Title is required at upload, skip.
+  }
+  await supabase.from("itineraries").update(scalarUpdate).eq("id", itinerary_id);
 
-  return json({ ok: true, cached: false, parsed });
+  // Replace child rows atomically (delete + insert).
+  await supabase.from("itinerary_days").delete().eq("itinerary_id", itinerary_id);
+  await supabase.from("itinerary_hotels").delete().eq("itinerary_id", itinerary_id);
+  await supabase.from("itinerary_inclusions").delete().eq("itinerary_id", itinerary_id);
+  await supabase.from("itinerary_exclusions").delete().eq("itinerary_id", itinerary_id);
+
+  if (parsed.days?.length) {
+    await supabase.from("itinerary_days").insert(
+      parsed.days.map((d, i) => ({
+        itinerary_id,
+        day_number: d.day_number || i + 1,
+        title: d.title ?? "",
+        description: d.description ?? "",
+      })),
+    );
+  }
+  if (parsed.hotels?.length) {
+    await supabase.from("itinerary_hotels").insert(
+      parsed.hotels.map((h, i) => ({
+        itinerary_id,
+        position: i,
+        city: h.city ?? "",
+        hotel_name: h.hotel_name ?? "",
+        nights: h.nights ?? null,
+      })),
+    );
+  }
+  if (parsed.inclusions?.length) {
+    await supabase.from("itinerary_inclusions").insert(
+      parsed.inclusions.map((text, i) => ({
+        itinerary_id,
+        position: i,
+        inclusion_text: text,
+      })),
+    );
+  }
+  if (parsed.exclusions?.length) {
+    await supabase.from("itinerary_exclusions").insert(
+      parsed.exclusions.map((text, i) => ({
+        itinerary_id,
+        position: i,
+        exclusion_text: text,
+      })),
+    );
+  }
+
+  return json({ ok: true, parsed });
 });
