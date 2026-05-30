@@ -141,7 +141,25 @@ Deno.serve(async (req) => {
         await supabase.storage.from("itineraries").remove([path]);
         return json({ error: dbErr.message }, 500);
       }
-      return json({ ok: true, itinerary: data });
+      // Immediately parse the PDF with Gemini and write normalized rows.
+      // We don't fail the upload if parsing fails — admin can re-parse later.
+      const parseResult = await runParser(data.id);
+      return json({
+        ok: true,
+        itinerary: data,
+        parsed: parseResult.ok,
+        parse_error: parseResult.ok ? null : parseResult.data?.error ?? "Parse failed",
+      });
+    }
+
+    if (action === "reparse") {
+      const { id } = body ?? {};
+      if (!id) return json({ error: "Missing id" }, 400);
+      const result = await runParser(id);
+      if (!result.ok) {
+        return json({ error: result.data?.error ?? "Parse failed" }, 500);
+      }
+      return json({ ok: true });
     }
 
     if (action === "update_price") {
