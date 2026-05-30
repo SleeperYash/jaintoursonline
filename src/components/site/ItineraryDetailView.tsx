@@ -184,16 +184,82 @@ const ItineraryDetailView = ({
     const run = async () => {
       setLoading(true);
       setError(null);
-      const { data, error: invokeErr } = await supabase.functions.invoke("parse-itinerary", {
-        body: { itinerary_id: itineraryId },
-      });
+      // Pull editable, normalized data directly from Supabase.
+      // No AI call — visitors never trigger Gemini.
+      const [itinRes, daysRes, incRes, excRes] = await Promise.all([
+        supabase
+          .from("itineraries")
+          .select(
+            "id,title,starting_price,overview,visa_information,parsed_data",
+          )
+          .eq("id", itineraryId)
+          .maybeSingle(),
+        supabase
+          .from("itinerary_days")
+          .select("day_number,title,description")
+          .eq("itinerary_id", itineraryId)
+          .order("day_number", { ascending: true }),
+        supabase
+          .from("itinerary_inclusions")
+          .select("inclusion_text,position")
+          .eq("itinerary_id", itineraryId)
+          .order("position", { ascending: true }),
+        supabase
+          .from("itinerary_exclusions")
+          .select("exclusion_text,position")
+          .eq("itinerary_id", itineraryId)
+          .order("position", { ascending: true }),
+      ]);
       if (cancelled) return;
-      if (invokeErr || (data && data.error)) {
-        setError(invokeErr?.message ?? data?.error ?? "Could not parse itinerary");
-        setLoading(false);
-        return;
+
+      const row = itinRes.data;
+      const days = daysRes.data ?? [];
+      const inclusions = incRes.data ?? [];
+      const exclusions = excRes.data ?? [];
+
+      const hasNormalized =
+        days.length > 0 ||
+        inclusions.length > 0 ||
+        exclusions.length > 0 ||
+        !!row?.overview;
+
+      if (hasNormalized) {
+        setParsed({
+          title: row?.title ?? null,
+          starting_price: row?.starting_price ?? null,
+          overview: row?.overview ?? null,
+          days: days.map((d) => ({
+            title: d.title || `Day ${d.day_number}`,
+            body: d.description ?? "",
+          })),
+          inclusions: inclusions.map((i) => i.inclusion_text),
+          exclusions: exclusions.map((e) => e.exclusion_text),
+          visa: row?.visa_information ?? null,
+        });
+      } else if (row?.parsed_data) {
+        // Legacy: itinerary parsed under old schema (JSONB blob).
+        // Show what we have until an admin re-parses.
+        const legacy = row.parsed_data as Parsed;
+        setParsed({
+          title: legacy.title ?? row.title,
+          starting_price: legacy.starting_price ?? row.starting_price ?? null,
+          overview: legacy.overview ?? null,
+          days: legacy.days ?? [],
+          inclusions: legacy.inclusions ?? [],
+          exclusions: legacy.exclusions ?? [],
+          visa: legacy.visa ?? null,
+        });
+      } else {
+        setParsed({
+          title: row?.title ?? null,
+          starting_price: row?.starting_price ?? null,
+          overview: null,
+          days: [],
+          inclusions: [],
+          exclusions: [],
+          visa: null,
+        });
       }
-      setParsed(data.parsed as Parsed);
       setLoading(false);
     };
     run();

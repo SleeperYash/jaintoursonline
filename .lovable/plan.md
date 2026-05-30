@@ -1,38 +1,79 @@
+# Architecture Refactor: AI Parsing Only on Upload
+
 ## Goal
-Rebrand the site's blue palette to Imperial Blue `#00296b` (HSL ~217 100% 21%) while keeping gold accents and ivory/cream text untouched.
 
-## Approach
-All blues are centralized as HSL tokens in `src/index.css`. I'll retune the navy-family tokens around `#00296b` so the entire site updates in one place. Gold, ivory, and accent colors stay as-is.
+Gemini runs **exactly once** — when an admin uploads (or replaces) a PDF. All extracted data is stored in **editable, normalized Supabase tables** that you can edit directly in the Supabase Table Editor. Visitor page views never call Gemini; they read pre-parsed rows.
 
-## Token changes (src/index.css, both `:root` and `.dark`)
+## 1. Database changes (new migration)
 
-Base imperial blue = `217 100% 21%` (#00296b). Derived shades keep the same hue/saturation, only lightness varies for depth where shadows/contrast are needed — producing an even, cohesive gradient feel across surfaces.
+Extend `itineraries` and add four child tables:
 
-| Token | Before | After | Purpose |
-|---|---|---|---|
-| `--background` | 220 50% 10% | **217 100% 21%** | Page background = exact #00296b |
-| `--ink` | 220 50% 8% | 217 100% 14% | Deepest blue (footer/overlays) |
-| `--card` | 220 45% 14% | 217 80% 26% | Lifted surface |
-| `--popover` | 220 50% 12% | 217 90% 23% | Popovers |
-| `--secondary` | 220 40% 18% | 217 70% 30% | Panels |
-| `--muted` | 220 35% 20% | 217 60% 32% | Muted surface |
-| `--input` | 220 35% 18% | 217 65% 28% | Inputs |
-| `--border` | 220 35% 22% | 217 55% 35% | Borders |
-| `--emerald-deep` | 220 45% 16% | 217 85% 24% | "Emerald deep" band (still blue alias) |
-| `--accent-domestic-soft` | 220 40% 20% | 217 65% 28% | Category soft bg |
-| `--accent-international-soft` | 220 40% 20% | 217 65% 28% | Category soft bg |
-| `--sidebar-background` | 220 50% 10% | 217 100% 21% | Sidebar bg |
-| `--sidebar-accent` | 220 40% 18% | 217 70% 30% | Sidebar accent |
-| `--sidebar-border` | 220 35% 22% | 217 55% 35% | Sidebar border |
-| `--primary-foreground` / `--accent-foreground` / `--sidebar-primary-foreground` | 220 50% 10% | 217 100% 21% | Text-on-gold matches new bg |
-| `--gradient-hero` | uses 220 50% 8% | use 217 100% 14% | Hero gradient stays in-family |
-| `--shadow-luxe` | 220 60% 4% | 217 100% 8% | Shadow tone matches family |
-| `.globe-sphere` gradient stops | 220 hues | 217 hues | Globe orb matches |
+`**itineraries**` (add columns)
 
-Gold (`--gold`, `--gold-deep`, `--primary`, `--accent`, `--ring`), foreground ivory (`--foreground`, `--card-foreground`, etc.), `--accent-domestic` (amber), and `--accent-international` (sky) are **unchanged**.
+- `destination` text — display name (e.g. "Dubai")
+- `slug` text — URL slug for the package (auto from title)
+- `overview` text
+- `visa_information` text
+- `terms_conditions` text
+- `ai_processed` boolean default false
+- (keeps: id, title, destination_slug, duration, starting_price, file_path, parsed_at, parse_error, created_at, updated_at)
+- Remove dependency on `parsed_data` JSONB (column kept for backward-compat but no longer read)
 
-## Files touched
-- `src/index.css` — only file edited.
+`**itinerary_days**` — id, itinerary_id (FK, cascade), day_number, title, description
+`**itinerary_hotels**` — id, itinerary_id (FK, cascade), city, hotel_name, nights
+`**itinerary_inclusions**` — id, itinerary_id (FK, cascade), inclusion_text, position
+`**itinerary_exclusions**` — id, itinerary_id (FK, cascade), exclusion_text, position
 
-## Verification
-- Visually confirm preview: background = #00296b, gold accents intact, ivory text readable, cards/panels show subtle lighter-blue depth, hero/footer use deeper blue shades for an even gradient.
+All new tables: RLS enabled, public SELECT (so visitors can read), no public write. GRANTs to anon (SELECT) + authenticated + service_role.
+
+Trigger to keep `itineraries.updated_at` fresh.
+
+## 2. Edge function: `parse-itinerary` (rewritten)
+
+- Triggered **only by admin** (`admin-itineraries` calls it after upload, with service-role token or admin password).
+- Extracts PDF text → calls Gemini 2.5 Flash with a tool that returns the full structured payload (title, destination, duration, starting_price, overview, visa_information, terms_conditions, days[], hotels[], inclusions[], exclusions[]).
+- Writes scalar fields to `itineraries`; deletes + reinserts rows in the four child tables.
+- Sets `ai_processed = true`, `parsed_at = now()`.
+- **Refuses non-admin callers entirely** (no anonymous force, no anonymous parsing).
+
+## 3. Edge function: `admin-itineraries` (updated)
+
+- `upload` action: after inserting itinerary row, immediately calls the new parser internally. Returns parsed payload.
+- New `reparse` action: admin-triggered re-run (e.g. when PDF replaced).
+- New `replace_pdf` action: swaps file, then re-parses.
+
+## 4. Frontend changes
+
+- `ItineraryDetailView.tsx`: **stop calling** `supabase.functions.invoke("parse-itinerary")`. Instead query `itineraries` + child tables directly by id.
+- `ItineraryCard.tsx`: read `starting_price` from the row already passed in (already supported via `initialPrice`); remove the lazy parse-itinerary fallback.
+- `ItineraryViewer.tsx`: remove the "lazy-parse unparsed itineraries" loop.
+- `ManageDestinationDialog.tsx`: add a "Re-parse with AI" button per itinerary (admin-only).
+
+## 5. What you can edit directly in Supabase after deploy
+
+
+| Field                                  | Table                                                |
+| -------------------------------------- | ---------------------------------------------------- |
+| Price                                  | `itineraries.starting_price`                         |
+| Duration, title, overview, visa, terms | `itineraries`                                        |
+| Day-by-day                             | `itinerary_days` rows                                |
+| Hotels                                 | `itinerary_hotels` rows                              |
+| Inclusions / Exclusions                | `itinerary_inclusions` / `itinerary_exclusions` rows |
+
+
+No PDF re-upload, no AI re-run needed for edits.
+
+## Technical notes
+
+- Existing itineraries already in DB will show whatever scalar fields are populated; their `parsed_data` JSONB stays as a fallback read path only until you click "Re-parse" once per itinerary (one-time backfill). I'll handle that gracefully in the detail view (prefer normalized rows, fall back to legacy `parsed_data` if no normalized rows exist yet).
+- `parse-itinerary` will require the admin password header, so visitor browsers can never invoke it.
+
+## Files changed
+
+- New migration: `supabase/migrations/<ts>_itinerary_normalized.sql`
+- `supabase/functions/parse-itinerary/index.ts` — rewrite (admin-gated, writes normalized rows)
+- `supabase/functions/admin-itineraries/index.ts` — wire `upload` → parser; add `reparse`
+- `src/components/site/ItineraryDetailView.tsx` — read from DB, no AI call
+- `src/components/site/ItineraryCard.tsx` — drop lazy parse fallback
+- `src/components/site/ItineraryViewer.tsx` — drop lazy parse loop
+- `src/components/site/ManageDestinationDialog.tsx` — add Re-parse button

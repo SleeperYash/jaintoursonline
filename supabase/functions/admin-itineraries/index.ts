@@ -60,6 +60,29 @@ Deno.serve(async (req) => {
 
   const supabase = createClient(SUPABASE_URL, SERVICE_ROLE);
 
+  // Helper: invoke parse-itinerary (admin-gated) for a given itinerary id.
+  const runParser = async (itinerary_id: string) => {
+    try {
+      const res = await fetch(
+        `${SUPABASE_URL}/functions/v1/parse-itinerary`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-admin-password": ADMIN_PASSWORD,
+            apikey: SERVICE_ROLE,
+            Authorization: `Bearer ${SERVICE_ROLE}`,
+          },
+          body: JSON.stringify({ itinerary_id }),
+        },
+      );
+      const data = await res.json().catch(() => ({}));
+      return { ok: res.ok && data?.ok !== false, data };
+    } catch (e) {
+      return { ok: false, data: { error: (e as Error).message } };
+    }
+  };
+
   let body: any;
   try {
     body = await req.json();
@@ -118,7 +141,25 @@ Deno.serve(async (req) => {
         await supabase.storage.from("itineraries").remove([path]);
         return json({ error: dbErr.message }, 500);
       }
-      return json({ ok: true, itinerary: data });
+      // Immediately parse the PDF with Gemini and write normalized rows.
+      // We don't fail the upload if parsing fails — admin can re-parse later.
+      const parseResult = await runParser(data.id);
+      return json({
+        ok: true,
+        itinerary: data,
+        parsed: parseResult.ok,
+        parse_error: parseResult.ok ? null : parseResult.data?.error ?? "Parse failed",
+      });
+    }
+
+    if (action === "reparse") {
+      const { id } = body ?? {};
+      if (!id) return json({ error: "Missing id" }, 400);
+      const result = await runParser(id);
+      if (!result.ok) {
+        return json({ error: result.data?.error ?? "Parse failed" }, 500);
+      }
+      return json({ ok: true });
     }
 
     if (action === "update_price") {
