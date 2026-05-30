@@ -29,7 +29,6 @@ import {
   X,
   Tag,
   Eye,
-  Sparkles,
 } from "lucide-react";
 import { useAdminAuth, fileToBase64, adminPublicUrl } from "@/hooks/useAdminAuth";
 import {
@@ -106,7 +105,6 @@ const ManageDestinationDialog = ({
   const [savingPriceId, setSavingPriceId] = useState<string | null>(null);
   const [durationDrafts, setDurationDrafts] = useState<Record<string, string>>({});
   const [savingDurationId, setSavingDurationId] = useState<string | null>(null);
-  const [reparsingId, setReparsingId] = useState<string | null>(null);
 
   // Reviews
   const { reviews, refetch: refetchReviews } = useClientReviews();
@@ -397,7 +395,7 @@ const ManageDestinationDialog = ({
         description: res?.parsed
           ? `${itinTitle} — AI extracted day-by-day, hotels & inclusions.`
           : res?.parse_error
-            ? `${itinTitle} — uploaded, but AI parse failed: ${res.parse_error}. Use the ✨ button to retry.`
+            ? `${itinTitle} — uploaded, but AI parse failed: ${res.parse_error}. Re-upload the PDF to retry.`
             : itinTitle,
       });
       setItinTitle("");
@@ -460,20 +458,6 @@ const ManageDestinationDialog = ({
       toast({ title: "Update failed", description: (err as Error).message, variant: "destructive" });
     } finally {
       setSavingDurationId(null);
-    }
-  };
-
-  const handleReparse = async (it: Itinerary) => {
-    if (!confirm(`Re-run AI parsing for "${it.title}"? This calls Gemini and overwrites the day-by-day, hotels, inclusions and exclusions for this itinerary.`)) return;
-    setReparsingId(it.id);
-    try {
-      await callAdmin("reparse", { id: it.id });
-      toast({ title: "Re-parsed", description: it.title });
-      fetchItineraries();
-    } catch (err) {
-      toast({ title: "Re-parse failed", description: (err as Error).message, variant: "destructive" });
-    } finally {
-      setReparsingId(null);
     }
   };
 
