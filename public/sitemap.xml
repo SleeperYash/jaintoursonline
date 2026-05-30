@@ -171,11 +171,23 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://travelstest.lovable.app/destinations/vietnam/vietnam-adventure-quest-with-halong-bay-7-days</loc>
+    <loc>https://travelstest.lovable.app/destinations/himachal/scenic-shimla-manali</loc>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://travelstest.lovable.app/destinations/himachal/scenic-shimla-manali</loc>
+    <loc>https://travelstest.lovable.app/destinations/dubai/amazing-dubai-6-days</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://travelstest.lovable.app/destinations/bali/unreal-bali</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://travelstest.lovable.app/destinations/thailand/2n-phuket-2n-krabi</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://travelstest.lovable.app/destinations/vietnam/vietnam-adventure-quest-with-halong-bay-7-days</loc>
     <priority>0.6</priority>
   </url>
   <url>
@@ -195,11 +207,19 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://travelstest.lovable.app/destinations/bali/unreal-bali</loc>
+    <loc>https://travelstest.lovable.app/destinations/dubai/dubai-extravaganza-6-days</loc>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://travelstest.lovable.app/destinations/thailand/2n-phuket-2n-krabi</loc>
+    <loc>https://travelstest.lovable.app/destinations/dubai/dubai-fun-5-days</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://travelstest.lovable.app/destinations/japan/japan-extravenga-8n-9d</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://travelstest.lovable.app/destinations/dubai/fascinating-dubai-with-abu-dhabi-7-days</loc>
     <priority>0.6</priority>
   </url>
   <url>
@@ -215,27 +235,7 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://travelstest.lovable.app/destinations/dubai/dubai-fun-5-days</loc>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://travelstest.lovable.app/destinations/japan/japan-extravenga-8n-9d</loc>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://travelstest.lovable.app/destinations/bhutan/amazing-bhutan-8-days</loc>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://travelstest.lovable.app/destinations/dubai/amazing-dubai-6-days</loc>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://travelstest.lovable.app/destinations/dubai/dubai-extravaganza-6-days</loc>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://travelstest.lovable.app/destinations/dubai/fascinating-dubai-with-abu-dhabi-7-days</loc>
     <priority>0.6</priority>
   </url>
 </urlset>
