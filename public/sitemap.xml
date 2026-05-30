@@ -151,6 +151,18 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://travelstest.lovable.app/destinations/united-kingdom/uk-scotland-6-nights-7-days</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://travelstest.lovable.app/destinations/singapore-malaysia/vietnam-adventure-quest-7-days</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://travelstest.lovable.app/destinations/bali/amazing-bali-7-days</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://travelstest.lovable.app/destinations/vietnam/vietnam-adventure-quest-7-days</loc>
     <priority>0.6</priority>
   </url>
@@ -207,11 +219,15 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://travelstest.lovable.app/destinations/united-kingdom/uk-scotland-6-nights-7-days</loc>
+    <loc>https://travelstest.lovable.app/destinations/japan/japan-extravenga-8n-9d</loc>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://travelstest.lovable.app/destinations/singapore-malaysia/vietnam-adventure-quest-7-days</loc>
+    <loc>https://travelstest.lovable.app/destinations/bhutan/amazing-bhutan-8-days</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://travelstest.lovable.app/destinations/dubai/amazing-dubai-6-days</loc>
     <priority>0.6</priority>
   </url>
   <url>
@@ -220,22 +236,6 @@
   </url>
   <url>
     <loc>https://travelstest.lovable.app/destinations/dubai/fascinating-dubai-with-abu-dhabi-7-days</loc>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://travelstest.lovable.app/destinations/japan/japan-extravenga-8n-9d</loc>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://travelstest.lovable.app/destinations/bali/amazing-bali-7-days</loc>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://travelstest.lovable.app/destinations/dubai/amazing-dubai-6-days</loc>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://travelstest.lovable.app/destinations/bhutan/amazing-bhutan-8-days</loc>
     <priority>0.6</priority>
   </url>
 </urlset>
