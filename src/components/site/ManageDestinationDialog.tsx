@@ -648,18 +648,6 @@ const ManageDestinationDialog = ({
                               <Eye className="w-4 h-4" />
                             </a>
                             <button
-                              onClick={() => handleReparse(it)}
-                              disabled={reparsingId === it.id}
-                              className="p-2 text-foreground/60 hover:text-gold disabled:opacity-40"
-                              title="Re-parse with AI"
-                            >
-                              {reparsingId === it.id ? (
-                                <Loader2 className="w-4 h-4 animate-spin" />
-                              ) : (
-                                <Sparkles className="w-4 h-4" />
-                              )}
-                            </button>
-                            <button
                               onClick={() => handleDeleteItin(it)}
                               className="p-2 text-foreground/60 hover:text-destructive"
                               title="Delete"
