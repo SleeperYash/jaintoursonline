@@ -238,4 +238,16 @@
     <loc>https://travelstest.lovable.app/destinations/bhutan/amazing-bhutan-8-days</loc>
     <priority>0.6</priority>
   </url>
+  <url>
+    <loc>https://travelstest.lovable.app/destinations/north-east/amazing-north-east-6n-7d</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://travelstest.lovable.app/destinations/rajasthan/royal-rajasthan-trio-jaisalmer-jodhpur-udaipur</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://travelstest.lovable.app/destinations/rajasthan/royal-rajasthan-ranthambore-jaipur-jaisalmer-jodhpur</loc>
+    <priority>0.6</priority>
+  </url>
 </urlset>
