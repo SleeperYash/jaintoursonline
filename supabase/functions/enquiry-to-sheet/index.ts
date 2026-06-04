@@ -10,7 +10,8 @@ Deno.serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     const GS_KEY = Deno.env.get("GOOGLE_SHEETS_API_KEY");
     const SPREADSHEET_ID = Deno.env.get("GOOGLE_SHEETS_SPREADSHEET_ID");
-    const SHEET_NAME = Deno.env.get("GOOGLE_SHEETS_SHEET_NAME") || "Enquiries";
+    // Tab name is fixed to match the actual sheet in the spreadsheet.
+    const SHEET_NAME = "Enquiries";
 
     if (!LOVABLE_API_KEY || !GS_KEY) {
       return new Response(JSON.stringify({ ok: false, error: "Google Sheets connector not linked" }), {
