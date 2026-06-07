@@ -49,7 +49,7 @@ const Destinations = () => {
   useSeo({
     title: "Destinations — Domestic & International | Jain Tours",
     description:
-      "Hand-picked domestic and international destinations curated for Indian luxury travellers. Explore galleries, inclusions and on-ground support by Jain Tours & Travels.",
+      "Hand-picked domestic & international destinations curated for Indian luxury travellers by Jain Tours & Travels.",
     canonicalPath: "/destinations",
   });
 
