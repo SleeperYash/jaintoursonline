@@ -18,7 +18,7 @@ const DESTINATION_SLUGS = [
   "maldives","bhutan","sri-lanka","nepal","united-kingdom",
 ];
 
-const BASE_URL = "https://travelstest.lovable.app";
+const BASE_URL = "https://jaintoursonline.lovable.app";
 const SUPABASE_URL = "https://tddtcsdbqrlabbqqotqd.supabase.co";
 const SUPABASE_ANON =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRkZHRjc2RicXJsYWJicXFvdHFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4MTcwNDMsImV4cCI6MjA5NDM5MzA0M30.WsKd0iLhSym3nOSy5wFnAfyOmM6Sd0z1RGmfAj7JnX8";
