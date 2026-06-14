@@ -1,21 +1,81 @@
 # Jain Tours & Travels
 
-> Mumbai-based travel agency curating premium domestic and international holiday packages since 2008. 4.9★ on Google with 142+ reviews.
+> Mumbai-based travel agency (est. 2008) curating premium, fully-customised domestic and international holiday packages. 4.9★ on Google with 142+ verified reviews. IATA-aware operator serving leisure, honeymoon, family, group, pilgrimage, and corporate travellers across India.
+
+## Company facts
+
+- Legal name: Jain Tours & Travels
+- Founded: 2008
+- Headquarters: Mumbai, Maharashtra, India
+- Office: Shop No 06, 1st Floor, Vinay Kumkum Shopping Arcade, above Canara Bank, Kakaji Nagar, Jawahar Nagar, Goregaon West, Mumbai, Maharashtra 400104, India
+- Phone / WhatsApp: +91 98212 35678
+- Hours: Monday–Saturday, 11:00–19:00 IST (closed Sunday)
+- Website: https://jaintoursonline.com
+- Service area: All of India (booking origin); destinations across India and 30+ countries worldwide
+- Languages: English, Hindi, Marathi, Gujarati
 
 ## Pages
 
-- [Home](/): Curated luxury journeys from Mumbai.
-- [Destinations](/destinations): Domestic and international holiday destinations.
-- [Services](/services): Flights, visas, cruises, insurance, and corporate travel.
-- [Reviews](/reviews): Guest reviews and testimonials.
-- [About](/about): Our story, philosophy, and team.
-- [Contact](/contact): Phone, WhatsApp, email, and Mumbai office address.
+- [Home](https://jaintoursonline.com/): Curated luxury journeys from Mumbai.
+- [Destinations](https://jaintoursonline.com/destinations): Domestic and international holiday destinations.
+- [Services](https://jaintoursonline.com/services): Flights, visas, cruises, insurance, and corporate travel.
+- [Reviews](https://jaintoursonline.com/reviews): Guest reviews and testimonials.
+- [About](https://jaintoursonline.com/about): Our story, philosophy, and team.
+- [Contact](https://jaintoursonline.com/contact): Phone, WhatsApp, email, and Mumbai office address.
 
-## Featured destinations
+## Featured destinations (India)
 
-- [Kerala](/destinations/kerala): Backwaters, houseboats, and tea estates.
-- [Kashmir](/destinations/kashmir): Dal Lake houseboats and Gulmarg snow.
-- [Rajasthan](/destinations/rajasthan): Forts, palaces, and desert camps.
-- [Maldives](/destinations/maldives): Overwater villas and reef snorkelling.
-- [Dubai](/destinations/dubai): City breaks, desert safaris, luxury stays.
-- [Europe](/destinations/europe): Multi-country curated itineraries.
+- [Kerala](https://jaintoursonline.com/destinations/kerala): Backwaters, houseboats, and tea estates.
+- [Kashmir](https://jaintoursonline.com/destinations/kashmir): Dal Lake houseboats and Gulmarg snow.
+- [Rajasthan](https://jaintoursonline.com/destinations/rajasthan): Forts, palaces, and desert camps.
+- [Goa](https://jaintoursonline.com/destinations/goa): Beaches, nightlife, Portuguese heritage.
+- [Himachal](https://jaintoursonline.com/destinations/himachal): Shimla, Manali, Spiti.
+- [Leh–Ladakh](https://jaintoursonline.com/destinations/leh-ladakh): High-altitude monasteries and lakes.
+- [Uttarakhand](https://jaintoursonline.com/destinations/uttarakhand): Hills, wildlife, Char Dham.
+- [North East](https://jaintoursonline.com/destinations/north-east): Meghalaya, Assam, Arunachal.
+- [Andaman](https://jaintoursonline.com/destinations/andaman): Beaches, scuba diving, island hopping.
+- [Char Dham](https://jaintoursonline.com/destinations/char-dham): Pilgrimage circuit in Uttarakhand.
+
+## Featured destinations (International)
+
+- [Maldives](https://jaintoursonline.com/destinations/maldives): Overwater villas and reef snorkelling.
+- [Dubai](https://jaintoursonline.com/destinations/dubai): City breaks, desert safaris, luxury stays.
+- [Europe](https://jaintoursonline.com/destinations/europe): Multi-country curated itineraries.
+- [Thailand](https://jaintoursonline.com/destinations/thailand): Phuket, Krabi, Bangkok, Pattaya.
+- [Bali](https://jaintoursonline.com/destinations/bali): Ubud, Seminyak, Nusa islands.
+- [Vietnam](https://jaintoursonline.com/destinations/vietnam): Hanoi, Halong Bay, Da Nang, Ho Chi Minh.
+- [Singapore & Malaysia](https://jaintoursonline.com/destinations/singapore-malaysia): Twin-city Southeast Asia combo.
+- [Bhutan](https://jaintoursonline.com/destinations/bhutan): Paro, Thimphu, Punakha monasteries.
+- [Sri Lanka](https://jaintoursonline.com/destinations/sri-lanka): Cultural triangle and beaches.
+- [Nepal](https://jaintoursonline.com/destinations/nepal): Kathmandu, Pokhara, Himalayan trekking.
+- [Japan](https://jaintoursonline.com/destinations/japan): Tokyo, Kyoto, Osaka, Mt Fuji.
+- [Georgia](https://jaintoursonline.com/destinations/georgia): Tbilisi, Baku, Gabala.
+- [United Kingdom](https://jaintoursonline.com/destinations/united-kingdom): London, Scotland highlands.
+- [Australia](https://jaintoursonline.com/destinations/australia): Sydney, Melbourne, Gold Coast.
+- [Mauritius](https://jaintoursonline.com/destinations/mauritius): Beaches and island excursions.
+- [Hong Kong](https://jaintoursonline.com/destinations/hongkong): City, Disneyland, Macau.
+
+## Services offered
+
+- Customised holiday package design (domestic & international)
+- Honeymoon and family vacation planning
+- Group tours and pilgrimage tours (Char Dham, Vaishno Devi, Tirupati)
+- Corporate / MICE travel
+- International & domestic flight bookings
+- Hotel and resort reservations
+- Visa assistance and documentation
+- Travel insurance
+- Cruise bookings
+- Airport transfers and chauffeured car rentals
+- Foreign exchange guidance
+
+## How to enquire
+
+- Call or WhatsApp +91 98212 35678
+- Submit the enquiry form at https://jaintoursonline.com/contact
+- Visit the Mumbai office (Goregaon West), Mon–Sat 11:00–19:00 IST
+- Typical response time: under 4 business hours
+
+## Optional
+
+- [Full LLM context](https://jaintoursonline.com/llms-full.txt): Extended factual reference for AI search engines.
