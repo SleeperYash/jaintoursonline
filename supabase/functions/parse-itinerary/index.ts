@@ -186,8 +186,9 @@ Deno.serve(async (req) => {
 
   if (!aiRes.ok) {
     const t = await aiRes.text();
+    console.error("AI gateway error", aiRes.status, t);
     await supabase.from("itineraries").update({ parse_error: `AI ${aiRes.status}` }).eq("id", itinerary_id);
-    return json({ error: `AI error: ${aiRes.status}`, detail: t }, 502);
+    return json({ error: `AI error: ${aiRes.status}` }, 502);
   }
   const aiJson = await aiRes.json();
   const call = aiJson?.choices?.[0]?.message?.tool_calls?.[0];
