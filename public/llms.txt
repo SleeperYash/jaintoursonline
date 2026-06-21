@@ -81,4 +81,17 @@
 - [Full LLM context](https://jaintoursonline.com/llms-full.txt): Extended factual reference for AI search engines.
 
 <!-- BLOG:START -->
+## Travel blog
+
+- [Best Time to Visit Kashmir: A Month-by-Month Guide (2026)](https://jaintoursonline.com/blog/best-time-to-visit-kashmir): From tulip blooms in April to snow-covered Gulmarg in January — how to time your Kashmir trip perfectly.
+- [Maldives Honeymoon from India: Real Costs, Top Resorts & 7-Day Plan](https://jaintoursonline.com/blog/maldives-honeymoon-from-india-cost-guide): A transparent breakdown of what a Maldives honeymoon actually costs from Mumbai, with resort tiers and a tested 7-day itinerary.
+- [Dubai vs Singapore: Which is the Better Family Holiday from India?](https://jaintoursonline.com/blog/dubai-vs-singapore-family-holiday): Cost, kid-friendliness, food, attractions and visa — a side-by-side comparison for Indian families.
+- [Bali in 7 Days: A First-Timer's Itinerary from Mumbai](https://jaintoursonline.com/blog/bali-7-day-itinerary-from-mumbai): A balanced Ubud + Seminyak + Nusa Penida itinerary tested across hundreds of our travellers.
+- [Char Dham Yatra by Helicopter: Complete 2026 Booking Guide](https://jaintoursonline.com/blog/char-dham-yatra-by-helicopter-2026): How the helicopter yatra works, what it costs, which package to pick and when to book.
+- [Vietnam in 8 Days: Hanoi, Halong Bay & Da Nang Itinerary](https://jaintoursonline.com/blog/vietnam-8-days-itinerary): The three-region Vietnam itinerary we have refined over hundreds of trips — what to see and what to skip.
+- [Schengen Visa from India in 2026: Documents, Timeline & Approval Tips](https://jaintoursonline.com/blog/schengen-visa-from-india-guide): Which country to apply through, common rejection reasons, and how to maximise your approval odds.
+- [Europe in 10 Days: Best 3-Country Combinations for Indian Travellers](https://jaintoursonline.com/blog/europe-10-days-best-combinations): Five Europe combos tested with hundreds of our travellers — pick the one that matches your style.
+- [Andaman vs Maldives: An Honest Comparison for Indian Couples](https://jaintoursonline.com/blog/andaman-vs-maldives-comparison): Beach quality, food, cost, romance and adventure — which one is actually right for your honeymoon?
+- [Leh-Ladakh Bike Trip: A First-Timer's Complete Guide](https://jaintoursonline.com/blog/leh-ladakh-bike-trip-guide): Routes, costs, acclimatisation, permits and bike choice — everything to plan a safe Leh-Ladakh bike trip.
+
 <!-- BLOG:END -->
