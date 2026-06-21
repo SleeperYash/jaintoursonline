@@ -6,6 +6,7 @@ import SignatureTravelCollections from "@/components/site/home/SignatureTravelCo
 import HandpickedPackages from "@/components/site/home/HandpickedPackages";
 import HowItWorks from "@/components/site/home/HowItWorks";
 import ReviewsCardStack from "@/components/site/home/ReviewsCardStack";
+import BlogStrip from "@/components/site/home/BlogStrip";
 import InquiryBand from "@/components/site/InquiryBand";
 import { MotionReveal } from "@/components/site/MotionReveal";
 import { useSeo } from "@/hooks/useSeo";
@@ -28,6 +29,7 @@ const Index = () => {
       <MotionReveal><HowItWorks /></MotionReveal>
       <MotionReveal><ReviewsCardStack /></MotionReveal>
       <MotionReveal><InquiryBand /></MotionReveal>
+      <MotionReveal><BlogStrip /></MotionReveal>
     </SiteLayout>
   );
 };
