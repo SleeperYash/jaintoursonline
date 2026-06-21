@@ -79,3 +79,6 @@
 ## Optional
 
 - [Full LLM context](https://jaintoursonline.com/llms-full.txt): Extended factual reference for AI search engines.
+
+<!-- BLOG:START -->
+<!-- BLOG:END -->
