@@ -25,7 +25,7 @@ export const BLOG_POSTS: BlogPost[] = [
     excerpt:
       "From tulip blooms in April to snow-covered Gulmarg in January — how to time your Kashmir trip perfectly.",
     category: "Destination Guides",
-    cover: "https://images.unsplash.com/photo-1566837497312-7be6c5b1a3f1?auto=format&fit=crop&q=80&w=1200",
+    cover: "https://images.unsplash.com/photo-1566837945700-30057527ade0?auto=format&fit=crop&q=80&w=1200",
     date: "2026-06-01",
     readMinutes: 7,
     content: [
