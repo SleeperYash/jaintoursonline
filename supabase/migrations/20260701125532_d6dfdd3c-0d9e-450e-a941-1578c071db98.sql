@@ -1,0 +1,1 @@
+DELETE FROM public.itineraries WHERE id = 'b92f049e-c86c-4ee4-ae70-57b80c98f2f8';
