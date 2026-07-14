@@ -16,6 +16,12 @@ export interface BlogPost {
   date: string; // ISO date
   readMinutes: number;
   content: BlogBlock[];
+  /** Internal links — surfaced on the post page and on destination pages. */
+  related?: {
+    destinations?: string[]; // slugs from src/data/destinations.ts
+    services?: string[];     // free-text service names (link to /services)
+    posts?: string[];        // other blog post slugs
+  };
 }
 
 export const BLOG_POSTS: BlogPost[] = [
@@ -47,6 +53,11 @@ export const BLOG_POSTS: BlogPost[] = [
       ]},
       { type: "p", text: "We plan Kashmir trips from Mumbai year-round and can tailor the itinerary to whichever season suits you. WhatsApp us at +91 98212 35678 for a same-day quote." },
     ],
+    related: {
+      destinations: ["kashmir", "leh-ladakh", "himachal"],
+      services: ["Domestic Holidays", "Honeymoon Specialists"],
+      posts: ["leh-ladakh-bike-trip-guide"],
+    },
   },
   {
     slug: "maldives-honeymoon-from-india-cost-guide",
@@ -83,6 +94,11 @@ export const BLOG_POSTS: BlogPost[] = [
       { type: "p", text: "May to October is Maldives' green season — rates fall 25–40% and showers usually pass quickly. November shoulder season offers the best price-to-weather ratio. Avoid Indian school holidays (Dec 20 – Jan 5) unless you book by August." },
       { type: "p", text: "We have direct contracts with 40+ Maldives resorts including Centara, Kuredu, Adaaran, Sun Siyam, OZEN, Sun Aqua, Velassaru and Soneva. Talk to us before booking online — we usually match or beat OTA pricing and include extras like floating breakfast or anniversary cake free of cost." },
     ],
+    related: {
+      destinations: ["maldives", "andaman", "mauritius"],
+      services: ["Honeymoon Specialists", "International Holidays"],
+      posts: ["andaman-vs-maldives-comparison"],
+    },
   },
   {
     slug: "dubai-vs-singapore-family-holiday",
@@ -110,6 +126,11 @@ export const BLOG_POSTS: BlogPost[] = [
       { type: "h2", text: "Our Recommendation" },
       { type: "p", text: "First international trip with kids under 10: Dubai. Older kids who love theme parks and nature: Singapore. Combine both as a 9-night twin-city if budget allows — we plan this combo often and it is genuinely outstanding." },
     ],
+    related: {
+      destinations: ["dubai", "singapore-malaysia", "thailand"],
+      services: ["International Holidays", "Group & Family Travel"],
+      posts: ["thailand-visa-free-guide-2026", "malaysia-visa-free-for-indians"],
+    },
   },
   {
     slug: "bali-7-day-itinerary-from-mumbai",
@@ -139,6 +160,11 @@ export const BLOG_POSTS: BlogPost[] = [
       { type: "h2", text: "When to Go" },
       { type: "p", text: "April–June and September–October are the sweet spots: dry weather, fewer crowds, better prices. Avoid Aug (peak European holidays) and Dec–Jan (rain + Indian peak season pricing)." },
     ],
+    related: {
+      destinations: ["bali", "thailand", "vietnam"],
+      services: ["International Holidays", "Honeymoon Specialists"],
+      posts: ["vietnam-8-days-itinerary", "thailand-visa-free-guide-2026"],
+    },
   },
   {
     slug: "char-dham-yatra-by-helicopter-2026",
@@ -170,6 +196,11 @@ export const BLOG_POSTS: BlogPost[] = [
       ]},
       { type: "p", text: "We are an authorised partner for the Char Dham helicopter yatra and handle bookings, biometric registration, and on-ground coordination. Call +91 98212 35678 to confirm availability for your dates." },
     ],
+    related: {
+      destinations: ["char-dham", "uttarakhand"],
+      services: ["Domestic Holidays", "Group & Family Travel"],
+      posts: ["ayodhya-ram-mandir-pilgrimage"],
+    },
   },
   {
     slug: "vietnam-8-days-itinerary",
@@ -200,6 +231,11 @@ export const BLOG_POSTS: BlogPost[] = [
       { type: "h2", text: "What to Skip on a First Trip" },
       { type: "p", text: "Sapa requires a 6-hour overnight train each way — skip unless you have 10+ days. Ho Chi Minh and Mekong Delta are best paired with Cambodia on a separate trip." },
     ],
+    related: {
+      destinations: ["vietnam", "thailand", "bali"],
+      services: ["International Holidays", "Visa Support"],
+      posts: ["vietnam-90-day-evisa-guide", "bali-7-day-itinerary-from-mumbai"],
+    },
   },
   {
     slug: "schengen-visa-from-india-guide",
@@ -235,6 +271,11 @@ export const BLOG_POSTS: BlogPost[] = [
       ]},
       { type: "p", text: "We have processed over 2,000 Schengen visa files. Our standard approach: dummy bookings, structured cover letter, financial document review and full pre-submission check. Approval rate stays above 96%." },
     ],
+    related: {
+      destinations: ["europe", "united-kingdom"],
+      services: ["Visa Support", "Travel Insurance"],
+      posts: ["etias-europe-2026-what-indians-need-to-know", "uk-eta-for-indians-2026"],
+    },
   },
   {
     slug: "europe-10-days-best-combinations",
@@ -265,6 +306,11 @@ export const BLOG_POSTS: BlogPost[] = [
         "Take a Eurail pass only if you have 4+ intercity legs",
       ]},
     ],
+    related: {
+      destinations: ["europe", "united-kingdom", "georgia"],
+      services: ["International Holidays", "Visa Support"],
+      posts: ["schengen-visa-from-india-guide", "etias-europe-2026-what-indians-need-to-know"],
+    },
   },
   {
     slug: "andaman-vs-maldives-comparison",
@@ -295,6 +341,11 @@ export const BLOG_POSTS: BlogPost[] = [
       { type: "h2", text: "Our Verdict" },
       { type: "p", text: "Budget under ₹1.5 lakh per couple: Andaman. Pure romance and willing to spend ₹2.5 lakh+: Maldives. Honeymoon under ₹2 lakh that still feels luxurious: Andaman 5-star resort." },
     ],
+    related: {
+      destinations: ["andaman", "maldives"],
+      services: ["Honeymoon Specialists", "Domestic Holidays"],
+      posts: ["maldives-honeymoon-from-india-cost-guide"],
+    },
   },
   {
     slug: "leh-ladakh-bike-trip-guide",
@@ -324,5 +375,338 @@ export const BLOG_POSTS: BlogPost[] = [
       { type: "h2", text: "Cost" },
       { type: "p", text: "A 7-day fly-in Leh package with bike rental, fuel, hotels and permits runs ₹38,000 – 55,000 per person. Full 12-day Manali → Leh → Srinagar with backup vehicle: ₹65,000 – 85,000." },
     ],
+    related: {
+      destinations: ["leh-ladakh", "kashmir", "himachal"],
+      services: ["Domestic Holidays", "Travel Insurance"],
+      posts: ["best-time-to-visit-kashmir"],
+    },
+  },
+  {
+    slug: "japan-cherry-blossom-2026",
+    title: "Japan Cherry Blossom 2026: Forecast, Best Cities & Booking Timeline",
+    excerpt:
+      "Sakura dates city-by-city, where Indians should base themselves, and why booking by December matters.",
+    category: "Destination Guides",
+    cover: "https://images.unsplash.com/photo-1522383225653-ed111181a951?auto=format&fit=crop&q=80&w=1200",
+    date: "2026-06-10",
+    readMinutes: 7,
+    content: [
+      { type: "p", text: "The 2026 sakura forecast points to a slightly early bloom in Kyoto and Tokyo — full bloom is likely between March 24 and April 2 across the Kansai-Kanto belt. Here is how to plan a Japan cherry blossom trip that doesn't miss the window." },
+      { type: "h2", text: "Forecast Dates by City (2026)" },
+      { type: "ul", items: [
+        "Tokyo: first bloom Mar 22, full bloom Mar 29 – Apr 3",
+        "Kyoto: first bloom Mar 24, full bloom Mar 31 – Apr 6",
+        "Osaka: first bloom Mar 25, full bloom Apr 1 – Apr 7",
+        "Hakone / Mt. Fuji area: full bloom Apr 8 – Apr 15",
+      ]},
+      { type: "h2", text: "Recommended 8-Day Route" },
+      { type: "p", text: "Tokyo (3N) → Hakone (1N) → Kyoto (2N) → Osaka (1N). This gives you two bloom windows: catch early sakura in Tokyo and late-blooming trees around Fuji if you time the tail end of the trip." },
+      { type: "h2", text: "Cost Per Person from Mumbai" },
+      { type: "p", text: "A 4-star sakura-season package with flights, JR Pass, hotels and breakfast runs ₹2.10 – 2.60 lakh. Cherry blossom season is Japan's peak — expect 20–30% higher hotel rates than autumn." },
+      { type: "h2", text: "Visa & Booking Timeline" },
+      { type: "p", text: "Japan tourist visa now processes in 5–7 working days for Indians with 3-year multi-entry now available for repeat travellers. Lock hotels by mid-December — top ryokans in Kyoto sell out 4 months ahead." },
+      { type: "p", text: "We build custom Japan sakura itineraries every spring — WhatsApp +91 98212 35678 for a same-day quote." },
+    ],
+    related: {
+      destinations: ["japan", "hongkong"],
+      services: ["International Holidays", "Visa Support"],
+      posts: ["europe-10-days-best-combinations"],
+    },
+  },
+  {
+    slug: "thailand-visa-free-guide-2026",
+    title: "Thailand Visa-Free for Indians in 2026: What's Changed & How to Plan",
+    excerpt:
+      "Thailand's visa-free entry for Indian passport holders explained — stay limits, documents at immigration, and the best 6-night itinerary.",
+    category: "Visa Guides",
+    cover: "https://images.unsplash.com/photo-1528181304800-259b08848526?auto=format&fit=crop&q=80&w=1200",
+    date: "2026-06-08",
+    readMinutes: 6,
+    content: [
+      { type: "p", text: "Thailand's visa-free entry for Indian passport holders has been extended through 2026 — no visa fee, no VOA queue, just a passport stamp on arrival. Here is what the rules actually say and how to use them." },
+      { type: "h2", text: "Key Rules" },
+      { type: "ul", items: [
+        "Passport valid 6+ months from date of entry",
+        "Stay up to 60 days per entry",
+        "Confirmed return ticket within 60 days",
+        "Proof of funds: THB 20,000 per person (~₹47,000) — rarely checked but keep bank statement handy",
+        "Hotel address for first night",
+      ]},
+      { type: "h2", text: "6-Night Itinerary We Book Most" },
+      { type: "p", text: "Bangkok (2N) → Phuket (2N) → Krabi (2N). Bangkok for shopping and street food, Phuket for beach nightlife, Krabi for postcard islands. Total cost from Mumbai with 4-star hotels and daily breakfast: ₹58,000 – 75,000 per person." },
+      { type: "h2", text: "What to Skip" },
+      { type: "p", text: "Pattaya is losing its edge — noisier, more crowded, weaker beaches than 10 years ago. Swap it for Krabi or Koh Samui unless your group specifically wants nightlife." },
+      { type: "h2", text: "Best Months" },
+      { type: "p", text: "November to February is peak dry season. May–October is cheaper (30–40% less) but expect afternoon showers. Avoid Songkran (Apr 13–15) unless you enjoy citywide water fights." },
+    ],
+    related: {
+      destinations: ["thailand", "singapore-malaysia", "bali"],
+      services: ["International Holidays", "Visa Support", "Group & Family Travel"],
+      posts: ["malaysia-visa-free-for-indians", "bali-7-day-itinerary-from-mumbai"],
+    },
+  },
+  {
+    slug: "malaysia-visa-free-for-indians",
+    title: "Malaysia Visa-Free for Indians: 2026 Rules, Combos & 5-Day Plan",
+    excerpt:
+      "Malaysia's visa-free window explained, plus the Kuala Lumpur + Langkawi combo we book most often.",
+    category: "Visa Guides",
+    cover: "https://images.unsplash.com/photo-1596422846543-75c6fc197f07?auto=format&fit=crop&q=80&w=1200",
+    date: "2026-06-04",
+    readMinutes: 5,
+    content: [
+      { type: "p", text: "Malaysia extended visa-free entry for Indian passport holders through December 2026. Combined with cheap AirAsia and Batik Air fares from Mumbai, it is now the fastest, cheapest Southeast Asian trip you can take." },
+      { type: "h2", text: "Rules" },
+      { type: "ul", items: [
+        "Stay up to 30 days per entry, single or multi-entry allowed",
+        "Passport valid 6+ months",
+        "Return ticket within 30 days",
+        "MDAC (Malaysia Digital Arrival Card) — free online form within 3 days of arrival",
+      ]},
+      { type: "h2", text: "Kuala Lumpur + Langkawi 5-Night Plan" },
+      { type: "p", text: "KL (2N) → Langkawi (3N). KL for Petronas, Batu Caves and Genting; Langkawi for Cable Car, island hopping and duty-free shopping. Cost from Mumbai: ₹42,000 – 55,000 per person with 4-star hotels." },
+      { type: "h2", text: "Combine With Singapore" },
+      { type: "p", text: "Malaysia pairs beautifully with Singapore — fly Mumbai → Singapore, cross to KL by 5-hour luxury coach or 45-min flight, exit from KL. Two countries, one visa-lite trip." },
+    ],
+    related: {
+      destinations: ["singapore-malaysia", "thailand", "bali"],
+      services: ["International Holidays", "Group & Family Travel"],
+      posts: ["thailand-visa-free-guide-2026", "dubai-vs-singapore-family-holiday"],
+    },
+  },
+  {
+    slug: "bhutan-sdf-2026-cost-guide",
+    title: "Bhutan Trip in 2026: New SDF Rules, Real Costs & 6-Day Itinerary",
+    excerpt:
+      "The updated Sustainable Development Fee, entry via Phuentsholing vs Paro, and a tested 6-day Bhutan plan for Indians.",
+    category: "Destination Guides",
+    cover: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&q=80&w=1200",
+    date: "2026-05-30",
+    readMinutes: 6,
+    content: [
+      { type: "p", text: "Bhutan's Sustainable Development Fee (SDF) for Indians sits at ₹1,200 per adult per night in 2026, with a 50% concession still active on select routes. Kids under 5 free, 6–12 half. Here is how the numbers actually stack up." },
+      { type: "h2", text: "Entry Points" },
+      { type: "p", text: "Two options: fly Kolkata/Delhi/Mumbai → Paro on Druk Air / Bhutan Airlines, or fly Bagdogra and drive via Phuentsholing (10 hours). Phuentsholing entry is 40% cheaper but adds a full travel day either side." },
+      { type: "h2", text: "6-Night Itinerary" },
+      { type: "ul", items: [
+        "Day 1: Arrive Paro, drive to Thimphu",
+        "Day 2: Thimphu — Buddha Dordenma, Memorial Chorten, weekend market",
+        "Day 3: Thimphu → Punakha via Dochula Pass",
+        "Day 4: Punakha Dzong, suspension bridge, Chimi Lhakhang",
+        "Day 5: Drive back to Paro",
+        "Day 6: Tiger's Nest (Taktsang) trek",
+        "Day 7: Depart Paro",
+      ]},
+      { type: "h2", text: "Cost Per Person from Mumbai" },
+      { type: "ul", items: [
+        "Via Paro flight, 3-star hotels: ₹78,000 – 95,000",
+        "Via Bagdogra + drive, 3-star hotels: ₹52,000 – 68,000",
+        "Luxury (Aman, Six Senses, COMO): ₹4.5 – 9 lakh",
+      ]},
+      { type: "h2", text: "Best Months" },
+      { type: "p", text: "March–May and September–November. October is the sweet spot: clear skies for Tiger's Nest, festival season across dzongs, no monsoon leeches." },
+    ],
+    related: {
+      destinations: ["bhutan", "nepal", "sri-lanka"],
+      services: ["International Holidays", "Pilgrimage Tours"],
+      posts: ["char-dham-yatra-by-helicopter-2026"],
+    },
+  },
+  {
+    slug: "uk-eta-for-indians-2026",
+    title: "UK ETA for Indians: What It Is, When You Need It, How to Apply",
+    excerpt:
+      "The UK Electronic Travel Authorisation kicks in for Indians in 2026 — here's how it works with your existing visitor visa.",
+    category: "Visa Guides",
+    cover: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&q=80&w=1200",
+    date: "2026-05-26",
+    readMinutes: 5,
+    content: [
+      { type: "p", text: "The UK is rolling out its Electronic Travel Authorisation (ETA) globally in 2026. Indian passport holders still need a full Standard Visitor Visa — the ETA does not replace it. But if you hold a US, EU or Canada visa and are transiting through Heathrow, ETA rules now apply. Here is what actually changes." },
+      { type: "h2", text: "Do Indians Need the ETA?" },
+      { type: "p", text: "No — not for the standard visitor route. Indians still apply for the £127 Standard Visitor Visa via VFS Global. The ETA is for visa-exempt nationalities only." },
+      { type: "h2", text: "Where the ETA Does Affect You" },
+      { type: "ul", items: [
+        "Airside transit at Heathrow / Manchester if connecting via a non-UK carrier",
+        "Cruise stops touching UK ports",
+        "Certain business itineraries entering UK from Ireland",
+      ]},
+      { type: "h2", text: "UK Visitor Visa Timeline (2026)" },
+      { type: "p", text: "Standard processing: 3 weeks. Priority (₹5,000 extra): 5 working days. Super Priority: 24 hours. Approval rates for Indian applicants sit at 92% when documents are complete." },
+      { type: "h2", text: "UK + Schengen Combo" },
+      { type: "p", text: "The most common UK trip we plan is 10 days: London → Edinburgh → Highlands. Adding Paris or Amsterdam requires a separate Schengen visa — apply for both simultaneously, 60 days before travel." },
+    ],
+    related: {
+      destinations: ["united-kingdom", "europe"],
+      services: ["Visa Support", "International Holidays"],
+      posts: ["schengen-visa-from-india-guide", "etias-europe-2026-what-indians-need-to-know"],
+    },
+  },
+  {
+    slug: "vietnam-90-day-evisa-guide",
+    title: "Vietnam 90-Day E-Visa for Indians: Multi-Entry Rules & Application",
+    excerpt:
+      "Vietnam now offers a 90-day multi-entry e-visa for Indians — here's who should get it and how to apply in 30 minutes.",
+    category: "Visa Guides",
+    cover: "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&q=80&w=1200",
+    date: "2026-05-20",
+    readMinutes: 5,
+    content: [
+      { type: "p", text: "Vietnam's expanded e-visa now lets Indian passport holders stay 90 days per entry, with a multi-entry option — a huge change for anyone combining Vietnam with Cambodia or Laos, or repeat-visiting Halong Bay and Ho Chi Minh in one trip." },
+      { type: "h2", text: "Fees" },
+      { type: "ul", items: [
+        "Single-entry 90 days: USD 25",
+        "Multi-entry 90 days: USD 50",
+        "Processing: 3 working days (rush service 24 hrs at USD 15 extra)",
+      ]},
+      { type: "h2", text: "How to Apply" },
+      { type: "p", text: "Apply directly at evisa.gov.vn. Avoid the copycat sites that rank higher on Google and charge 3–4× more. You need: passport scan, 4×6 photo, entry date, and exit port. Approval comes as a PDF — print two copies." },
+      { type: "h2", text: "Who Should Choose Multi-Entry" },
+      { type: "ul", items: [
+        "Anyone adding Cambodia (Angkor Wat) or Laos to their trip",
+        "Business travellers with repeat Vietnam meetings",
+        "Digital nomads staying 60+ days",
+      ]},
+      { type: "p", text: "For most first-timers doing an 8-day Hanoi + Halong + Da Nang loop, the single-entry visa is enough." },
+    ],
+    related: {
+      destinations: ["vietnam", "thailand", "bali"],
+      services: ["Visa Support", "International Holidays"],
+      posts: ["vietnam-8-days-itinerary", "thailand-visa-free-guide-2026"],
+    },
+  },
+  {
+    slug: "cordelia-cruise-mumbai-guide",
+    title: "Cordelia Cruise from Mumbai in 2026: Routes, Cabins & Real Costs",
+    excerpt:
+      "India's own cruise line explained — Mumbai to Goa, Lakshadweep, Sri Lanka — with cabin tiers and what to expect on board.",
+    category: "Cruises",
+    cover: "https://images.unsplash.com/photo-1548574505-5e239809ee19?auto=format&fit=crop&q=80&w=1200",
+    date: "2026-05-15",
+    readMinutes: 6,
+    content: [
+      { type: "p", text: "Cordelia Cruises has grown into a serious short-break option for Indian families — no visa, no forex hassle, and pricing that beats a comparable Goa hotel stay. Here is what booking a Cordelia sailing actually looks like in 2026." },
+      { type: "h2", text: "Popular Routes" },
+      { type: "ul", items: [
+        "Mumbai → Goa → Mumbai (2 nights)",
+        "Mumbai → Goa → Lakshadweep → Mumbai (4 nights)",
+        "Mumbai → Sri Lanka (Colombo, Galle) — 6 nights",
+        "Chennai → Sri Lanka round trips (seasonal)",
+      ]},
+      { type: "h2", text: "Cabin Tiers (Per Person, Twin Sharing)" },
+      { type: "ul", items: [
+        "Interior cabin: ₹9,000 – 14,000 per night",
+        "Ocean-view cabin: ₹13,000 – 18,000 per night",
+        "Balcony suite: ₹19,000 – 28,000 per night",
+        "Premium suite: ₹35,000+ per night",
+      ]},
+      { type: "h2", text: "What's Included" },
+      { type: "p", text: "All meals across 4 restaurants, entertainment shows, kids' club, pool decks, gym. Not included: shore excursions, alcohol (buy a drink package), spa, casino, specialty dining." },
+      { type: "h2", text: "Sri Lanka Sailing — Bring a Visa" },
+      { type: "p", text: "The Sri Lanka voyages require a valid ETA in advance (USD 50, apply at eta.gov.lk). We arrange this alongside the cruise booking so guests don't get denied boarding at Mumbai." },
+      { type: "p", text: "We book Cordelia sailings almost every week — often with cabin upgrades or onboard credit that direct bookings miss. Message us before you buy online." },
+    ],
+    related: {
+      destinations: ["goa", "sri-lanka"],
+      services: ["Cruise Bookings", "Domestic Holidays"],
+      posts: ["andaman-vs-maldives-comparison"],
+    },
+  },
+  {
+    slug: "ayodhya-ram-mandir-pilgrimage",
+    title: "Ayodhya Ram Mandir Pilgrimage 2026: Darshan, Stay & 3-Day Plan",
+    excerpt:
+      "How to plan a stress-free Ayodhya trip — VIP darshan slots, hotel picks, and a 3-day circuit including Varanasi and Prayagraj.",
+    category: "Pilgrimage",
+    cover: "https://images.unsplash.com/photo-1587474260584-136574528ed5?auto=format&fit=crop&q=80&w=1200",
+    date: "2026-05-10",
+    readMinutes: 6,
+    content: [
+      { type: "p", text: "Ayodhya's Ram Mandir has become India's most-visited pilgrimage site since its 2024 consecration — expect crowds year-round. Planning ahead is the only way to get a peaceful darshan." },
+      { type: "h2", text: "How to Reach" },
+      { type: "p", text: "Fly Mumbai/Delhi → Ayodhya (Maharishi Valmiki International Airport) direct. Trains from Lucknow (2 hrs) are cheap and frequent. Lucknow's Chaudhary Charan Singh airport is the alternate if fares to Ayodhya spike." },
+      { type: "h2", text: "Darshan Slots" },
+      { type: "p", text: "General darshan: 6:30 AM – 12:00 PM and 2:30 PM – 10:00 PM. VIP darshan passes are limited and require ID + advance booking — we arrange these on request. Sugriva Kila and Kanak Bhawan are essential add-ons." },
+      { type: "h2", text: "3-Day Circuit" },
+      { type: "ul", items: [
+        "Day 1: Arrive Ayodhya, Ram Mandir evening darshan, Saryu ghat aarti",
+        "Day 2: Hanuman Garhi, Kanak Bhawan, then drive/train to Prayagraj (Triveni Sangam)",
+        "Day 3: Prayagraj → Varanasi (Kashi Vishwanath, Ganga aarti at Dashashwamedh)",
+      ]},
+      { type: "h2", text: "Cost Per Person from Mumbai" },
+      { type: "p", text: "3-night pilgrimage circuit with 4-star hotels, flights, transfers and priority darshan: ₹32,000 – 45,000. Deluxe with 5-star Taj Nadesar Palace in Varanasi: ₹65,000+." },
+    ],
+    related: {
+      destinations: ["delhi", "uttarakhand", "char-dham"],
+      services: ["Pilgrimage Tours", "Domestic Holidays"],
+      posts: ["char-dham-yatra-by-helicopter-2026"],
+    },
+  },
+  {
+    slug: "meghalaya-monsoon-living-root-bridges",
+    title: "Meghalaya in Monsoon: Living Root Bridges & Cherrapunji Guide",
+    excerpt:
+      "Why the wettest place on earth is best visited during monsoon — waterfalls, root bridges, and a 5-day Northeast plan.",
+    category: "Destination Guides",
+    cover: "https://images.unsplash.com/photo-1591018653692-e6d6b7e5f7e9?auto=format&fit=crop&q=80&w=1200",
+    date: "2026-05-02",
+    readMinutes: 6,
+    content: [
+      { type: "p", text: "Everyone tells you not to visit Meghalaya in monsoon. They are wrong. June to September is when Cherrapunji actually earns its title — 1,000+ waterfalls appear across the plateau and living root bridges hum with sound. If you're prepared, it's spectacular." },
+      { type: "h2", text: "5-Day Route" },
+      { type: "ul", items: [
+        "Day 1: Fly Mumbai → Guwahati, drive to Shillong (3 hrs)",
+        "Day 2: Shillong — Elephant Falls, Umiam Lake, Ward's Lake",
+        "Day 3: Cherrapunji — Nohkalikai Falls, Seven Sisters, Mawsmai Cave",
+        "Day 4: Double Decker Living Root Bridge trek (Nongriat, 3,500 steps down + up)",
+        "Day 5: Dawki river (crystal-clear even in monsoon), Mawlynnong (Asia's cleanest village), drive back to Guwahati",
+      ]},
+      { type: "h2", text: "What to Pack" },
+      { type: "ul", items: [
+        "Waterproof trekking shoes (mandatory for Nongriat)",
+        "Rain jacket + poncho (Cherrapunji gets 100mm+ per day)",
+        "Dry bags for phone and passport",
+        "Leech socks and salt sachets",
+      ]},
+      { type: "h2", text: "Cost" },
+      { type: "p", text: "5-day Meghalaya package from Mumbai with flights, 4-star hotels, private cab and breakfast: ₹38,000 – 52,000 per person. Off-peak (August) rates are 30% lower than October–November." },
+      { type: "h2", text: "Combine With" },
+      { type: "p", text: "Kaziranga (Assam) for one-horned rhinos, or Tawang (Arunachal Pradesh — requires Inner Line Permit) for high-altitude monasteries. We plan Northeast circuits year-round." },
+    ],
+    related: {
+      destinations: ["north-east", "bhutan"],
+      services: ["Domestic Holidays", "Group & Family Travel"],
+      posts: ["leh-ladakh-bike-trip-guide"],
+    },
+  },
+  {
+    slug: "etias-europe-2026-what-indians-need-to-know",
+    title: "ETIAS Europe 2026: What Indians Travelling to Schengen Need to Know",
+    excerpt:
+      "ETIAS goes live in late 2026 — but it does not replace your Schengen visa. Here's what actually changes for Indian travellers.",
+    category: "Visa Guides",
+    cover: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&q=80&w=1200",
+    date: "2026-04-24",
+    readMinutes: 5,
+    content: [
+      { type: "p", text: "The EU's ETIAS (European Travel Information and Authorisation System) launches in late 2026 alongside the EES entry-exit system. For Indians, the headline is simple: you still need a Schengen visa. ETIAS is for visa-exempt nationalities only. But EES changes how your entry gets recorded, and that affects you." },
+      { type: "h2", text: "What ETIAS Is (and Isn't)" },
+      { type: "p", text: "ETIAS is a €7 pre-travel authorisation for citizens of ~60 visa-exempt countries (US, UK, Canada, Australia, Japan, Singapore). Indians hold a visa-required passport, so ETIAS does not apply." },
+      { type: "h2", text: "EES — The Change That Does Affect Indians" },
+      { type: "p", text: "The Entry-Exit System replaces manual passport stamping at Schengen borders with biometric scanning (fingerprints + facial photo) on your first entry after go-live. Expect longer queues at Paris CDG, Amsterdam and Rome for the first few months. Build in extra transfer time." },
+      { type: "h2", text: "Overstay Risk" },
+      { type: "p", text: "EES will track your 90/180-day allowance automatically — no more relying on missed stamps. If you have overstayed on past trips, expect the system to flag you. Regularise with the relevant embassy before you next apply for a Schengen visa." },
+      { type: "h2", text: "Practical Impact on 2026 Trips" },
+      { type: "ul", items: [
+        "Still apply for Schengen visa 60 days before travel",
+        "Land 30–45 min earlier for connections at Schengen entry airports",
+        "Keep hotel bookings, return tickets and insurance printouts for random EES checks",
+      ]},
+    ],
+    related: {
+      destinations: ["europe", "united-kingdom"],
+      services: ["Visa Support", "International Holidays"],
+      posts: ["schengen-visa-from-india-guide", "uk-eta-for-indians-2026", "europe-10-days-best-combinations"],
+    },
   },
 ];
