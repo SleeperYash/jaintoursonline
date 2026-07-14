@@ -16,6 +16,12 @@ export interface BlogPost {
   date: string; // ISO date
   readMinutes: number;
   content: BlogBlock[];
+  /** Internal links — surfaced on the post page and on destination pages. */
+  related?: {
+    destinations?: string[]; // slugs from src/data/destinations.ts
+    services?: string[];     // free-text service names (link to /services)
+    posts?: string[];        // other blog post slugs
+  };
 }
 
 export const BLOG_POSTS: BlogPost[] = [
