@@ -2,6 +2,7 @@ import { Link, useParams } from "react-router-dom";
 import SiteLayout from "@/components/site/SiteLayout";
 import { useSeo } from "@/hooks/useSeo";
 import { BLOG_POSTS } from "@/data/blogPosts";
+import { findDestination } from "@/data/destinations";
 import NotFound from "./NotFound";
 import { Calendar, Clock, ArrowLeft } from "lucide-react";
 import { BRAND, waLink } from "@/lib/brand";
@@ -21,6 +22,17 @@ const BlogPost = () => {
   });
 
   if (!post) return <NotFound />;
+
+  const rel = post.related ?? {};
+  const relatedDestinations = (rel.destinations ?? [])
+    .map((slug) => findDestination(slug))
+    .filter((d): d is NonNullable<typeof d> => Boolean(d));
+  const relatedPosts = (rel.posts ?? [])
+    .map((s) => BLOG_POSTS.find((p) => p.slug === s))
+    .filter((p): p is NonNullable<typeof p> => Boolean(p));
+  const relatedServices = rel.services ?? [];
+  const hasRelated =
+    relatedDestinations.length > 0 || relatedPosts.length > 0 || relatedServices.length > 0;
 
   const articleLd = {
     "@context": "https://schema.org",
@@ -97,6 +109,71 @@ const BlogPost = () => {
             </a>
           </div>
         </aside>
+
+        {hasRelated && (
+          <section aria-labelledby="related-heading" className="mt-16">
+            <h2 id="related-heading" className="font-serif text-2xl md:text-3xl text-foreground mb-6">
+              Related on Jain Tours
+            </h2>
+
+            {relatedDestinations.length > 0 && (
+              <div className="mb-8">
+                <p className="text-[11px] uppercase tracking-luxe text-gold mb-3">Destinations</p>
+                <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
+                  {relatedDestinations.map((d) => (
+                    <Link
+                      key={d.slug}
+                      to={`/destinations/${d.slug}`}
+                      className="group flex items-center gap-3 p-3 rounded-lg bg-card border border-border/60 hover:border-gold/50 transition"
+                    >
+                      <img src={d.image} alt={d.name} loading="lazy" className="w-16 h-16 rounded object-cover" />
+                      <div className="min-w-0">
+                        <p className="font-serif text-base text-foreground group-hover:text-gold transition-colors truncate">{d.name}</p>
+                        <p className="text-[11px] uppercase tracking-luxe text-muted-foreground">{d.region}</p>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {relatedServices.length > 0 && (
+              <div className="mb-8">
+                <p className="text-[11px] uppercase tracking-luxe text-gold mb-3">Services</p>
+                <div className="flex flex-wrap gap-2">
+                  {relatedServices.map((name) => (
+                    <Link
+                      key={name}
+                      to="/services"
+                      className="inline-flex items-center px-3.5 py-1.5 rounded-full border border-border text-xs text-foreground hover:border-gold/50 hover:text-gold transition"
+                    >
+                      {name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {relatedPosts.length > 0 && (
+              <div>
+                <p className="text-[11px] uppercase tracking-luxe text-gold mb-3">Continue reading</p>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  {relatedPosts.map((p) => (
+                    <Link
+                      key={p.slug}
+                      to={`/blog/${p.slug}`}
+                      className="group block p-4 rounded-lg bg-card border border-border/60 hover:border-gold/50 transition"
+                    >
+                      <p className="text-[10px] uppercase tracking-luxe text-gold mb-1.5">{p.category}</p>
+                      <p className="font-serif text-base text-foreground group-hover:text-gold transition-colors">{p.title}</p>
+                      <p className="mt-1.5 text-xs text-muted-foreground line-clamp-2">{p.excerpt}</p>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+          </section>
+        )}
       </article>
     </SiteLayout>
   );
