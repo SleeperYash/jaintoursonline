@@ -7,7 +7,6 @@ import { findDestination } from "@/data/destinations";
 import NotFound from "./NotFound";
 import { Calendar, Clock, ArrowLeft, Headset } from "lucide-react";
 import { BRAND, waLink } from "@/lib/brand";
-import { useState } from "react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 const SITE = "https://jaintoursonline.com";
