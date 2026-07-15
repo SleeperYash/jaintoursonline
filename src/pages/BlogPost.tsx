@@ -2,10 +2,12 @@ import { Link, useParams } from "react-router-dom";
 import SiteLayout from "@/components/site/SiteLayout";
 import { useSeo } from "@/hooks/useSeo";
 import { BLOG_POSTS } from "@/data/blogPosts";
+import { BLOG_FAQS } from "@/data/blogFaqs";
 import { findDestination } from "@/data/destinations";
 import NotFound from "./NotFound";
-import { Calendar, Clock, ArrowLeft } from "lucide-react";
+import { Calendar, Clock, ArrowLeft, Headset } from "lucide-react";
 import { BRAND, waLink } from "@/lib/brand";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 const SITE = "https://jaintoursonline.com";
 
@@ -22,6 +24,8 @@ const BlogPost = () => {
   });
 
   if (!post) return <NotFound />;
+
+  const faqs = BLOG_FAQS[post.slug] ?? [];
 
   const rel = post.related ?? {};
   const relatedDestinations = (rel.destinations ?? [])
@@ -53,9 +57,33 @@ const BlogPost = () => {
     articleSection: post.category,
   };
 
+  const faqLd = faqs.length
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: faqs.map((f) => ({
+          "@type": "Question",
+          name: f.q,
+          acceptedAnswer: { "@type": "Answer", text: f.a },
+        })),
+      }
+    : null;
+
+  // Derive a short "trip name" for the CTA copy — e.g. "Kashmir", "Bali".
+  const tripName = (() => {
+    const firstDest = relatedDestinations[0]?.name;
+    if (firstDest) return firstDest;
+    // fallback: pull the first capitalised word from the title
+    const m = post.title.match(/\b([A-Z][a-zA-Z]+)\b/);
+    return m?.[1] ?? "next";
+  })();
+
   return (
     <SiteLayout>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleLd) }} />
+      {faqLd && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
+      )}
 
       <article className="container py-16 max-w-3xl">
         <Link to="/blog" className="inline-flex items-center gap-2 text-xs uppercase tracking-luxe text-gold hover:underline mb-8">
@@ -109,6 +137,53 @@ const BlogPost = () => {
             </a>
           </div>
         </aside>
+
+        {faqs.length > 0 && (
+          <section aria-labelledby="faq-heading" className="mt-16">
+            <p className="text-[11px] uppercase tracking-luxe text-gold mb-3">FAQ</p>
+            <h2 id="faq-heading" className="font-serif text-2xl md:text-3xl text-foreground mb-6">
+              Frequently Asked Questions
+            </h2>
+            <Accordion type="single" collapsible className="border border-border/60 rounded-lg overflow-hidden bg-card divide-y divide-border/60">
+              {faqs.map((f, i) => (
+                <AccordionItem key={i} value={`faq-${i}`} className="border-b-0">
+                  <AccordionTrigger className="px-4 md:px-6 py-4 text-left text-sm md:text-base font-medium text-foreground hover:bg-secondary/50 hover:no-underline gap-4">
+                    <span className="flex-1">
+                      <span className="text-gold mr-2 font-serif">Q{i + 1}.</span>
+                      {f.q}
+                    </span>
+                  </AccordionTrigger>
+                  <AccordionContent className="px-4 md:px-6 pb-5 text-sm md:text-[15px] text-muted-foreground leading-relaxed">
+                    {f.a}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </section>
+        )}
+
+        {/* Branded CTA banner (matches design reference) */}
+        <section className="mt-10">
+          <div className="relative overflow-hidden rounded-xl bg-ink text-white px-5 py-6 md:px-8 md:py-7 flex flex-col md:flex-row md:items-center gap-5 md:gap-6 border border-gold/20">
+            <div className="hidden sm:flex shrink-0 w-12 h-12 md:w-14 md:h-14 rounded-full bg-gold/15 text-gold items-center justify-center ring-1 ring-gold/40">
+              <Headset className="w-6 h-6" strokeWidth={1.5} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-serif text-lg md:text-2xl leading-tight">
+                Planning your {tripName} trip?
+              </p>
+              <p className="mt-1 text-xs md:text-sm text-white/70">
+                Get a customised itinerary &amp; best deals from our travel experts.
+              </p>
+            </div>
+            <Link
+              to="/contact"
+              className="shrink-0 inline-flex items-center justify-center px-5 md:px-7 py-3 bg-gold text-primary-foreground text-[11px] md:text-xs uppercase tracking-luxe font-medium rounded-md hover:bg-gold/90 transition w-full md:w-auto"
+            >
+              Get a Free Quote
+            </Link>
+          </div>
+        </section>
 
         {hasRelated && (
           <section aria-labelledby="related-heading" className="mt-16">
