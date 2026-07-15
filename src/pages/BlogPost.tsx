@@ -5,7 +5,7 @@ import { BLOG_POSTS } from "@/data/blogPosts";
 import { BLOG_FAQS } from "@/data/blogFaqs";
 import { findDestination } from "@/data/destinations";
 import NotFound from "./NotFound";
-import { Calendar, Clock, ArrowLeft, Plus, Minus, HeadsetIcon } from "lucide-react";
+import { Calendar, Clock, ArrowLeft, Headset } from "lucide-react";
 import { BRAND, waLink } from "@/lib/brand";
 import { useState } from "react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -167,7 +167,7 @@ const BlogPost = () => {
         <section className="mt-10">
           <div className="relative overflow-hidden rounded-xl bg-ink text-white px-5 py-6 md:px-8 md:py-7 flex flex-col md:flex-row md:items-center gap-5 md:gap-6 border border-gold/20">
             <div className="hidden sm:flex shrink-0 w-12 h-12 md:w-14 md:h-14 rounded-full bg-gold/15 text-gold items-center justify-center ring-1 ring-gold/40">
-              <HeadsetIcon className="w-6 h-6" strokeWidth={1.5} />
+              <Headset className="w-6 h-6" strokeWidth={1.5} />
             </div>
             <div className="flex-1 min-w-0">
               <p className="font-serif text-lg md:text-2xl leading-tight">
