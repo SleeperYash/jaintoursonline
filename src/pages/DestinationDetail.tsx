@@ -197,12 +197,15 @@ const DestinationDetail = () => {
                 All posts
               </Link>
             </div>
-            <div className="grid gap-4 md:grid-cols-3">
+            <div
+              className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-3 -mx-4 px-4 md:mx-0 md:px-0 scrollbar-hide"
+              style={{ scrollbarWidth: "none" }}
+            >
               {relatedBlogs.map((p) => (
                 <Link
                   key={p.slug}
                   to={`/blog/${p.slug}`}
-                  className="group block bg-card border border-border/60 rounded-lg overflow-hidden hover:border-gold/50 transition"
+                  className="group snap-start shrink-0 w-[260px] md:w-[300px] bg-card border border-border/60 rounded-lg overflow-hidden hover:border-gold/50 transition"
                 >
                   <div className="aspect-[16/10] overflow-hidden">
                     <img src={p.cover} alt={p.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
