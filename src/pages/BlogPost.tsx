@@ -8,6 +8,8 @@ import NotFound from "./NotFound";
 import { Calendar, Clock, ArrowLeft, Headset } from "lucide-react";
 import { BRAND, waLink } from "@/lib/brand";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import Breadcrumbs from "@/components/site/Breadcrumbs";
+import TravelAgencyLd from "@/components/site/schema/TravelAgencyLd";
 
 const SITE = "https://jaintoursonline.com";
 
@@ -84,8 +86,18 @@ const BlogPost = () => {
       {faqLd && (
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
       )}
+      <TravelAgencyLd id="ld-agency-blogpost" pagePath={`/blog/${post.slug}`} />
 
       <article className="container py-16 max-w-3xl">
+        <Breadcrumbs
+          ldId="ld-breadcrumb-blogpost"
+          className="mb-6"
+          items={[
+            { label: "Blog", href: "/blog" },
+            { label: post.category, href: `/blog?category=${encodeURIComponent(post.category)}` },
+            { label: post.title },
+          ]}
+        />
         <Link to="/blog" className="inline-flex items-center gap-2 text-xs uppercase tracking-luxe text-gold hover:underline mb-8">
           <ArrowLeft className="w-3 h-3" /> All posts
         </Link>

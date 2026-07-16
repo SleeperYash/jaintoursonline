@@ -12,6 +12,8 @@ import { useHiddenDefaultImages } from "@/hooks/useHiddenDefaultImages";
 import { adminPublicUrl } from "@/hooks/useAdminAuth";
 import { generateEstimatedPrice, formatINR } from "@/lib/estimatedPrice";
 import { Camera, ChevronLeft, ChevronRight, X } from "lucide-react";
+import Breadcrumbs from "@/components/site/Breadcrumbs";
+import TravelAgencyLd from "@/components/site/schema/TravelAgencyLd";
 
 const PLACEHOLDER = "/placeholder.svg";
 
@@ -63,6 +65,7 @@ const DestinationDetail = () => {
 
   return (
     <SiteLayout>
+      <TravelAgencyLd id="ld-agency-destdetail" pagePath={`/destinations/${slug}`} />
       <JsonLd
         id="ld-destination"
         data={{
@@ -88,6 +91,15 @@ const DestinationDetail = () => {
       />
       {/* Photo grid */}
       <section className="container pt-24 md:pt-32">
+        <Breadcrumbs
+          ldId="ld-breadcrumb-destdetail"
+          className="mb-4"
+          items={[
+            { label: "Destinations", href: "/destinations" },
+            { label: d.region, href: `/destinations?filter=${d.region.toLowerCase()}` },
+            { label: d.name },
+          ]}
+        />
         <Link
           to="/destinations"
           className="inline-flex items-center gap-2 text-[10px] md:text-xs uppercase tracking-luxe text-foreground/70 hover:text-gold transition-colors mb-3 md:mb-5"

@@ -4,6 +4,8 @@ import InquiryBand from "@/components/site/InquiryBand";
 import { serviceGroups } from "@/data/services";
 import { useSeo } from "@/hooks/useSeo";
 import { useReveal } from "@/hooks/useReveal";
+import Breadcrumbs from "@/components/site/Breadcrumbs";
+import TravelAgencyLd from "@/components/site/schema/TravelAgencyLd";
 
 const Services = () => {
   useSeo({
@@ -15,6 +17,8 @@ const Services = () => {
 
   return (
     <SiteLayout>
+      <TravelAgencyLd id="ld-agency-services" pagePath="/services" />
+      <Breadcrumbs ldId="ld-breadcrumb-services" visible={false} items={[{ label: "Services" }]} />
       <PageHero title="OUR SERVICES" crumb="Services" />
 
       <section className="container py-16 md:py-24 space-y-20">
