@@ -99,6 +99,8 @@ const About = () => {
 
   return (
     <SiteLayout>
+      <TravelAgencyLd id="ld-agency-about" pagePath="/about" />
+      <Breadcrumbs ldId="ld-breadcrumb-about" visible={false} items={[{ label: "About" }]} />
       {/* HERO */}
       <section
         className="relative w-full h-[240px] md:h-[360px] flex items-center justify-center overflow-hidden"
