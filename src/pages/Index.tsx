@@ -10,6 +10,7 @@ import BlogStrip from "@/components/site/home/BlogStrip";
 import InquiryBand from "@/components/site/InquiryBand";
 import { MotionReveal } from "@/components/site/MotionReveal";
 import { useSeo } from "@/hooks/useSeo";
+import TravelAgencyLd from "@/components/site/schema/TravelAgencyLd";
 
 const Index = () => {
   useSeo({
@@ -21,6 +22,7 @@ const Index = () => {
 
   return (
     <SiteLayout>
+      <TravelAgencyLd id="ld-agency-home" pagePath="/" />
       <HeroLuxe />
       <MotionReveal><HeroTrustBadges /></MotionReveal>
       <MotionReveal><TopTrending /></MotionReveal>

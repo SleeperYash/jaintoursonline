@@ -4,6 +4,8 @@ import PageHero from "@/components/site/PageHero";
 import { useSeo } from "@/hooks/useSeo";
 import { BLOG_POSTS } from "@/data/blogPosts";
 import { Calendar, Clock } from "lucide-react";
+import Breadcrumbs from "@/components/site/Breadcrumbs";
+import TravelAgencyLd from "@/components/site/schema/TravelAgencyLd";
 
 const Blog = () => {
   useSeo({
@@ -17,8 +19,14 @@ const Blog = () => {
 
   return (
     <SiteLayout>
+      <TravelAgencyLd id="ld-agency-blog" pagePath="/blog" />
       <PageHero title="Travel Blog" crumb="Blog" />
       <section className="container py-16">
+        <Breadcrumbs
+          ldId="ld-breadcrumb-blog"
+          className="mb-8"
+          items={[{ label: "Blog" }]}
+        />
         <header className="max-w-2xl mb-12">
           <p className="text-xs uppercase tracking-luxe text-gold mb-3">Latest Stories</p>
           <h2 className="font-serif text-3xl md:text-4xl text-foreground">

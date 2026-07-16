@@ -9,6 +9,8 @@ import { useReveal } from "@/hooks/useReveal";
 import { useDestinationCovers } from "@/hooks/useDestinationCovers";
 import { Link } from "react-router-dom";
 import { ArrowUpRight, MapPin, Plane, Globe, Search, X } from "lucide-react";
+import Breadcrumbs from "@/components/site/Breadcrumbs";
+import TravelAgencyLd from "@/components/site/schema/TravelAgencyLd";
 
 type CategoryKey = "domestic" | "international";
 type FilterKey = "all" | CategoryKey;
@@ -81,6 +83,8 @@ const Destinations = () => {
 
   return (
     <SiteLayout>
+      <TravelAgencyLd id="ld-agency-destinations" pagePath="/destinations" />
+      <Breadcrumbs ldId="ld-breadcrumb-destinations" visible={false} items={[{ label: "Destinations" }]} />
       <JsonLd
         id="ld-destinations-list"
         data={{
