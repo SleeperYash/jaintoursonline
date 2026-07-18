@@ -14,9 +14,10 @@ import TravelAgencyLd from "@/components/site/schema/TravelAgencyLd";
 
 const Index = () => {
   useSeo({
-    title: "Jain Tours & Travels — Curated Luxury Journeys from Mumbai",
+    title:
+      "Jain Tours & Travels | Trusted Travel Agency in Mumbai | International & Domestic Tour Packages | Visa Services",
     description:
-      "Bespoke honeymoons, family escapes, cruises and corporate journeys. Rated 4.9★ by 142+ guests. Mumbai-based, 24×7 support.",
+      "Jain Tours & Travels is a trusted travel agency in Mumbai with 30+ years of experience. We offer international & domestic tour packages, visa services, air tickets, hotels, cruises and customized holidays with personalized service.",
     canonicalPath: "/",
   });
 
