@@ -34,10 +34,10 @@ const Header = () => {
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300",
+        "fixed top-0 left-0 right-0 z-50 w-full transition-all duration-[400ms] ease-out",
         solid
-          ? "bg-white/10 backdrop-blur-md border border-white/20 shadow-lg"
-          : "bg-transparent border border-transparent"
+          ? "bg-white/70 dark:bg-black/50 backdrop-blur-xl border-b border-white/30 dark:border-white/10 shadow-lg text-black dark:text-white"
+          : "bg-transparent border-b border-transparent text-white"
       )}
     >
       {/* Hairline gold accent on scroll */}
@@ -50,8 +50,10 @@ const Header = () => {
 
       <div
         className={cn(
-          "container flex items-center justify-between transition-all duration-300",
-          "h-[60px] py-2 px-4 md:h-[70px] md:py-3 md:px-5 lg:h-20 lg:py-4 lg:px-6"
+          "container flex items-center justify-between transition-all duration-[400ms] ease-out px-4 md:px-5 lg:px-6",
+          solid
+            ? "h-[54px] py-2 md:h-[60px] md:py-2 lg:h-[64px] lg:py-3"
+            : "h-[60px] py-2 md:h-[70px] md:py-3 lg:h-20 lg:py-4"
         )}
       >
         {/* Logo */}
@@ -67,10 +69,19 @@ const Header = () => {
             <span className="absolute -inset-0.5 rounded-full border border-gold/0 group-hover:border-gold/30 group-hover:scale-110 transition-all duration-500" />
           </div>
           <div className="flex flex-col leading-none">
-            <span className="font-serif md:text-lg lg:text-xl tracking-wide text-foreground text-base text-yellow-400">
-              Jain <span className="italic font-bold text-sky-600 dark:text-sky-400">Tours & Travels</span>
+            <span className={cn(
+              "font-serif md:text-lg lg:text-xl tracking-wide text-base transition-colors duration-[400ms]",
+              solid ? "text-black dark:text-white" : "text-white"
+            )}>
+              Jain <span className={cn(
+                "italic font-bold transition-colors duration-[400ms]",
+                solid ? "text-sky-600 dark:text-sky-400" : "text-amber-200"
+              )}>Tours & Travels</span>
             </span>
-            <span className="tracking-luxe uppercase text-muted-foreground mt-1 md:text-[9px] lg:text-[10px] text-xs text-slate-950">
+            <span className={cn(
+              "tracking-luxe uppercase mt-1 md:text-[9px] lg:text-[10px] text-xs transition-colors duration-[400ms]",
+              solid ? "text-black/70 dark:text-white/70" : "text-white/80"
+            )}>
               Mumbai ·
             </span>
           </div>
@@ -85,14 +96,18 @@ const Header = () => {
               end={l.to === "/"}
               className={({ isActive }) =>
                 cn(
-                  "relative px-4 py-2 text-[11px] uppercase tracking-luxe transition-colors group font-medium",
-                  isActive ? "text-gold" : "text-foreground/75 hover:text-foreground"
+                  "relative px-4 py-2 text-[11px] uppercase tracking-luxe transition-colors duration-[400ms] group font-semibold",
+                  isActive
+                    ? "text-gold"
+                    : solid
+                      ? "text-black/80 hover:text-black dark:text-white/85 dark:hover:text-white"
+                      : "text-white/90 hover:text-white"
                 )
               }
             >
               {({ isActive }) => (
                 <>
-                  <span className="font-semibold text-sky-500">{l.label}</span>
+                  <span>{l.label}</span>
                   <span
                     className={cn(
                       "absolute left-4 right-4 -bottom-0.5 h-px bg-gold transition-all duration-500 origin-left",
@@ -121,7 +136,10 @@ const Header = () => {
         <div className="lg:hidden flex items-center gap-2">
           <ThemeToggle className="w-9 h-9" />
           <button
-            className="text-foreground relative w-11 h-11 flex items-center justify-center"
+            className={cn(
+              "relative w-11 h-11 flex items-center justify-center transition-colors duration-[400ms]",
+              solid ? "text-black dark:text-white" : "text-white"
+            )}
             onClick={() => setOpen((v) => !v)}
             aria-label="Toggle menu"
             aria-expanded={open}
