@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState, useMemo } from "react";
 import { ArrowRight } from "lucide-react";
-import { BRAND } from "@/lib/brand";
 import slide1 from "@/assets/hero-slide-1.png.asset.json";
 import slide2 from "@/assets/hero-slide-2.png.asset.json";
 import slide3 from "@/assets/hero-slide-3.png.asset.json";
