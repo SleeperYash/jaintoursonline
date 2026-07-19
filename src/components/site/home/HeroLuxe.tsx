@@ -14,25 +14,25 @@ const slides = [
     url: slide1.url,
     alt: "Tropical beach at golden hour with palm trees and turquoise water",
     positionDesktop: "center 55%",
-    positionMobile: "30% 55%",
+    positionMobile: "50% 60%",
   },
   {
     url: slide2.url,
     alt: "Swiss Alps lake at sunrise with snow-capped peaks and red train",
     positionDesktop: "center 50%",
-    positionMobile: "40% 50%",
+    positionMobile: "55% 55%",
   },
   {
     url: slide3.url,
     alt: "Japan cherry blossoms and pagoda reflected on calm water at sunset",
     positionDesktop: "center 55%",
-    positionMobile: "65% 55%",
+    positionMobile: "60% 60%",
   },
   {
     url: slide4.url,
     alt: "Dubai Marina skyline at twilight with palms and yachts",
     positionDesktop: "center 55%",
-    positionMobile: "70% 55%",
+    positionMobile: "60% 55%",
   },
 ];
 
@@ -77,6 +77,7 @@ const HeroLuxe = () => {
             style={{
               opacity: idx === current ? 1 : 0,
               objectPosition: isMobile ? s.positionMobile : s.positionDesktop,
+              filter: "saturate(1.12) contrast(1.06) brightness(1.03)",
             }}
             loading={idx === initial ? "eager" : "lazy"}
             fetchPriority={idx === initial ? "high" : "auto"}
@@ -85,76 +86,69 @@ const HeroLuxe = () => {
             height={1080}
           />
         ))}
-        {/* Cinematic color grade */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/70" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/30 mix-blend-multiply" />
-        {/* Premium radial vignette behind headline */}
+        {/* Lighter cinematic color grade (~40% reduced) */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-black/10 to-black/45" />
+        {/* Soft radial gradient behind text for readability */}
         <div
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(ellipse 55% 45% at 50% 48%, hsl(0 0% 0% / 0.55) 0%, transparent 70%)",
+              "radial-gradient(ellipse 60% 50% at 50% 50%, hsl(0 0% 0% / 0.45) 0%, hsl(0 0% 0% / 0.15) 55%, transparent 78%)",
           }}
         />
-        {/* Warm gold ambient glow */}
-        <div
-          className="absolute inset-0 opacity-40 pointer-events-none"
-          style={{
-            background:
-              "radial-gradient(ellipse at 50% 40%, hsl(42 95% 65% / 0.18) 0%, transparent 55%)",
-          }}
-        />
-        {/* Film grain */}
+        {/* Warm champagne ambient glow (subtle) */}
         <div
           aria-hidden
-          className="absolute inset-0 opacity-[0.07] mix-blend-overlay pointer-events-none"
+          className="absolute inset-0 opacity-25 pointer-events-none"
           style={{
-            backgroundImage:
-              "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.6'/></svg>\")",
+            background:
+              "radial-gradient(ellipse at 50% 42%, hsl(42 90% 78% / 0.14) 0%, transparent 55%)",
           }}
         />
       </div>
 
       {/* Content */}
-      <div className="relative z-10 container text-center px-6 py-32 animate-hero-float">
+      <div className="relative z-10 container text-center px-6 pt-36 pb-28 md:py-32 animate-hero-float">
         <a
           href={GOOGLE_REVIEWS_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full border border-white/30 bg-white/10 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.3)] mb-10 opacity-0 animate-hero-fade-up hover:bg-white/20 hover:border-white/50 hover:-translate-y-0.5 transition-all duration-500"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/25 bg-white/10 backdrop-blur-xl mb-8 md:mb-12 opacity-0 animate-hero-fade-up hover:bg-white/15 hover:border-white/40 hover:-translate-y-0.5 transition-all duration-500"
           style={{ animationDelay: "80ms" }}
           aria-label="Read our Google Reviews"
         >
-          <GoogleG className="w-4 h-4" />
-          <span className="text-xs font-semibold text-white tabular-nums">4.9</span>
+          <GoogleG className="w-3 h-3" />
+          <span className="text-[10px] font-semibold text-white tabular-nums">4.9</span>
           <span className="flex gap-0.5" aria-hidden>
             {Array.from({ length: 5 }).map((_, i) => (
-              <svg key={i} className="w-3 h-3" viewBox="0 0 24 24" fill="#FBBF24">
+              <svg key={i} className="w-2 h-2" viewBox="0 0 24 24" fill="#FBBF24">
                 <path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.787 1.401 8.168L12 18.897l-7.335 3.868 1.401-8.168L.132 9.21l8.2-1.192z" />
               </svg>
             ))}
           </span>
-          <span className="hidden sm:inline w-px h-3.5 bg-white/30" aria-hidden />
-          <span className="text-[11px] tracking-wide text-white/95 font-medium">
-            140+ Google Reviews
+          <span className="text-[9px] tracking-wide text-white/95 font-medium uppercase">
+            Google Reviews
           </span>
         </a>
 
         <h1
-          className="font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-[1.02] tracking-tight text-white opacity-0 animate-hero-fade-up"
-          style={{
-            animationDelay: "220ms",
-            textShadow: "0 2px 24px rgba(0,0,0,0.45), 0 1px 3px rgba(0,0,0,0.35)",
-          }}
+          className="relative font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.05] tracking-tight text-white opacity-0 animate-hero-fade-up"
+          style={{ animationDelay: "220ms" }}
         >
-          &nbsp;
+          <span
+            aria-hidden
+            className="absolute inset-0 -z-10 blur-2xl opacity-60 pointer-events-none"
+            style={{
+              background:
+                "radial-gradient(ellipse 55% 60% at 50% 55%, rgba(240,220,170,0.35) 0%, transparent 70%)",
+            }}
+          />
           <span
             className="font-serif italic font-medium bg-clip-text text-transparent inline-block"
             style={{
               backgroundImage:
-                "linear-gradient(135deg, #FBF3D9 0%, #F3DDA0 25%, #E6C475 50%, #F3DDA0 75%, #FBF3D9 100%)",
-              filter:
-                "drop-shadow(0 0 28px rgba(230,196,117,0.4)) drop-shadow(0 2px 14px rgba(0,0,0,0.5))",
+                "linear-gradient(135deg, #FBF4DB 0%, #F5E4B4 40%, #EAD497 60%, #FBF4DB 100%)",
+              textShadow: "0 1px 2px rgba(0,0,0,0.25)",
             }}
           >
             Journeys Crafted in Gold.
@@ -162,22 +156,22 @@ const HeroLuxe = () => {
         </h1>
 
         <p
-          className="mt-8 max-w-2xl mx-auto text-base md:text-lg leading-relaxed font-light text-white/90 opacity-0 animate-hero-fade-up"
+          className="mt-10 md:mt-8 max-w-md md:max-w-2xl mx-auto text-sm md:text-lg leading-relaxed font-light text-white/90 opacity-0 animate-hero-fade-up"
           style={{
             animationDelay: "380ms",
-            textShadow: "0 1px 12px rgba(0,0,0,0.5)",
+            textShadow: "0 1px 8px rgba(0,0,0,0.35)",
           }}
         >
           From Mumbai to the world — <br /> curated holidays, seamless bookings, and unforgettable journeys tailored just for you.
         </p>
 
         <div
-          className="mt-12 flex flex-wrap items-center justify-center gap-4 opacity-0 animate-hero-fade-up"
+          className="mt-12 md:mt-14 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4 max-w-md sm:max-w-none mx-auto opacity-0 animate-hero-fade-up"
           style={{ animationDelay: "540ms" }}
         >
           <Link
             to="/contact"
-            className="group relative inline-flex items-center gap-2 px-8 py-4 rounded-full text-[11px] uppercase tracking-luxe font-semibold text-[#1a1206] overflow-hidden transition-all duration-500 hover:-translate-y-0.5"
+            className="group relative inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full text-[11px] uppercase tracking-luxe font-semibold text-[#1a1206] overflow-hidden transition-all duration-500 hover:-translate-y-0.5"
             style={{
               backgroundImage:
                 "linear-gradient(135deg, #F5D68A 0%, #D4A94A 50%, #B8862F 100%)",
@@ -198,7 +192,7 @@ const HeroLuxe = () => {
           </Link>
           <Link
             to="/destinations"
-            className="group inline-flex items-center px-8 py-4 rounded-full border border-white/30 bg-white/10 backdrop-blur-xl text-white text-[11px] uppercase tracking-luxe font-medium shadow-[0_8px_32px_rgba(0,0,0,0.25)] hover:bg-white/20 hover:border-white/60 transition-all duration-500 hover:-translate-y-0.5"
+            className="group inline-flex items-center justify-center px-8 py-4 rounded-full border border-white/30 bg-white/10 backdrop-blur-xl text-white text-[11px] uppercase tracking-luxe font-medium shadow-[0_8px_32px_rgba(0,0,0,0.25)] hover:bg-white/20 hover:border-white/60 transition-all duration-500 hover:-translate-y-0.5"
           >
             Explore Destinations
           </Link>
