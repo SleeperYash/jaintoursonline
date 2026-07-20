@@ -1,5 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap");
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -292,6 +290,22 @@ html.theme-anim {
   .globe-sphere {
     background: radial-gradient(circle at 30% 30%, hsl(217 100% 28%), hsl(222 47% 11%));
   }
+}
+
+/* Hero premium animations */
+@keyframes hero-fade-up {
+  0% { opacity: 0; transform: translateY(24px); filter: blur(6px); }
+  100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+@keyframes hero-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.animate-hero-fade-up {
+  animation: hero-fade-up 1.1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.animate-hero-float {
+  animation: hero-float 8s ease-in-out infinite;
 }
 
 /* Respect reduced-motion preferences */

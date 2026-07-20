@@ -29,17 +29,34 @@ const InquiryForm = () => {
 
   const onSubmit = async (values: InquiryValues) => {
     setSubmitting(true);
-    // Cast: typed Database may regenerate after migration applies.
-    const { error } = await (supabase as any).from("inquiries").insert({
+    const destinationName = values.destination?.trim() || "";
+    const destinationSlug = destinationName
+      ? destinationName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")
+      : "general";
+
+    const payload = {
       name: values.name,
       email: values.email,
       phone: values.phone,
-      destination: values.destination || null,
+      destination_slug: destinationSlug,
+      destination_name: destinationName || null,
       travel_dates: values.travel_dates || null,
-      travelers: values.travelers || null,
-      budget: values.budget || null,
-      message: values.message || null,
-    });
+      travellers: values.travelers || null,
+      budget_per_person: values.budget || null,
+      itinerary_title: values.message ? `Message: ${values.message}` : null,
+    };
+
+    const { error } = await supabase.from("enquiries").insert(payload);
+
+    // Mirror to Google Sheets (non-blocking — never block UX on this)
+    try {
+      await supabase.functions.invoke("enquiry-to-sheet", {
+        body: { ...payload, message: values.message || null },
+      });
+    } catch (_) {
+      /* sheet sync failures don't affect the user */
+    }
+
     setSubmitting(false);
 
     if (error) {

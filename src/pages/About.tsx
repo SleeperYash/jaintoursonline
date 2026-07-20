@@ -3,6 +3,8 @@ import { useSeo } from "@/hooks/useSeo";
 import { useReveal } from "@/hooks/useReveal";
 import { BRAND } from "@/lib/brand";
 import { Link } from "react-router-dom";
+import Breadcrumbs from "@/components/site/Breadcrumbs";
+import TravelAgencyLd from "@/components/site/schema/TravelAgencyLd";
 import nepalTempleImg from "@/assets/nepal-temple.jpg";
 import {
   Smile,
@@ -97,6 +99,8 @@ const About = () => {
 
   return (
     <SiteLayout>
+      <TravelAgencyLd id="ld-agency-about" pagePath="/about" />
+      <Breadcrumbs ldId="ld-breadcrumb-about" visible={false} items={[{ label: "About" }]} />
       {/* HERO */}
       <section
         className="relative w-full h-[240px] md:h-[360px] flex items-center justify-center overflow-hidden"

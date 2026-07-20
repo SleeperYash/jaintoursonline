@@ -1,6 +1,8 @@
-// Runs before `vite dev` and `vite build` (predev/prebuild hooks); writes public/sitemap.xml.
-import { writeFileSync } from "fs";
+// Runs before `vite dev` and `vite build` (predev/prebuild hooks).
+// Writes public/sitemap.xml AND updates public/llms.txt blog block.
+import { writeFileSync, readFileSync } from "fs";
 import { resolve } from "path";
+import { BLOG_POSTS } from "../src/data/blogPosts";
 const slugify = (str: string): string =>
   str
     .toLowerCase()
@@ -18,7 +20,7 @@ const DESTINATION_SLUGS = [
   "maldives","bhutan","sri-lanka","nepal","united-kingdom",
 ];
 
-const BASE_URL = "https://travelstest.lovable.app";
+const BASE_URL = "https://jaintoursonline.com";
 const SUPABASE_URL = "https://tddtcsdbqrlabbqqotqd.supabase.co";
 const SUPABASE_ANON =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRkZHRjc2RicXJsYWJicXFvdHFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4MTcwNDMsImV4cCI6MjA5NDM5MzA0M30.WsKd0iLhSym3nOSy5wFnAfyOmM6Sd0z1RGmfAj7JnX8";
@@ -87,8 +89,45 @@ async function main() {
     });
   }
 
+  // Blog
+  entries.push({ path: "/blog", changefreq: "weekly", priority: "0.8" });
+  for (const post of BLOG_POSTS) {
+    entries.push({ path: `/blog/${post.slug}`, changefreq: "monthly", priority: "0.7" });
+  }
+
   writeFileSync(resolve("public/sitemap.xml"), render(entries));
   console.log(`sitemap.xml written (${entries.length} entries)`);
+
+  // Update llms.txt blog block between markers
+  try {
+    const llmsPath = resolve("public/llms.txt");
+    const current = readFileSync(llmsPath, "utf8");
+    const startMarker = "<!-- BLOG:START -->";
+    const endMarker = "<!-- BLOG:END -->";
+    const blogLines = [
+      startMarker,
+      "## Travel blog",
+      "",
+      ...BLOG_POSTS.map(
+        (p) => `- [${p.title}](${BASE_URL}/blog/${p.slug}): ${p.excerpt}`,
+      ),
+      "",
+      endMarker,
+    ].join("\n");
+    let next: string;
+    if (current.includes(startMarker) && current.includes(endMarker)) {
+      next = current.replace(
+        new RegExp(`${startMarker}[\\s\\S]*?${endMarker}`),
+        blogLines,
+      );
+    } else {
+      next = `${current.trimEnd()}\n\n${blogLines}\n`;
+    }
+    writeFileSync(llmsPath, next);
+    console.log(`llms.txt blog block updated (${BLOG_POSTS.length} posts)`);
+  } catch (e) {
+    console.warn("llms.txt update skipped:", (e as Error).message);
+  }
 }
 
 main();

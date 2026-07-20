@@ -5,6 +5,8 @@ import { BRAND, waLink } from "@/lib/brand";
 import { useSeo } from "@/hooks/useSeo";
 import { useReveal } from "@/hooks/useReveal";
 import { Phone, MapPin, Mail, Clock, MessageCircle } from "lucide-react";
+import Breadcrumbs from "@/components/site/Breadcrumbs";
+import TravelAgencyLd from "@/components/site/schema/TravelAgencyLd";
 
 const Contact = () => {
   useSeo({
@@ -25,9 +27,15 @@ const Contact = () => {
 
   return (
     <SiteLayout>
+      <TravelAgencyLd id="ld-agency-contact" pagePath="/contact" />
       <PageHero title="CONTACT US" crumb="Contact" />
 
       <section className="container py-16 md:py-24 grid lg:grid-cols-5 gap-16">
+        <Breadcrumbs
+          ldId="ld-breadcrumb-contact"
+          visible={false}
+          items={[{ label: "Contact" }]}
+        />
         <div ref={ref} className="reveal lg:col-span-3 bg-card border border-border/60 p-8 md:p-12">
           <h2 className="font-serif text-3xl text-foreground mb-2">Send an enquiry</h2>
           <p className="text-sm text-muted-foreground mb-10">We reply within a few hours, every day.</p>

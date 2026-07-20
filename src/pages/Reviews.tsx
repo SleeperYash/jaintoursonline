@@ -10,6 +10,8 @@ import { useClientReviews, type DisplayReview } from "@/hooks/useClientReviews";
 import { Star, ExternalLink, Quote } from "lucide-react";
 import { GoogleRatingBadge, VerifiedTag } from "@/components/site/reviews/GoogleBadge";
 import ReviewsCardStack from "@/components/site/home/ReviewsCardStack";
+import Breadcrumbs from "@/components/site/Breadcrumbs";
+import TravelAgencyLd from "@/components/site/schema/TravelAgencyLd";
 
 const Reviews = () => {
   const { display: dbReviews } = useClientReviews();
@@ -25,6 +27,8 @@ const Reviews = () => {
 
   return (
     <SiteLayout>
+      <TravelAgencyLd id="ld-agency-reviews" pagePath="/reviews" />
+      <Breadcrumbs ldId="ld-breadcrumb-reviews" visible={false} items={[{ label: "Reviews" }]} />
       <JsonLd
         id="ld-reviews"
         data={{

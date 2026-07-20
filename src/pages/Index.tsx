@@ -6,20 +6,24 @@ import SignatureTravelCollections from "@/components/site/home/SignatureTravelCo
 import HandpickedPackages from "@/components/site/home/HandpickedPackages";
 import HowItWorks from "@/components/site/home/HowItWorks";
 import ReviewsCardStack from "@/components/site/home/ReviewsCardStack";
+import BlogStrip from "@/components/site/home/BlogStrip";
 import InquiryBand from "@/components/site/InquiryBand";
 import { MotionReveal } from "@/components/site/MotionReveal";
 import { useSeo } from "@/hooks/useSeo";
+import TravelAgencyLd from "@/components/site/schema/TravelAgencyLd";
 
 const Index = () => {
   useSeo({
-    title: "Jain Tours & Travels — Curated Luxury Journeys from Mumbai",
+    title:
+      "Jain Tours & Travels | Trusted Travel Agency in Mumbai | International & Domestic Tour Packages | Visa Services",
     description:
-      "Bespoke honeymoons, family escapes, cruises and corporate journeys. Rated 4.9★ by 142+ guests. Mumbai-based, 24×7 support.",
+      "Jain Tours & Travels is a trusted travel agency in Mumbai with 30+ years of experience. We offer international & domestic tour packages, visa services, air tickets, hotels, cruises and customized holidays with personalized service.",
     canonicalPath: "/",
   });
 
   return (
     <SiteLayout>
+      <TravelAgencyLd id="ld-agency-home" pagePath="/" />
       <HeroLuxe />
       <MotionReveal><HeroTrustBadges /></MotionReveal>
       <MotionReveal><TopTrending /></MotionReveal>
@@ -28,6 +32,7 @@ const Index = () => {
       <MotionReveal><HowItWorks /></MotionReveal>
       <MotionReveal><ReviewsCardStack /></MotionReveal>
       <MotionReveal><InquiryBand /></MotionReveal>
+      <MotionReveal><BlogStrip /></MotionReveal>
     </SiteLayout>
   );
 };

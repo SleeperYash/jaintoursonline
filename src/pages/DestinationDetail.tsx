@@ -5,12 +5,15 @@ import ItineraryViewer from "@/components/site/ItineraryViewer";
 import JsonLd from "@/components/site/JsonLd";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { findDestination } from "@/data/destinations";
+import { BLOG_POSTS } from "@/data/blogPosts";
 import { useSeo } from "@/hooks/useSeo";
 import { useDestinationImages } from "@/hooks/useDestinationImages";
 import { useHiddenDefaultImages } from "@/hooks/useHiddenDefaultImages";
 import { adminPublicUrl } from "@/hooks/useAdminAuth";
 import { generateEstimatedPrice, formatINR } from "@/lib/estimatedPrice";
 import { Camera, ChevronLeft, ChevronRight, X } from "lucide-react";
+import Breadcrumbs from "@/components/site/Breadcrumbs";
+import TravelAgencyLd from "@/components/site/schema/TravelAgencyLd";
 
 const PLACEHOLDER = "/placeholder.svg";
 
@@ -62,6 +65,7 @@ const DestinationDetail = () => {
 
   return (
     <SiteLayout>
+      <TravelAgencyLd id="ld-agency-destdetail" pagePath={`/destinations/${slug}`} />
       <JsonLd
         id="ld-destination"
         data={{
@@ -87,6 +91,15 @@ const DestinationDetail = () => {
       />
       {/* Photo grid */}
       <section className="container pt-24 md:pt-32">
+        <Breadcrumbs
+          ldId="ld-breadcrumb-destdetail"
+          className="mb-4"
+          items={[
+            { label: "Destinations", href: "/destinations" },
+            { label: d.region, href: `/destinations?filter=${d.region.toLowerCase()}` },
+            { label: d.name },
+          ]}
+        />
         <Link
           to="/destinations"
           className="inline-flex items-center gap-2 text-[10px] md:text-xs uppercase tracking-luxe text-foreground/70 hover:text-gold transition-colors mb-3 md:mb-5"
@@ -176,6 +189,49 @@ const DestinationDetail = () => {
       </section>
 
       <ItineraryViewer destinationSlug={d.slug} destinationName={d.name} fallbackImage={heroPhoto} />
+
+      {/* Related travel guides */}
+      {(() => {
+        const relatedBlogs = BLOG_POSTS.filter((p) =>
+          p.related?.destinations?.includes(d.slug),
+        ).slice(0, 3);
+        if (relatedBlogs.length === 0) return null;
+        return (
+          <section aria-labelledby="dest-blogs" className="container py-10 md:py-16 border-t border-border/40">
+            <div className="flex items-end justify-between mb-6 gap-4">
+              <div>
+                <p className="text-[10px] md:text-xs uppercase tracking-luxe text-gold">Read before you go</p>
+                <h2 id="dest-blogs" className="font-serif text-xl md:text-3xl text-foreground mt-1">
+                  {d.name} travel guides
+                </h2>
+              </div>
+              <Link to="/blog" className="shrink-0 text-[11px] uppercase tracking-luxe text-foreground/70 hover:text-gold transition">
+                All posts
+              </Link>
+            </div>
+            <div
+              className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-3 -mx-4 px-4 md:mx-0 md:px-0 scrollbar-hide"
+              style={{ scrollbarWidth: "none" }}
+            >
+              {relatedBlogs.map((p) => (
+                <Link
+                  key={p.slug}
+                  to={`/blog/${p.slug}`}
+                  className="group snap-start shrink-0 w-[260px] md:w-[300px] bg-card border border-border/60 rounded-lg overflow-hidden hover:border-gold/50 transition"
+                >
+                  <div className="aspect-[16/10] overflow-hidden">
+                    <img src={p.cover} alt={p.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                  </div>
+                  <div className="p-4">
+                    <p className="text-[10px] uppercase tracking-luxe text-gold mb-1.5">{p.category}</p>
+                    <p className="font-serif text-base text-foreground group-hover:text-gold transition-colors line-clamp-2">{p.title}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        );
+      })()}
 
       {/* Lightbox */}
       <Dialog open={lightbox !== null} onOpenChange={(o) => !o && setLightbox(null)}>
