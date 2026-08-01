@@ -1,35 +1,35 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState, useMemo } from "react";
 import { ArrowRight } from "lucide-react";
-import slide1 from "@/assets/hero-slide-1.png.asset.json";
-import slide2 from "@/assets/hero-slide-2.png.asset.json";
-import slide3 from "@/assets/hero-slide-3.png.asset.json";
-import slide4 from "@/assets/hero-slide-4.png.asset.json";
+import slide1 from "@/assets/hero-slide-1.jpg";
+import slide2 from "@/assets/hero-slide-2.jpg";
+import slide3 from "@/assets/hero-slide-3.jpg";
+import slide4 from "@/assets/hero-slide-4.jpg";
 
 const GOOGLE_REVIEWS_URL =
   "https://www.google.com/search?q=Jain+Tours+%26+Travels+Mumbai+reviews";
 
 const slides = [
   {
-    url: slide1.url,
+    url: slide1,
     alt: "Tropical beach at golden hour with palm trees and turquoise water",
     positionDesktop: "center 55%",
     positionMobile: "50% 60%",
   },
   {
-    url: slide2.url,
+    url: slide2,
     alt: "Swiss Alps lake at sunrise with snow-capped peaks and red train",
     positionDesktop: "center 50%",
     positionMobile: "55% 55%",
   },
   {
-    url: slide3.url,
+    url: slide3,
     alt: "Japan cherry blossoms and pagoda reflected on calm water at sunset",
     positionDesktop: "center 55%",
     positionMobile: "60% 60%",
   },
   {
-    url: slide4.url,
+    url: slide4,
     alt: "Dubai Marina skyline at twilight with palms and yachts",
     positionDesktop: "center 55%",
     positionMobile: "60% 55%",
@@ -86,16 +86,26 @@ const HeroLuxe = () => {
             height={1080}
           />
         ))}
-        {/* Lighter cinematic color grade (~40% reduced) */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-black/10 to-black/45" />
-        {/* Soft radial gradient behind text for readability */}
+        {/* Cinematic radial vignette — transparent center, soft edge darkening (~15%) */}
         <div
-          className="absolute inset-0"
+          aria-hidden
+          className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              "radial-gradient(ellipse 60% 50% at 50% 50%, hsl(0 0% 0% / 0.45) 0%, hsl(0 0% 0% / 0.15) 55%, transparent 78%)",
+              "radial-gradient(ellipse 90% 90% at 50% 50%, transparent 0%, transparent 42%, hsl(0 0% 0% / 0.08) 68%, hsl(0 0% 0% / 0.15) 100%)",
           }}
         />
+        {/* Gentle readability wash behind the copy */}
+        <div
+          aria-hidden
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(ellipse 70% 55% at 50% 50%, hsl(0 0% 0% / 0.28) 0%, hsl(0 0% 0% / 0.1) 60%, transparent 82%)",
+          }}
+        />
+        {/* Base bottom grade for scroll cue contrast */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/30" />
         {/* Warm champagne ambient glow (subtle) */}
         <div
           aria-hidden

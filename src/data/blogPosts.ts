@@ -7,6 +7,8 @@ export type BlogBlock =
   | { type: "p"; text: string }
   | { type: "ul"; items: string[] };
 
+const kashmirFeatured = "/images/kashmir-featured.webp";
+
 export interface BlogPost {
   slug: string;
   title: string;
@@ -31,7 +33,7 @@ export const BLOG_POSTS: BlogPost[] = [
     excerpt:
       "From tulip blooms in April to snow-covered Gulmarg in January — how to time your Kashmir trip perfectly.",
     category: "Destination Guides",
-    cover: "/__l5e/assets-v1/79d88434-6ef9-466d-b6da-ed2e8266d06f/kashmir-featured.webp",
+    cover: kashmirFeatured,
     date: "2026-06-01",
     readMinutes: 7,
     content: [
