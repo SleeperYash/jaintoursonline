@@ -65,7 +65,7 @@ const HeroLuxe = () => {
   }, []);
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-background">
+    <section className="relative min-h-screen flex items-start md:items-center justify-center overflow-hidden bg-background pt-28 md:pt-0">
       {/* Crossfading background slideshow */}
       <div className="absolute inset-0">
         {slides.map((s, idx) => (
