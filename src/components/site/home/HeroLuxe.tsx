@@ -106,7 +106,7 @@ const HeroLuxe = () => {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 container text-center px-6 pt-36 pb-28 md:py-32 -translate-y-16 md:translate-y-0 animate-hero-float">
+      <div className="relative z-10 container text-center px-6 pt-36 pb-28 md:py-32 -translate-y-20 md:translate-y-0 animate-hero-float">
         <a
           href={GOOGLE_REVIEWS_URL}
           target="_blank"
@@ -130,7 +130,7 @@ const HeroLuxe = () => {
         </a>
 
         <h1
-          className="relative font-serif italic font-medium text-[2.6rem] sm:text-[3.4rem] md:text-[4.3rem] lg:text-[5.1rem] leading-[1.05] tracking-tight text-[#F7F2E8] opacity-0 animate-hero-fade-up"
+          className="relative font-serif italic font-medium text-[2.95rem] sm:text-[3.4rem] md:text-[4.3rem] lg:text-[5.1rem] leading-[1.05] tracking-tight text-[#F7F2E8] opacity-0 animate-hero-fade-up"
           style={{
             animationDelay: "220ms",
             textShadow: "0 6px 20px rgba(0,0,0,0.35)",
@@ -140,7 +140,7 @@ const HeroLuxe = () => {
         </h1>
 
         <p
-          className="mt-6 md:mt-8 max-w-md md:max-w-2xl mx-auto text-sm md:text-lg leading-relaxed font-light text-white opacity-0 animate-hero-fade-up"
+          className="mt-5 md:mt-8 max-w-md md:max-w-2xl mx-auto text-sm md:text-lg leading-relaxed font-light text-white opacity-0 animate-hero-fade-up"
           style={{
             animationDelay: "380ms",
             textShadow: "0 2px 10px rgba(0,0,0,0.30)",
