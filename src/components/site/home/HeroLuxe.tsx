@@ -106,7 +106,7 @@ const HeroLuxe = () => {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 container text-center px-6 pt-24 pb-20 md:py-32 animate-hero-float">
+      <div className="relative z-10 container text-center px-6 pt-36 pb-28 md:py-32 -translate-y-16 md:translate-y-0 animate-hero-float">
         <a
           href={GOOGLE_REVIEWS_URL}
           target="_blank"
