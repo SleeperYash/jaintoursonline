@@ -7,7 +7,7 @@ export type BlogBlock =
   | { type: "p"; text: string }
   | { type: "ul"; items: string[] };
 
-import kashmirFeatured from "@/assets/kashmir-featured.webp";
+const kashmirFeatured = "/images/kashmir-featured.webp";
 
 export interface BlogPost {
   slug: string;
