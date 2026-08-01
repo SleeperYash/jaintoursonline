@@ -86,44 +86,32 @@ const HeroLuxe = () => {
             height={1080}
           />
         ))}
-        {/* Cinematic radial vignette — transparent center, soft edge darkening (~15%) */}
+        {/* Premium radial vignette for consistent text readability */}
         <div
           aria-hidden
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              "radial-gradient(ellipse 90% 90% at 50% 50%, transparent 0%, transparent 42%, hsl(0 0% 0% / 0.08) 68%, hsl(0 0% 0% / 0.15) 100%)",
+              "radial-gradient(circle at center, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.18) 45%, rgba(0,0,0,0.40) 100%)",
           }}
         />
-        {/* Gentle readability wash behind the copy */}
+        {/* Subtle top-to-bottom grade for depth and scroll cue contrast */}
         <div
           aria-hidden
           className="absolute inset-0 pointer-events-none"
           style={{
-            background:
-              "radial-gradient(ellipse 70% 55% at 50% 50%, hsl(0 0% 0% / 0.28) 0%, hsl(0 0% 0% / 0.1) 60%, transparent 82%)",
-          }}
-        />
-        {/* Base bottom grade for scroll cue contrast */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/30" />
-        {/* Warm champagne ambient glow (subtle) */}
-        <div
-          aria-hidden
-          className="absolute inset-0 opacity-25 pointer-events-none"
-          style={{
-            background:
-              "radial-gradient(ellipse at 50% 42%, hsl(42 90% 78% / 0.14) 0%, transparent 55%)",
+            background: "linear-gradient(to bottom, rgba(0,0,0,0.12), rgba(0,0,0,0.20))",
           }}
         />
       </div>
 
       {/* Content */}
-      <div className="relative z-10 container text-center px-6 pt-36 pb-28 md:py-32 animate-hero-float">
+      <div className="relative z-10 container text-center px-6 pt-36 pb-28 md:py-32 -translate-y-16 md:translate-y-0 animate-hero-float">
         <a
           href={GOOGLE_REVIEWS_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/25 bg-white/10 backdrop-blur-xl mb-8 md:mb-12 opacity-0 animate-hero-fade-up hover:bg-white/15 hover:border-white/40 hover:-translate-y-0.5 transition-all duration-500"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/25 bg-white/10 backdrop-blur-xl mb-6 md:mb-10 opacity-0 animate-hero-fade-up hover:bg-white/15 hover:border-white/40 hover:-translate-y-0.5 transition-all duration-500"
           style={{ animationDelay: "80ms" }}
           aria-label="Read our Google Reviews"
         >
@@ -142,41 +130,27 @@ const HeroLuxe = () => {
         </a>
 
         <h1
-          className="relative font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.05] tracking-tight text-white opacity-0 animate-hero-fade-up"
-          style={{ animationDelay: "220ms" }}
+          className="relative font-serif italic font-medium text-[2.6rem] sm:text-[3.4rem] md:text-[4.3rem] lg:text-[5.1rem] leading-[1.05] tracking-tight text-[#F7F2E8] opacity-0 animate-hero-fade-up"
+          style={{
+            animationDelay: "220ms",
+            textShadow: "0 6px 20px rgba(0,0,0,0.35)",
+          }}
         >
-          <span
-            aria-hidden
-            className="absolute inset-0 -z-10 blur-2xl opacity-60 pointer-events-none"
-            style={{
-              background:
-                "radial-gradient(ellipse 55% 60% at 50% 55%, rgba(240,220,170,0.35) 0%, transparent 70%)",
-            }}
-          />
-          <span
-            className="font-serif italic font-medium bg-clip-text text-transparent inline-block"
-            style={{
-              backgroundImage:
-                "linear-gradient(135deg, #FBF4DB 0%, #F5E4B4 40%, #EAD497 60%, #FBF4DB 100%)",
-              textShadow: "0 1px 2px rgba(0,0,0,0.25)",
-            }}
-          >
-            Journeys Crafted in Gold.
-          </span>
+          Journeys Crafted in Gold.
         </h1>
 
         <p
-          className="mt-10 md:mt-8 max-w-md md:max-w-2xl mx-auto text-sm md:text-lg leading-relaxed font-light text-white/90 opacity-0 animate-hero-fade-up"
+          className="mt-6 md:mt-8 max-w-md md:max-w-2xl mx-auto text-sm md:text-lg leading-relaxed font-light text-white opacity-0 animate-hero-fade-up"
           style={{
             animationDelay: "380ms",
-            textShadow: "0 1px 8px rgba(0,0,0,0.35)",
+            textShadow: "0 2px 10px rgba(0,0,0,0.30)",
           }}
         >
           From Mumbai to the world — <br /> curated holidays, seamless bookings, and unforgettable journeys tailored just for you.
         </p>
 
         <div
-          className="mt-12 md:mt-14 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4 max-w-md sm:max-w-none mx-auto opacity-0 animate-hero-fade-up"
+          className="mt-10 md:mt-14 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4 max-w-md sm:max-w-none mx-auto opacity-0 animate-hero-fade-up"
           style={{ animationDelay: "540ms" }}
         >
           <Link
