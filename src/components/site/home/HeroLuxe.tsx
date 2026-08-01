@@ -86,33 +86,21 @@ const HeroLuxe = () => {
             height={1080}
           />
         ))}
-        {/* Cinematic radial vignette — transparent center, soft edge darkening (~15%) */}
+        {/* Premium radial vignette for consistent text readability */}
         <div
           aria-hidden
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              "radial-gradient(ellipse 90% 90% at 50% 50%, transparent 0%, transparent 42%, hsl(0 0% 0% / 0.08) 68%, hsl(0 0% 0% / 0.15) 100%)",
+              "radial-gradient(circle at center, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.18) 45%, rgba(0,0,0,0.40) 100%)",
           }}
         />
-        {/* Gentle readability wash behind the copy */}
+        {/* Subtle top-to-bottom grade for depth and scroll cue contrast */}
         <div
           aria-hidden
           className="absolute inset-0 pointer-events-none"
           style={{
-            background:
-              "radial-gradient(ellipse 70% 55% at 50% 50%, hsl(0 0% 0% / 0.28) 0%, hsl(0 0% 0% / 0.1) 60%, transparent 82%)",
-          }}
-        />
-        {/* Base bottom grade for scroll cue contrast */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/30" />
-        {/* Warm champagne ambient glow (subtle) */}
-        <div
-          aria-hidden
-          className="absolute inset-0 opacity-25 pointer-events-none"
-          style={{
-            background:
-              "radial-gradient(ellipse at 50% 42%, hsl(42 90% 78% / 0.14) 0%, transparent 55%)",
+            background: "linear-gradient(to bottom, rgba(0,0,0,0.12), rgba(0,0,0,0.20))",
           }}
         />
       </div>
