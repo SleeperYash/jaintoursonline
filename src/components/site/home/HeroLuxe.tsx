@@ -111,20 +111,20 @@ const HeroLuxe = () => {
           href={GOOGLE_REVIEWS_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/25 bg-white/10 backdrop-blur-xl mb-6 md:mb-10 opacity-0 animate-hero-fade-up hover:bg-white/15 hover:border-white/40 hover:-translate-y-0.5 transition-all duration-500"
+          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-white/25 bg-white/10 backdrop-blur-xl mb-7 md:mb-10 opacity-0 animate-hero-fade-up hover:bg-white/15 hover:border-white/40 hover:-translate-y-0.5 transition-all duration-500"
           style={{ animationDelay: "80ms" }}
           aria-label="Read our Google Reviews"
         >
-          <GoogleG className="w-3 h-3" />
-          <span className="text-[10px] font-semibold text-white tabular-nums">4.9</span>
+          <GoogleG className="w-3.5 h-3.5" />
+          <span className="text-[11px] sm:text-[10px] font-semibold text-white tabular-nums">4.9</span>
           <span className="flex gap-0.5" aria-hidden>
             {Array.from({ length: 5 }).map((_, i) => (
-              <svg key={i} className="w-2 h-2" viewBox="0 0 24 24" fill="#FBBF24">
+              <svg key={i} className="w-2.5 h-2.5 sm:w-2 sm:h-2" viewBox="0 0 24 24" fill="#FBBF24">
                 <path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.787 1.401 8.168L12 18.897l-7.335 3.868 1.401-8.168L.132 9.21l8.2-1.192z" />
               </svg>
             ))}
           </span>
-          <span className="text-[9px] tracking-wide text-white/95 font-medium uppercase">
+          <span className="text-[10px] sm:text-[9px] tracking-wide text-white/95 font-medium uppercase">
             Google Reviews
           </span>
         </a>
