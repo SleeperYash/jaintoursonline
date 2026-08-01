@@ -1,35 +1,35 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState, useMemo } from "react";
 import { ArrowRight } from "lucide-react";
-import slide1 from "@/assets/hero-slide-1.png.asset.json";
-import slide2 from "@/assets/hero-slide-2.png.asset.json";
-import slide3 from "@/assets/hero-slide-3.png.asset.json";
-import slide4 from "@/assets/hero-slide-4.png.asset.json";
+import slide1 from "@/assets/hero-slide-1.jpg";
+import slide2 from "@/assets/hero-slide-2.jpg";
+import slide3 from "@/assets/hero-slide-3.jpg";
+import slide4 from "@/assets/hero-slide-4.jpg";
 
 const GOOGLE_REVIEWS_URL =
   "https://www.google.com/search?q=Jain+Tours+%26+Travels+Mumbai+reviews";
 
 const slides = [
   {
-    url: slide1.url,
+    url: slide1,
     alt: "Tropical beach at golden hour with palm trees and turquoise water",
     positionDesktop: "center 55%",
     positionMobile: "50% 60%",
   },
   {
-    url: slide2.url,
+    url: slide2,
     alt: "Swiss Alps lake at sunrise with snow-capped peaks and red train",
     positionDesktop: "center 50%",
     positionMobile: "55% 55%",
   },
   {
-    url: slide3.url,
+    url: slide3,
     alt: "Japan cherry blossoms and pagoda reflected on calm water at sunset",
     positionDesktop: "center 55%",
     positionMobile: "60% 60%",
   },
   {
-    url: slide4.url,
+    url: slide4,
     alt: "Dubai Marina skyline at twilight with palms and yachts",
     positionDesktop: "center 55%",
     positionMobile: "60% 55%",
