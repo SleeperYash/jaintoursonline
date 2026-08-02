@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState, useMemo } from "react";
 import { ArrowRight } from "lucide-react";
+import { trackEvent } from "@/lib/analytics";
 import slide1 from "@/assets/hero-slide-1.jpg";
 import slide2 from "@/assets/hero-slide-2.jpg";
 import slide3 from "@/assets/hero-slide-3.jpg";
@@ -111,6 +112,7 @@ const HeroLuxe = () => {
           href={GOOGLE_REVIEWS_URL}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={() => trackEvent("google_reviews_badge_click", { location: "hero", rating: 4.9 })}
           className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-white/25 bg-white/10 backdrop-blur-xl mb-7 md:mb-10 opacity-0 animate-hero-fade-up hover:bg-white/15 hover:border-white/40 hover:-translate-y-0.5 transition-all duration-500"
           style={{ animationDelay: "80ms" }}
           aria-label="Read our Google Reviews"
@@ -155,6 +157,7 @@ const HeroLuxe = () => {
         >
           <Link
             to="/contact"
+            onClick={() => trackEvent("hero_cta_click", { cta: "plan_my_trip", destination: "/contact" })}
             className="group relative inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full text-[11px] uppercase tracking-luxe font-semibold text-[#1a1206] overflow-hidden transition-all duration-500 hover:-translate-y-0.5"
             style={{
               backgroundImage:
@@ -176,6 +179,7 @@ const HeroLuxe = () => {
           </Link>
           <Link
             to="/destinations"
+            onClick={() => trackEvent("hero_cta_click", { cta: "explore_destinations", destination: "/destinations" })}
             className="group inline-flex items-center justify-center px-8 py-4 rounded-full border border-white/30 bg-white/10 backdrop-blur-xl text-white text-[11px] uppercase tracking-luxe font-medium shadow-[0_8px_32px_rgba(0,0,0,0.25)] hover:bg-white/20 hover:border-white/60 transition-all duration-500 hover:-translate-y-0.5"
           >
             Explore Destinations
