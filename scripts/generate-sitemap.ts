@@ -95,8 +95,19 @@ async function main() {
     entries.push({ path: `/blog/${post.slug}`, changefreq: "monthly", priority: "0.7" });
   }
 
-  writeFileSync(resolve("public/sitemap.xml"), render(entries));
-  console.log(`sitemap.xml written (${entries.length} entries)`);
+  // Deduplicate by path and drop non-public/parameterised routes.
+  const seen = new Set<string>();
+  const clean = entries.filter((e) => {
+    const path = e.path.split("?")[0].split("#")[0].replace(/\/+$/, "") || "/";
+    e.path = path === "/" ? "/" : path;
+    if (path.includes("*") || path.startsWith("/admin")) return false;
+    if (seen.has(e.path)) return false;
+    seen.add(e.path);
+    return true;
+  });
+
+  writeFileSync(resolve("public/sitemap.xml"), render(clean));
+  console.log(`sitemap.xml written (${clean.length} entries)`);
 
   // Update llms.txt blog block between markers
   try {

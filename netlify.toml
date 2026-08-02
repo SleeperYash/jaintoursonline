@@ -6,3 +6,16 @@
   from = "/*"
   to = "/index.html"
   status = 200
+
+# Canonical host: www -> apex (single hop, no chains)
+[[redirects]]
+  from = "https://www.jaintoursonline.com/*"
+  to = "https://jaintoursonline.com/:splat"
+  status = 301
+  force = true
+
+# Block indexing of Netlify deploy previews / branch deploys
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"

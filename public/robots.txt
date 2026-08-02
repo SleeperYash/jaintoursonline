@@ -70,5 +70,9 @@ Allow: /
 
 User-agent: *
 Allow: /
+Disallow: /*?*
+Disallow: /*&*
+Disallow: /admin
+Disallow: /404
 
 Sitemap: https://jaintoursonline.com/sitemap.xml
