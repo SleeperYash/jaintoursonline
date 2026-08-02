@@ -19,12 +19,22 @@ import Blog from "./pages/Blog.tsx";
 import BlogPost from "./pages/BlogPost.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import PageTransition from "./components/site/PageTransition";
+import { trackPageView } from "@/lib/analytics";
 
 const queryClient = new QueryClient();
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
   useEffect(() => { window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior }); }, [pathname]);
+  return null;
+};
+
+const AnalyticsTracker = () => {
+  const { pathname, search } = useLocation();
+  useEffect(() => {
+    const t = window.setTimeout(() => trackPageView(pathname + search), 80);
+    return () => window.clearTimeout(t);
+  }, [pathname, search]);
   return null;
 };
 
@@ -57,6 +67,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <ScrollToTop />
+        <AnalyticsTracker />
         <AnimatedRoutes />
       </BrowserRouter>
     </TooltipProvider>
