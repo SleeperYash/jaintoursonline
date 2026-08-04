@@ -1,3 +1,4 @@
+import { ALL_KEYWORDS } from "@/lib/seoKeywords";
 import SiteLayout from "@/components/site/SiteLayout";
 import HeroLuxe from "@/components/site/home/HeroLuxe";
 import HeroTrustBadges from "@/components/site/home/HeroTrustBadges";
