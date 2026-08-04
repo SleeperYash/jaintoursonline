@@ -49,9 +49,9 @@ const categoryStyles: Record<
 
 const Destinations = () => {
   useSeo({
-    title: "Destinations — Domestic & International | Jain Tours",
+    title: "International & Domestic Tour Packages from Mumbai | Jain Tours",
     description:
-      "Hand-picked domestic & international destinations curated for Indian luxury travellers by Jain Tours & Travels.",
+      "Explore international & domestic tour packages from Mumbai — Dubai, Bali, Thailand, Singapore, Europe, Maldives, Kerala, Kashmir & more, curated by Jain Tours & Travels, Goregaon West.",
     canonicalPath: "/destinations",
   });
 
