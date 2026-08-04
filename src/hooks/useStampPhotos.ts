@@ -1,11 +1,11 @@
-import malaysiaImg from "@/assets/stamps/malaysia.png";
-import singaporeImg from "@/assets/stamps/singapore.png";
-import thailandImg from "@/assets/stamps/thailand.png";
-import sriLankaImg from "@/assets/stamps/sri-lanka.png";
-import kashmirImg from "@/assets/stamps/kashmir.png";
-import himachalPradeshImg from "@/assets/stamps/himachal-pradesh.png";
-import andamanImg from "@/assets/stamps/andaman.png";
-import northEastImg from "@/assets/stamps/north-east-india.png";
+import malaysiaImg from "@/assets/stamps/malaysia.png?w=800&format=webp&quality=80";
+import singaporeImg from "@/assets/stamps/singapore.png?w=800&format=webp&quality=80";
+import thailandImg from "@/assets/stamps/thailand.png?w=800&format=webp&quality=80";
+import sriLankaImg from "@/assets/stamps/sri-lanka.png?w=800&format=webp&quality=80";
+import kashmirImg from "@/assets/stamps/kashmir.png?w=800&format=webp&quality=80";
+import himachalPradeshImg from "@/assets/stamps/himachal-pradesh.png?w=800&format=webp&quality=80";
+import andamanImg from "@/assets/stamps/andaman.png?w=800&format=webp&quality=80";
+import northEastImg from "@/assets/stamps/north-east-india.png?w=800&format=webp&quality=80";
 
 export type StampKey =
   | "malaysia"
