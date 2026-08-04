@@ -65,6 +65,22 @@ const HeroLuxe = () => {
     return () => clearInterval(t);
   }, []);
 
+  // Preload ONLY the hero slideshow images (first slide with high priority).
+  useEffect(() => {
+    const links: HTMLLinkElement[] = [];
+    slides.forEach((s, idx) => {
+      if (document.head.querySelector(`link[rel="preload"][href="${s.url}"]`)) return;
+      const link = document.createElement("link");
+      link.rel = "preload";
+      link.as = "image";
+      link.href = s.url;
+      if (idx === initial) link.setAttribute("fetchpriority", "high");
+      document.head.appendChild(link);
+      links.push(link);
+    });
+    return () => links.forEach((l) => l.remove());
+  }, [initial]);
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-background">
       {/* Crossfading background slideshow */}
