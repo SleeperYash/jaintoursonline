@@ -1,3 +1,4 @@
+import { PRIMARY_KEYWORDS, SERVICE_KEYWORDS } from "@/lib/seoKeywords";
 import SiteLayout from "@/components/site/SiteLayout";
 import PageHero from "@/components/site/PageHero";
 import InquiryBand from "@/components/site/InquiryBand";
@@ -13,6 +14,7 @@ const Services = () => {
     description:
       "Visa services Mumbai, air ticket booking, hotels, cruise packages, corporate travel and travel insurance from a trusted travel agency in Goregaon West, Mumbai.",
     canonicalPath: "/services",
+    keywords: [...SERVICE_KEYWORDS, ...PRIMARY_KEYWORDS],
   });
 
   return (

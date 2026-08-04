@@ -1,3 +1,4 @@
+import { destinationKeywords } from "@/lib/seoKeywords";
 import { useParams, Navigate, Link } from "react-router-dom";
 import { useMemo, useState } from "react";
 import SiteLayout from "@/components/site/SiteLayout";
@@ -49,11 +50,16 @@ const DestinationDetail = () => {
   const [lightbox, setLightbox] = useState<number | null>(null);
 
   useSeo({
-    title: d ? `${d.name} Tour Package — Jain Tours & Travels` : "Destination | Jain Tours",
-    description: d?.overview ?? "Curated destination by Jain Tours & Travels.",
+    title: d
+      ? `${d.name} Tour Package from Mumbai | Jain Tours & Travels`
+      : "Destination | Jain Tours",
+    description: d
+      ? `${d.overview} Book your ${d.name} tour package from Mumbai with Jain Tours & Travels — customized holidays, hotels, flights and visa assistance from a trusted travel agency in Goregaon West.`
+      : "Curated destination by Jain Tours & Travels.",
     canonicalPath: `/destinations/${slug}`,
     ogImage: heroPhoto,
     ogType: "product",
+    keywords: d ? destinationKeywords(d.slug, d.name, d.region) : undefined,
   });
 
   if (!d) return <Navigate to="/destinations" replace />;

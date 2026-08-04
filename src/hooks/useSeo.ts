@@ -28,6 +28,7 @@ export function useSeo({
   ogImage,
   ogType = "website",
   noIndex = false,
+  keywords,
 }: {
   title: string;
   description: string;
@@ -35,6 +36,7 @@ export function useSeo({
   ogImage?: string;
   ogType?: "website" | "article" | "product" | "profile";
   noIndex?: boolean;
+  keywords?: string[];
 }) {
   useEffect(() => {
     document.title = title;
@@ -56,6 +58,7 @@ export function useSeo({
       el.setAttribute("content", content);
     };
     setMeta("description", description);
+    if (keywords && keywords.length) setMeta("keywords", keywords.join(", "));
 
     const path = cleanPath(canonicalPath ?? window.location.pathname);
     const canonicalUrl = `${SITE_ORIGIN}${path === "/" ? "/" : path}`;
@@ -94,5 +97,5 @@ export function useSeo({
       document.head.appendChild(link);
     }
     link.setAttribute("href", canonicalUrl);
-  }, [title, description, canonicalPath, ogImage, ogType, noIndex]);
+  }, [title, description, canonicalPath, ogImage, ogType, noIndex, keywords?.join("|")]);
 }

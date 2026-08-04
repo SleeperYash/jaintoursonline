@@ -1,3 +1,4 @@
+import { PRIMARY_KEYWORDS, DESTINATION_KEYWORDS } from "@/lib/seoKeywords";
 import { useState, useMemo } from "react";
 import SiteLayout from "@/components/site/SiteLayout";
 import PageHero from "@/components/site/PageHero";
@@ -53,6 +54,7 @@ const Destinations = () => {
     description:
       "Explore international & domestic tour packages from Mumbai — Dubai, Bali, Thailand, Singapore, Europe, Maldives, Kerala, Kashmir & more, curated by Jain Tours & Travels, Goregaon West.",
     canonicalPath: "/destinations",
+    keywords: [...PRIMARY_KEYWORDS, ...DESTINATION_KEYWORDS],
   });
 
   const [filter, setFilter] = useState<FilterKey>("all");

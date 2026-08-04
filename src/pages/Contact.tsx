@@ -1,3 +1,4 @@
+import { PRIMARY_KEYWORDS, SERVICE_KEYWORDS } from "@/lib/seoKeywords";
 import SiteLayout from "@/components/site/SiteLayout";
 import PageHero from "@/components/site/PageHero";
 import InquiryForm from "@/components/site/InquiryForm";
@@ -14,6 +15,12 @@ const Contact = () => {
     description:
       "Talk to a trusted travel agent in Mumbai for customized holidays, group tours, honeymoon and corporate travel. Call, WhatsApp or enquire — office in Goregaon West, Mumbai.",
     canonicalPath: "/contact",
+    keywords: [
+      "Travel Agency Goregaon West",
+      "Travel Agent Mumbai",
+      ...PRIMARY_KEYWORDS,
+      ...SERVICE_KEYWORDS,
+    ],
   });
 
   const ref = useReveal<HTMLDivElement>();

@@ -2,10 +2,21 @@ import { Link } from "react-router-dom";
 import { useEffect, useState, useMemo } from "react";
 import { ArrowRight } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
-import slide1 from "@/assets/hero-slide-1.jpg";
-import slide2 from "@/assets/hero-slide-2.jpg";
-import slide3 from "@/assets/hero-slide-3.jpg";
-import slide4 from "@/assets/hero-slide-4.jpg";
+// Responsive, build-time optimised hero imagery (AVIF + WebP + JPG fallback).
+import slide1Avif from "@/assets/hero-slide-1.jpg?w=640;1024;1600;1920&format=avif&as=srcset";
+import slide1Webp from "@/assets/hero-slide-1.jpg?w=640;1024;1600;1920&format=webp&as=srcset";
+import slide1 from "@/assets/hero-slide-1.jpg?w=1600&format=jpg";
+import slide2Avif from "@/assets/hero-slide-2.jpg?w=640;1024;1600;1920&format=avif&as=srcset";
+import slide2Webp from "@/assets/hero-slide-2.jpg?w=640;1024;1600;1920&format=webp&as=srcset";
+import slide2 from "@/assets/hero-slide-2.jpg?w=1600&format=jpg";
+import slide3Avif from "@/assets/hero-slide-3.jpg?w=640;1024;1600;1920&format=avif&as=srcset";
+import slide3Webp from "@/assets/hero-slide-3.jpg?w=640;1024;1600;1920&format=webp&as=srcset";
+import slide3 from "@/assets/hero-slide-3.jpg?w=1600&format=jpg";
+import slide4Avif from "@/assets/hero-slide-4.jpg?w=640;1024;1600;1920&format=avif&as=srcset";
+import slide4Webp from "@/assets/hero-slide-4.jpg?w=640;1024;1600;1920&format=webp&as=srcset";
+import slide4 from "@/assets/hero-slide-4.jpg?w=1600&format=jpg";
+
+const SLIDE_SIZES = "100vw";
 
 const GOOGLE_REVIEWS_URL =
   "https://www.google.com/search?q=Jain+Tours+%26+Travels+Mumbai+reviews";
@@ -13,24 +24,32 @@ const GOOGLE_REVIEWS_URL =
 const slides = [
   {
     url: slide1,
+    avif: slide1Avif,
+    webp: slide1Webp,
     alt: "Tropical beach at golden hour with palm trees and turquoise water",
     positionDesktop: "center 55%",
     positionMobile: "50% 60%",
   },
   {
     url: slide2,
+    avif: slide2Avif,
+    webp: slide2Webp,
     alt: "Swiss Alps lake at sunrise with snow-capped peaks and red train",
     positionDesktop: "center 50%",
     positionMobile: "55% 55%",
   },
   {
     url: slide3,
+    avif: slide3Avif,
+    webp: slide3Webp,
     alt: "Japan cherry blossoms and pagoda reflected on calm water at sunset",
     positionDesktop: "center 55%",
     positionMobile: "60% 60%",
   },
   {
     url: slide4,
+    avif: slide4Avif,
+    webp: slide4Webp,
     alt: "Dubai Marina skyline at twilight with palms and yachts",
     positionDesktop: "center 55%",
     positionMobile: "60% 55%",
@@ -69,12 +88,15 @@ const HeroLuxe = () => {
   useEffect(() => {
     const links: HTMLLinkElement[] = [];
     slides.forEach((s, idx) => {
-      if (document.head.querySelector(`link[rel="preload"][href="${s.url}"]`)) return;
+      if (idx !== initial) return;
+      if (document.head.querySelector(`link[rel="preload"][imagesrcset="${s.avif}"]`)) return;
       const link = document.createElement("link");
       link.rel = "preload";
       link.as = "image";
-      link.href = s.url;
-      if (idx === initial) link.setAttribute("fetchpriority", "high");
+      link.setAttribute("imagesrcset", s.avif);
+      link.setAttribute("imagesizes", SLIDE_SIZES);
+      link.setAttribute("type", "image/avif");
+      link.setAttribute("fetchpriority", "high");
       document.head.appendChild(link);
       links.push(link);
     });
@@ -86,22 +108,25 @@ const HeroLuxe = () => {
       {/* Crossfading background slideshow */}
       <div className="absolute inset-0">
         {slides.map((s, idx) => (
-          <img
-            key={s.url}
-            src={s.url}
-            alt={s.alt}
-            className="absolute inset-0 w-full h-full object-cover transition-opacity duration-[2000ms] ease-in-out"
-            style={{
-              opacity: idx === current ? 1 : 0,
-              objectPosition: isMobile ? s.positionMobile : s.positionDesktop,
-              filter: "saturate(1.12) contrast(1.06) brightness(1.03)",
-            }}
-            loading={idx === initial ? "eager" : "lazy"}
-            fetchPriority={idx === initial ? "high" : "auto"}
-            decoding={idx === initial ? "sync" : "async"}
-            width={1920}
-            height={1080}
-          />
+          <picture key={s.url}>
+            <source type="image/avif" srcSet={s.avif} sizes={SLIDE_SIZES} />
+            <source type="image/webp" srcSet={s.webp} sizes={SLIDE_SIZES} />
+            <img
+              src={s.url}
+              alt={s.alt}
+              className="absolute inset-0 w-full h-full object-cover transition-opacity duration-[2000ms] ease-in-out"
+              style={{
+                opacity: idx === current ? 1 : 0,
+                objectPosition: isMobile ? s.positionMobile : s.positionDesktop,
+                filter: "saturate(1.12) contrast(1.06) brightness(1.03)",
+              }}
+              loading={idx === initial ? "eager" : "lazy"}
+              fetchPriority={idx === initial ? "high" : "auto"}
+              decoding={idx === initial ? "sync" : "async"}
+              width={1920}
+              height={1080}
+            />
+          </picture>
         ))}
         {/* Premium radial vignette for consistent text readability */}
         <div

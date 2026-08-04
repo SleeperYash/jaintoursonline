@@ -1,3 +1,4 @@
+import { ALL_KEYWORDS } from "@/lib/seoKeywords";
 import SiteLayout from "@/components/site/SiteLayout";
 import HeroLuxe from "@/components/site/home/HeroLuxe";
 import HeroTrustBadges from "@/components/site/home/HeroTrustBadges";
@@ -19,6 +20,7 @@ const Index = () => {
     description:
       "Jain Tours & Travels is a trusted travel agency in Mumbai with 30+ years of experience. We offer international & domestic tour packages, visa services, air tickets, hotels, cruises and customized holidays with personalized service.",
     canonicalPath: "/",
+    keywords: ALL_KEYWORDS,
   });
 
   return (

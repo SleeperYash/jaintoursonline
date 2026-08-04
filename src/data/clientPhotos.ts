@@ -1,14 +1,14 @@
 // Real client travel photos with associated reviews/destinations
-import bali from "@/assets/clients/bali-coconut.png";
-import dubaiGarden from "@/assets/clients/dubai-miracle-garden.png";
-import dubaiDesert1 from "@/assets/clients/dubai-desert-1.png";
-import dubaiDesert2 from "@/assets/clients/dubai-desert-2.png";
-import bangkok from "@/assets/clients/bangkok-baiyoke.png";
-import thailandLights from "@/assets/clients/thailand-kingdom-lights.png";
-import corporate from "@/assets/clients/corporate-meet.png";
-import kashmirHotel from "@/assets/clients/kashmir-grand-rayan.png";
-import kashmirSnow1 from "@/assets/clients/kashmir-snow-1.png";
-import kashmirSnow2 from "@/assets/clients/kashmir-snow-2.png";
+import bali from "@/assets/clients/bali-coconut.png?w=1200&format=webp&quality=78";
+import dubaiGarden from "@/assets/clients/dubai-miracle-garden.png?w=1200&format=webp&quality=78";
+import dubaiDesert1 from "@/assets/clients/dubai-desert-1.png?w=1200&format=webp&quality=78";
+import dubaiDesert2 from "@/assets/clients/dubai-desert-2.png?w=1200&format=webp&quality=78";
+import bangkok from "@/assets/clients/bangkok-baiyoke.png?w=1200&format=webp&quality=78";
+import thailandLights from "@/assets/clients/thailand-kingdom-lights.png?w=1200&format=webp&quality=78";
+import corporate from "@/assets/clients/corporate-meet.png?w=1200&format=webp&quality=78";
+import kashmirHotel from "@/assets/clients/kashmir-grand-rayan.png?w=1200&format=webp&quality=78";
+import kashmirSnow1 from "@/assets/clients/kashmir-snow-1.png?w=1200&format=webp&quality=78";
+import kashmirSnow2 from "@/assets/clients/kashmir-snow-2.png?w=1200&format=webp&quality=78";
 
 export type ClientReview = {
   image: string;
