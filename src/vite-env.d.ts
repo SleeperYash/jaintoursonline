@@ -9,3 +9,11 @@ declare module "*&format=jpg" {
   const src: string;
   export default src;
 }
+declare module "*&format=webp&quality=80" {
+  const src: string;
+  export default src;
+}
+declare module "*&format=webp&quality=78" {
+  const src: string;
+  export default src;
+}
