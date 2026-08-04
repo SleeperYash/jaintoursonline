@@ -53,6 +53,7 @@ const Destinations = () => {
     description:
       "Explore international & domestic tour packages from Mumbai — Dubai, Bali, Thailand, Singapore, Europe, Maldives, Kerala, Kashmir & more, curated by Jain Tours & Travels, Goregaon West.",
     canonicalPath: "/destinations",
+    keywords: [...PRIMARY_KEYWORDS, ...DESTINATION_KEYWORDS],
   });
 
   const [filter, setFilter] = useState<FilterKey>("all");
