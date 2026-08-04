@@ -14,6 +14,7 @@ const Services = () => {
     description:
       "Visa services Mumbai, air ticket booking, hotels, cruise packages, corporate travel and travel insurance from a trusted travel agency in Goregaon West, Mumbai.",
     canonicalPath: "/services",
+    keywords: [...SERVICE_KEYWORDS, ...PRIMARY_KEYWORDS],
   });
 
   return (

@@ -14,6 +14,7 @@ const Blog = () => {
     description:
       "Honest travel guides, itineraries and visa tips from Mumbai's trusted travel agency. Updated regularly.",
     canonicalPath: "/blog",
+    keywords: [...PRIMARY_KEYWORDS, ...DESTINATION_KEYWORDS],
   });
 
   const sorted = [...BLOG_POSTS].sort((a, b) => b.date.localeCompare(a.date));

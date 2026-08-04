@@ -15,6 +15,12 @@ const Contact = () => {
     description:
       "Talk to a trusted travel agent in Mumbai for customized holidays, group tours, honeymoon and corporate travel. Call, WhatsApp or enquire — office in Goregaon West, Mumbai.",
     canonicalPath: "/contact",
+    keywords: [
+      "Travel Agency Goregaon West",
+      "Travel Agent Mumbai",
+      ...PRIMARY_KEYWORDS,
+      ...SERVICE_KEYWORDS,
+    ],
   });
 
   const ref = useReveal<HTMLDivElement>();
