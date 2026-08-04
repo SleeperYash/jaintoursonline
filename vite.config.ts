@@ -13,6 +13,26 @@ export default defineConfig(({ mode }) => ({
     },
   },
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
+  build: {
+    target: "es2020",
+    cssCodeSplit: true,
+    sourcemap: false,
+    chunkSizeWarningLimit: 900,
+    rollupOptions: {
+      output: {
+        manualChunks(id: string) {
+          if (!id.includes("node_modules")) return;
+          if (id.includes("three") || id.includes("@react-three")) return "three";
+          if (id.includes("recharts") || id.includes("d3-")) return "charts";
+          if (id.includes("framer-motion")) return "motion";
+          if (id.includes("jspdf")) return "pdf";
+          if (id.includes("@supabase")) return "supabase";
+          if (id.includes("react-router") || id.includes("react-dom") || id.includes("/react/")) return "react-vendor";
+          return "vendor";
+        },
+      },
+    },
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
