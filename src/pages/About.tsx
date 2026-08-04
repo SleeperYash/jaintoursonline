@@ -92,8 +92,8 @@ const Reveal = ({ children, className = "" }: { children: React.ReactNode; class
 
 const About = () => {
   useSeo({
-    title: `About — ${BRAND.name}, Mumbai`,
-    description: `Mumbai-based travel partner since ${FOUNDED}. ${BRAND.rating}★ rated, crafting personal journeys across India and the world.`,
+    title: `About Our Travel Agency in Mumbai | ${BRAND.name}`,
+    description: `Trusted travel agency in Mumbai since ${FOUNDED} — ${BRAND.rating}★ rated tour operator in Goregaon West crafting luxury holiday packages, family and group tours across India and the world.`,
     canonicalPath: "/about",
   });
 
