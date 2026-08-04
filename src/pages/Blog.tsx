@@ -1,3 +1,4 @@
+import { PRIMARY_KEYWORDS, DESTINATION_KEYWORDS } from "@/lib/seoKeywords";
 import { Link } from "react-router-dom";
 import SiteLayout from "@/components/site/SiteLayout";
 import PageHero from "@/components/site/PageHero";

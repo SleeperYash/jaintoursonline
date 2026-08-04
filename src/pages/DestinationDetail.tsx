@@ -1,3 +1,4 @@
+import { destinationKeywords } from "@/lib/seoKeywords";
 import { useParams, Navigate, Link } from "react-router-dom";
 import { useMemo, useState } from "react";
 import SiteLayout from "@/components/site/SiteLayout";
