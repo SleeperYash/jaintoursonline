@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { useEffect } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -8,16 +8,16 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Index from "./pages/Index.tsx";
 
-import Destinations from "./pages/Destinations.tsx";
-import DestinationDetail from "./pages/DestinationDetail.tsx";
-import ItineraryDetailPage from "./pages/ItineraryDetailPage.tsx";
-import Services from "./pages/Services.tsx";
-import Reviews from "./pages/Reviews.tsx";
-import About from "./pages/About.tsx";
-import Contact from "./pages/Contact.tsx";
-import Blog from "./pages/Blog.tsx";
-import BlogPost from "./pages/BlogPost.tsx";
-import NotFound from "./pages/NotFound.tsx";
+const Destinations = lazy(() => import("./pages/Destinations.tsx"));
+const DestinationDetail = lazy(() => import("./pages/DestinationDetail.tsx"));
+const ItineraryDetailPage = lazy(() => import("./pages/ItineraryDetailPage.tsx"));
+const Services = lazy(() => import("./pages/Services.tsx"));
+const Reviews = lazy(() => import("./pages/Reviews.tsx"));
+const About = lazy(() => import("./pages/About.tsx"));
+const Contact = lazy(() => import("./pages/Contact.tsx"));
+const Blog = lazy(() => import("./pages/Blog.tsx"));
+const BlogPost = lazy(() => import("./pages/BlogPost.tsx"));
+const NotFound = lazy(() => import("./pages/NotFound.tsx"));
 import PageTransition from "./components/site/PageTransition";
 import { trackPageView } from "@/lib/analytics";
 
@@ -41,6 +41,7 @@ const AnalyticsTracker = () => {
 const AnimatedRoutes = () => {
   const location = useLocation();
   return (
+    <Suspense fallback={<div className="min-h-screen bg-background" />}>
     <AnimatePresence mode="wait" initial={false}>
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<PageTransition><Index /></PageTransition>} />
@@ -57,6 +58,7 @@ const AnimatedRoutes = () => {
         <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
       </Routes>
     </AnimatePresence>
+    </Suspense>
   );
 };
 
