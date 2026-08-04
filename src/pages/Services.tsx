@@ -9,9 +9,9 @@ import TravelAgencyLd from "@/components/site/schema/TravelAgencyLd";
 
 const Services = () => {
   useSeo({
-    title: "Travel Services: Flights, Visas & Cruises | Jain Tours",
+    title: "Visa Services & Air Ticket Booking Mumbai | Jain Tours",
     description:
-      "Full-service travel partner: flights, hotels, visas, cruises, corporate travel, insurance and 24×7 support. Mumbai-based, globally trusted.",
+      "Visa services Mumbai, air ticket booking, hotels, cruise packages, corporate travel and travel insurance from a trusted travel agency in Goregaon West, Mumbai.",
     canonicalPath: "/services",
   });
 

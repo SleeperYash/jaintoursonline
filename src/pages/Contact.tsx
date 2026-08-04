@@ -10,9 +10,9 @@ import TravelAgencyLd from "@/components/site/schema/TravelAgencyLd";
 
 const Contact = () => {
   useSeo({
-    title: "Contact Jain Tours & Travels — Mumbai",
+    title: "Contact Travel Agency in Goregaon West, Mumbai | Jain Tours",
     description:
-      "Speak to a Jain Tours travel curator. Call, WhatsApp or send an enquiry — we reply within hours, 24×7. Office in Goregaon West, Mumbai.",
+      "Talk to a trusted travel agent in Mumbai for customized holidays, group tours, honeymoon and corporate travel. Call, WhatsApp or enquire — office in Goregaon West, Mumbai.",
     canonicalPath: "/contact",
   });
 
