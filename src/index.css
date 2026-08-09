@@ -308,6 +308,11 @@ html.theme-anim {
   animation: hero-float 8s ease-in-out infinite;
 }
 
+/* Hide the Lovable badge globally */
+#lovable-badge {
+  display: none !important;
+}
+
 /* Respect reduced-motion preferences */
 @media (prefers-reduced-motion: reduce) {
   .animate-marquee-x,
