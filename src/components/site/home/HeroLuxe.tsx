@@ -84,11 +84,11 @@ const HeroLuxe = () => {
     return () => clearInterval(t);
   }, []);
 
-  // Preload ONLY the hero slideshow images (first slide with high priority).
+  // Preload ALL hero slideshow images so every crossfade is instant and seamless.
+  // The initial slide gets high priority; the rest warm the cache at low priority.
   useEffect(() => {
     const links: HTMLLinkElement[] = [];
     slides.forEach((s, idx) => {
-      if (idx !== initial) return;
       if (document.head.querySelector(`link[rel="preload"][imagesrcset="${s.avif}"]`)) return;
       const link = document.createElement("link");
       link.rel = "preload";
@@ -96,17 +96,30 @@ const HeroLuxe = () => {
       link.setAttribute("imagesrcset", s.avif);
       link.setAttribute("imagesizes", SLIDE_SIZES);
       link.setAttribute("type", "image/avif");
-      link.setAttribute("fetchpriority", "high");
+      link.setAttribute("fetchpriority", idx === initial ? "high" : "low");
       document.head.appendChild(link);
       links.push(link);
     });
     return () => links.forEach((l) => l.remove());
   }, [initial]);
 
+  // Warm the browser decode cache for every slide right after mount so the
+  // first transition never hits an undecoded image (prevents visible flicker).
+  useEffect(() => {
+    slides.forEach((s, idx) => {
+      if (idx === initial) return;
+      const img = new Image();
+      img.srcset = s.avif;
+      img.sizes = SLIDE_SIZES;
+      img.src = s.url;
+      img.decode?.().catch(() => {});
+    });
+  }, [initial]);
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-background">
       {/* Crossfading background slideshow */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 bg-[#0a0a0a]">
         {slides.map((s, idx) => (
           <picture key={s.url}>
             <source type="image/avif" srcSet={s.avif} sizes={SLIDE_SIZES} />
@@ -114,15 +127,17 @@ const HeroLuxe = () => {
             <img
               src={s.url}
               alt={s.alt}
-              className="absolute inset-0 w-full h-full object-cover transition-opacity duration-[2000ms] ease-in-out"
+              className="absolute inset-0 w-full h-full object-cover transition-opacity duration-[2500ms] ease-in-out"
               style={{
                 opacity: idx === current ? 1 : 0,
                 objectPosition: isMobile ? s.positionMobile : s.positionDesktop,
                 filter: "saturate(1.12) contrast(1.06) brightness(1.03)",
+                willChange: "opacity",
+                backfaceVisibility: "hidden",
               }}
-              loading={idx === initial ? "eager" : "lazy"}
-              fetchPriority={idx === initial ? "high" : "auto"}
-              decoding={idx === initial ? "sync" : "async"}
+              loading="eager"
+              fetchPriority={idx === initial ? "high" : "low"}
+              decoding="async"
               width={1920}
               height={1080}
             />
