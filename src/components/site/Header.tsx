@@ -76,10 +76,10 @@ const Header = () => {
               <span className={cn(
                 "transition-colors duration-[400ms]",
                 solid ? "text-black dark:text-white font-semibold dark:font-normal" : "text-white"
-              )}>Jain</span>
+              )}>Jain</span>{" "}
               <span className={cn(
                 "italic font-bold transition-colors duration-[400ms]",
-                solid ? "text-sky-600 dark:text-sky-400" : "text-amber-200"
+                solid ? "text-sky-600 dark:text-amber-200" : "text-amber-200"
               )}>Tours & Travels</span>
             </span>
             <span className={cn(
