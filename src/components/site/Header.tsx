@@ -72,11 +72,19 @@ const Header = () => {
           <div className="flex flex-col leading-none">
             <span className={cn(
               "font-serif md:text-lg lg:text-xl tracking-wide text-base transition-colors duration-[400ms]",
-              solid ? "text-black dark:text-white" : "text-black dark:text-white"
+              solid
+                ? "text-black dark:text-white"
+                : isHome
+                  ? "text-white dark:text-white"
+                  : "text-blue-950 dark:text-white"
             )}>
               <span className={cn(
-                "transition-colors duration-[400ms]",
-                solid ? "text-black dark:text-white font-semibold" : "text-black dark:text-white font-medium"
+                "transition-colors duration-[400ms] font-medium",
+                solid
+                  ? "text-black dark:text-white font-semibold"
+                  : isHome
+                    ? "text-white dark:text-white"
+                    : "text-blue-950 dark:text-white"
               )}>Jain</span>{" "}
               <span className={cn(
                 "italic font-bold transition-colors duration-[400ms] text-amber-200"
