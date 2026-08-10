@@ -30,6 +30,7 @@ const Header = () => {
   useEffect(() => setOpen(false), [pathname]);
 
   const solid = scrolled || open;
+  const isHome = pathname === "/";
 
   return (
     <header
