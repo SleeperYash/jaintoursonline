@@ -73,7 +73,11 @@ const Header = () => {
               "font-serif md:text-lg lg:text-xl tracking-wide text-base transition-colors duration-[400ms]",
               solid ? "text-black dark:text-white" : "text-white"
             )}>
-              Jain <span className={cn(
+              <span className={cn(
+                "transition-colors duration-[400ms]",
+                solid ? "text-black dark:text-white font-semibold dark:font-normal" : "text-white"
+              )}>Jain</span>
+              <span className={cn(
                 "italic font-bold transition-colors duration-[400ms]",
                 solid ? "text-sky-600 dark:text-sky-400" : "text-amber-200"
               )}>Tours & Travels</span>
