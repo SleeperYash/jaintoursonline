@@ -61,7 +61,7 @@ const ItineraryCard = ({
   return (
     <Link
       to={`/destinations/${destinationSlug}/${slugify(title)}`}
-      className="group block bg-card rounded-2xl overflow-hidden border border-border/60 hover:border-foreground/30 transition-colors"
+      className="group flex w-full flex-col bg-card rounded-2xl overflow-hidden border border-border/60 hover:border-gold/50 hover:shadow-luxe transition-all duration-300"
     >
       <div className="relative aspect-[16/10] overflow-hidden bg-muted">
         {image ? (
@@ -76,14 +76,14 @@ const ItineraryCard = ({
         )}
         <div className={`absolute bottom-0 left-0 right-0 h-[3px] ${accent.bar}`} />
       </div>
-      <div className="p-4 md:p-5">
+      <div className="p-4 md:p-5 flex flex-col flex-1">
         <p className="text-[10px] md:text-xs uppercase tracking-[0.15em] text-foreground/55 font-medium">
           {locationLabel}
         </p>
         <h3 className="font-serif text-lg md:text-xl text-foreground mt-1.5 leading-snug line-clamp-2">
           {cleanTitle}
         </h3>
-        <div className="mt-4 flex items-center justify-between gap-3">
+        <div className="mt-auto pt-4 flex items-center justify-between gap-3">
           <span className="text-xs md:text-sm text-foreground/60">
             {duration ?? "Custom duration"}
           </span>
