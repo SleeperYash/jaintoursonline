@@ -12,7 +12,7 @@ import { useDestinationImages } from "@/hooks/useDestinationImages";
 import { useHiddenDefaultImages } from "@/hooks/useHiddenDefaultImages";
 import { adminPublicUrl } from "@/hooks/useAdminAuth";
 import { generateEstimatedPrice, formatINR } from "@/lib/estimatedPrice";
-import { Camera, ChevronLeft, ChevronRight, X } from "lucide-react";
+import { CalendarDays, Camera, ChevronLeft, ChevronRight, Globe2, MapPin, Sparkles, X } from "lucide-react";
 import Breadcrumbs from "@/components/site/Breadcrumbs";
 import TravelAgencyLd from "@/components/site/schema/TravelAgencyLd";
 
@@ -44,8 +44,6 @@ const DestinationDetail = () => {
   }, [imagesReady, images, hidden, d]);
 
   const heroPhoto = photos[0];
-  const sidePhoto1 = photos[1] ?? photos[0];
-  const sidePhoto2 = photos[2] ?? photos[1] ?? photos[0];
 
   const [lightbox, setLightbox] = useState<number | null>(null);
 
