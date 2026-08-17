@@ -247,34 +247,37 @@ const DestinationDetail = () => {
         ).slice(0, 3);
         if (relatedBlogs.length === 0) return null;
         return (
-          <section aria-labelledby="dest-blogs" className="container py-10 md:py-16 border-t border-border/40">
-            <div className="flex items-end justify-between mb-6 gap-4">
+          <section aria-labelledby="dest-blogs" className="container py-14 md:py-20 border-t border-border/40">
+            <div className="flex items-end justify-between mb-7 gap-4">
               <div>
-                <p className="text-[10px] md:text-xs uppercase tracking-luxe text-gold">Read before you go</p>
-                <h2 id="dest-blogs" className="font-serif text-xl md:text-3xl text-foreground mt-1">
+                <p className="text-[10px] md:text-xs uppercase tracking-luxe text-foreground/80">
+                  Before you go
+                  <span className="inline-block align-middle ml-3 h-px w-8 bg-gold" />
+                </p>
+                <h2 id="dest-blogs" className="font-serif text-2xl md:text-4xl text-foreground mt-2">
                   {d.name} travel guides
                 </h2>
               </div>
-              <Link to="/blog" className="shrink-0 text-[11px] uppercase tracking-luxe text-foreground/70 hover:text-gold transition">
-                All posts
+              <Link to="/blog" className="shrink-0 inline-flex items-center gap-1.5 text-[11px] uppercase tracking-luxe text-foreground/70 hover:text-gold transition">
+                View all blogs <ChevronRight className="w-3.5 h-3.5" />
               </Link>
             </div>
             <div
-              className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-3 -mx-4 px-4 md:mx-0 md:px-0 scrollbar-hide"
+              className="flex md:grid md:grid-cols-3 gap-4 md:gap-6 overflow-x-auto md:overflow-visible snap-x snap-mandatory pb-3 -mx-4 px-4 md:mx-0 md:px-0 scrollbar-hide"
               style={{ scrollbarWidth: "none" }}
             >
               {relatedBlogs.map((p) => (
                 <Link
                   key={p.slug}
                   to={`/blog/${p.slug}`}
-                  className="group snap-start shrink-0 w-[260px] md:w-[300px] bg-card border border-border/60 rounded-lg overflow-hidden hover:border-gold/50 transition"
+                  className="group snap-start shrink-0 w-[260px] md:w-auto bg-card border border-border/60 rounded-2xl overflow-hidden hover:border-gold/50 hover:shadow-luxe transition"
                 >
-                  <div className="aspect-[16/10] overflow-hidden">
+                  <div className="aspect-[16/9] overflow-hidden">
                     <img src={p.cover} alt={p.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                   </div>
-                  <div className="p-4">
+                  <div className="p-4 md:p-5">
                     <p className="text-[10px] uppercase tracking-luxe text-gold mb-1.5">{p.category}</p>
-                    <p className="font-serif text-base text-foreground group-hover:text-gold transition-colors line-clamp-2">{p.title}</p>
+                    <p className="font-serif text-base md:text-lg text-foreground group-hover:text-gold transition-colors line-clamp-2">{p.title}</p>
                   </div>
                 </Link>
               ))}
