@@ -72,14 +72,17 @@ const ItineraryViewer = ({
   }, [destinationSlug]);
 
   return (
-    <section className="bg-background border-t border-border/60 py-16 md:py-24">
+    <section className="bg-background border-t border-border/40 py-14 md:py-24">
       <div className="container">
-        <div className="mb-8 md:mb-10">
-          <p className="text-xs uppercase tracking-luxe text-gold mb-3 md:mb-4">Sample itineraries</p>
-          <h2 className="font-serif text-3xl md:text-5xl text-foreground mb-3">
+        <div className="mb-8 md:mb-12">
+          <p className="text-[10px] md:text-xs uppercase tracking-luxe text-foreground/80">
+            Sample itineraries
+            <span className="inline-block align-middle ml-3 h-px w-8 bg-gold" />
+          </p>
+          <h2 className="font-serif text-3xl md:text-5xl text-foreground mt-3">
             {destinationName} itineraries
           </h2>
-          <p className="text-muted-foreground font-light max-w-xl">
+          <p className="mt-3 text-muted-foreground font-light max-w-xl text-sm md:text-base">
             Curated journeys prepared by our travel desk. Tap any itinerary to view full details.
           </p>
         </div>
@@ -98,9 +101,9 @@ const ItineraryViewer = ({
             const dest = destinations.find((d) => d.slug === destinationSlug);
             const locationLabel = (dest?.country ?? destinationName).toUpperCase();
             return (
-              <div className="-mx-4 px-4 md:mx-0 md:px-0 flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 overflow-x-auto md:overflow-visible snap-x snap-mandatory pb-2 scrollbar-hide" style={{ scrollbarWidth: "none" }}>
+              <div className="-mx-4 px-4 md:mx-0 md:px-0 flex md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 md:gap-6 items-stretch overflow-x-auto md:overflow-visible snap-x snap-mandatory pb-2 scrollbar-hide" style={{ scrollbarWidth: "none" }}>
                 {items.map((it, i) => (
-                  <div key={it.id} className="shrink-0 w-[78%] sm:w-[60%] md:w-auto snap-start">
+                  <div key={it.id} className="shrink-0 w-[78%] sm:w-[60%] md:w-auto snap-start flex">
                     <ItineraryCard
                       id={it.id}
                       title={it.title}
