@@ -95,11 +95,11 @@ const DestinationDetail = () => {
           },
         }}
       />
-      {/* Photo grid */}
+      {/* Cinematic hero */}
       <section className="container pt-24 md:pt-32">
         <Breadcrumbs
           ldId="ld-breadcrumb-destdetail"
-          className="mb-4"
+          className="mb-3"
           items={[
             { label: "Destinations", href: "/destinations" },
             { label: d.region, href: `/destinations?filter=${d.region.toLowerCase()}` },
@@ -108,91 +108,137 @@ const DestinationDetail = () => {
         />
         <Link
           to="/destinations"
-          className="inline-flex items-center gap-2 text-[10px] md:text-xs uppercase tracking-luxe text-foreground/70 hover:text-gold transition-colors mb-3 md:mb-5"
+          className="inline-flex items-center gap-2 text-[10px] md:text-xs uppercase tracking-luxe text-foreground/60 hover:text-gold transition-colors mb-4 md:mb-6"
         >
           <ChevronLeft className="w-4 h-4" /> All destinations
         </Link>
 
-        <div className="grid grid-cols-3 gap-1.5 md:gap-3 rounded-2xl overflow-hidden">
-          <button
-            onClick={() => setLightbox(0)}
-            className="relative col-span-2 group overflow-hidden bg-card aspect-[4/5] md:aspect-auto md:h-[480px]"
-          >
+        <div className="relative rounded-[22px] overflow-hidden bg-card border border-border/50 shadow-luxe">
+          <div className="relative min-h-[420px] md:min-h-[520px]">
             {heroPhoto ? (
-              <img src={heroPhoto} alt={d.name} loading="eager" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <img
+                src={heroPhoto}
+                alt={d.name}
+                loading="eager"
+                className="absolute inset-0 w-full h-full object-cover"
+              />
             ) : (
-              <div className="w-full h-full bg-muted animate-pulse" />
+              <div className="absolute inset-0 bg-muted animate-pulse" />
             )}
-          </button>
-          <div className="grid grid-rows-2 gap-1.5 md:gap-3 aspect-[1/2] md:aspect-auto md:h-[480px]">
-            <button onClick={() => setLightbox(1)} className="relative group overflow-hidden bg-card">
-              {sidePhoto1 ? (
-                <img src={sidePhoto1} alt={`${d.name} 2`} loading="eager" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-              ) : (
-                <div className="w-full h-full bg-muted animate-pulse" />
-              )}
-            </button>
-            <button onClick={() => setLightbox(2)} className="relative group overflow-hidden bg-card">
-              {sidePhoto2 ? (
-                <img src={sidePhoto2} alt={`${d.name} 3`} loading="eager" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-              ) : (
-                <div className="w-full h-full bg-muted animate-pulse" />
-              )}
-              {photos.length > 3 && (
-                <>
-                  <span className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/60 to-ink/30" aria-hidden />
-                  <span className="absolute inset-0 flex items-center justify-center">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 md:px-4 md:py-2 rounded-full bg-ink/85 backdrop-blur-sm border border-white/20 text-white text-[10px] md:text-xs uppercase tracking-luxe shadow-lg whitespace-nowrap">
-                      <Camera className="w-3 h-3 md:w-3.5 md:h-3.5" />
-                      +{photos.length - 3} photos
-                    </span>
-                  </span>
-                </>
-              )}
-            </button>
-          </div>
-        </div>
-      </section>
+            <div
+              className="absolute inset-0 bg-gradient-to-t from-ink/95 via-ink/70 to-ink/25 md:bg-gradient-to-r md:from-ink/95 md:via-ink/70 md:to-ink/10"
+              aria-hidden
+            />
 
-      {/* Header + sticky booking */}
-      <section className="container py-6 md:py-12">
-        <div className="grid lg:grid-cols-3 gap-6 lg:gap-10">
-          <div className="lg:col-span-2">
-            <p className="text-[10px] md:text-xs tracking-luxe uppercase text-gold mb-1.5">{d.region} · {d.country}</p>
-            <h1 className="font-serif text-2xl sm:text-3xl md:text-5xl lg:text-6xl text-foreground leading-[1.1]">{d.name}</h1>
-            <p className="mt-2 md:mt-3 text-sm md:text-lg text-foreground/70 font-light max-w-2xl">{d.tagline}</p>
+            <div className="relative grid lg:grid-cols-5 gap-8 p-6 md:p-10 lg:p-12 min-h-[420px] md:min-h-[520px] items-end lg:items-center">
+              <div className="lg:col-span-3">
+                <p className="text-[10px] md:text-xs tracking-luxe uppercase text-amber-200/90">
+                  {d.region} · {d.country}
+                </p>
+                <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-white leading-[1.05] mt-2">
+                  {d.name}
+                </h1>
+                <p className="mt-2 font-serif italic text-lg md:text-2xl text-amber-200/90">{d.tagline}</p>
+                <p className="mt-3 text-sm md:text-base text-white/75 font-light leading-relaxed max-w-xl line-clamp-2">
+                  {d.overview}
+                </p>
 
-            <p className="mt-5 md:mt-8 text-sm md:text-base text-foreground/80 font-light leading-relaxed max-w-2xl">{d.overview}</p>
-          </div>
-
-          {/* Sticky booking */}
-          <aside className="lg:col-span-1">
-            <div className="lg:sticky lg:top-28">
-              <div className="bg-card border border-gold/30 rounded-2xl p-6 shadow-luxe">
-                <p className="text-xs uppercase tracking-luxe text-foreground/60">Starting from</p>
-                <div className="mt-1 flex items-baseline gap-2">
-                  <span className="font-serif text-4xl text-emerald-600 dark:text-emerald-400">{formatINR(startingPrice)}/-</span>
-                  <span className="text-xs text-foreground/60">/ person</span>
+                <div className="mt-6 md:mt-8 flex flex-wrap gap-x-8 gap-y-4">
+                  {[
+                    { icon: CalendarDays, label: "Duration", value: d.duration },
+                    { icon: Globe2, label: "Region", value: d.region },
+                    { icon: MapPin, label: "Country", value: d.country },
+                    { icon: Sparkles, label: "Highlight", value: d.highlights?.[0] ?? "Curated stays" },
+                  ].map((f) => (
+                    <div key={f.label} className="flex items-center gap-2.5 min-w-0">
+                      <span className="shrink-0 w-8 h-8 rounded-full border border-amber-200/40 flex items-center justify-center">
+                        <f.icon className="w-3.5 h-3.5 text-amber-200" />
+                      </span>
+                      <span className="min-w-0">
+                        <span className="block text-[9px] uppercase tracking-luxe text-amber-200/80">{f.label}</span>
+                        <span className="block text-xs md:text-sm text-white/90 truncate max-w-[150px]">{f.value}</span>
+                      </span>
+                    </div>
+                  ))}
                 </div>
-                <p className="mt-1 text-xs text-foreground/60">twin sharing</p>
-
-                <Link
-                  to="/contact"
-                  className="mt-5 w-full inline-flex items-center justify-center px-6 py-3 rounded-full border border-border text-sm uppercase tracking-luxe text-foreground hover:border-gold/40 transition"
-                >
-                  Customise enquiry
-                </Link>
-
-                <ul className="mt-6 space-y-2 text-xs text-foreground/70">
-                  <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-gold" /> Free cancellation up to 30 days</li>
-                  <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-gold" /> 24×7 concierge support</li>
-                  <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-gold" /> Best price guarantee</li>
-                </ul>
               </div>
+
+              {/* Enquiry / price card */}
+              <aside className="lg:col-span-2 w-full">
+                <div className="rounded-2xl border border-amber-200/25 bg-background/92 dark:bg-ink/85 backdrop-blur-md p-5 md:p-6 shadow-luxe">
+                  <p className="text-[10px] uppercase tracking-luxe text-foreground/60">Starting from</p>
+                  <div className="mt-1 flex items-baseline gap-2 flex-wrap">
+                    <span className="font-serif text-3xl md:text-4xl text-foreground">{formatINR(startingPrice)}</span>
+                    <span className="text-[11px] text-foreground/60">/ person · twin sharing</span>
+                  </div>
+
+                  <Link
+                    to="/contact"
+                    className="mt-5 w-full inline-flex items-center justify-center px-6 py-3 rounded-full bg-foreground text-background text-xs uppercase tracking-luxe hover:opacity-90 transition"
+                  >
+                    Customise enquiry
+                  </Link>
+
+                  <ul className="mt-5 space-y-2 text-xs text-foreground/70">
+                    {["Free cancellation up to 30 days", "24×7 concierge support", "Best price guarantee", "Flexible payment options"].map((t) => (
+                      <li key={t} className="flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-gold shrink-0" /> {t}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </aside>
             </div>
-          </aside>
+          </div>
         </div>
       </section>
+
+      {/* Gallery */}
+      {photos.length > 0 && (
+        <section className="container py-12 md:py-20">
+          <div className="flex items-end justify-between gap-4 mb-5 md:mb-7">
+            <h2 className="text-xs md:text-sm uppercase tracking-luxe text-foreground/80">
+              Explore {d.name}
+              <span className="inline-block align-middle ml-3 h-px w-8 bg-gold" />
+            </h2>
+            <button
+              onClick={() => setLightbox(0)}
+              className="shrink-0 inline-flex items-center gap-1.5 text-[11px] uppercase tracking-luxe text-foreground/70 hover:text-gold transition"
+            >
+              View all photos <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
+          <div
+            className="-mx-4 px-4 md:mx-0 md:px-0 flex md:grid md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 overflow-x-auto md:overflow-visible snap-x snap-mandatory pb-2 scrollbar-hide"
+            style={{ scrollbarWidth: "none" }}
+          >
+            {photos.slice(0, 8).map((p, i) => {
+              const isLast = i === 7 && photos.length > 8;
+              return (
+                <button
+                  key={`${p}-${i}`}
+                  onClick={() => setLightbox(i)}
+                  className="group relative shrink-0 w-[70%] sm:w-[45%] md:w-auto snap-start rounded-xl overflow-hidden bg-muted aspect-[4/3]"
+                >
+                  <img
+                    src={p}
+                    alt={`${d.name} ${i + 1}`}
+                    loading={i < 4 ? "eager" : "lazy"}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  {isLast && (
+                    <span className="absolute inset-0 bg-ink/70 flex flex-col items-center justify-center gap-1.5 text-white">
+                      <Camera className="w-4 h-4" />
+                      <span className="text-[10px] uppercase tracking-luxe">+{photos.length - 8} more</span>
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       <ItineraryViewer destinationSlug={d.slug} destinationName={d.name} fallbackImage={heroPhoto} />
 
