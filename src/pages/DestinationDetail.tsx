@@ -67,6 +67,31 @@ const DestinationDetail = () => {
   const waMessage = encodeURIComponent(`Hi, I'm interested in the ${d.name} tour. Please share pricing.`);
   const waUrl = `https://wa.me/9821235678?text=${waMessage}`;
 
+  const priceCard = (
+    <div className="rounded-2xl border border-gold/25 bg-card p-5 md:p-6 shadow-luxe">
+      <p className="text-[10px] uppercase tracking-luxe text-foreground/60">Starting from</p>
+      <div className="mt-1 flex items-baseline gap-2 flex-wrap">
+        <span className="font-serif text-3xl md:text-4xl text-foreground">{formatINR(startingPrice)}</span>
+        <span className="text-[11px] text-foreground/60">/ person · twin sharing</span>
+      </div>
+
+      <Link
+        to="/contact"
+        className="mt-5 w-full inline-flex items-center justify-center px-6 py-3 rounded-full bg-foreground text-background text-xs uppercase tracking-luxe hover:opacity-90 transition"
+      >
+        Customise enquiry
+      </Link>
+
+      <ul className="mt-5 space-y-2 text-xs text-foreground/70">
+        {["Free cancellation up to 30 days", "24×7 concierge support", "Best price guarantee", "Flexible payment options"].map((t) => (
+          <li key={t} className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-gold shrink-0" /> {t}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+
   return (
     <SiteLayout>
       <TravelAgencyLd id="ld-agency-destdetail" pagePath={`/destinations/${slug}`} />
