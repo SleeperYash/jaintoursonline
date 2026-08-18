@@ -119,10 +119,10 @@ const DestinationDetail = () => {
         }}
       />
       {/* Cinematic hero */}
-      <section className="container pt-24 md:pt-32">
+      <section className="container pt-20 md:pt-32 overflow-x-clip">
         <Breadcrumbs
           ldId="ld-breadcrumb-destdetail"
-          className="mb-3"
+          className="mb-2 md:mb-3"
           items={[
             { label: "Destinations", href: "/destinations" },
             { label: d.region, href: `/destinations?filter=${d.region.toLowerCase()}` },
@@ -131,13 +131,13 @@ const DestinationDetail = () => {
         />
         <Link
           to="/destinations"
-          className="inline-flex items-center gap-2 text-[10px] md:text-xs uppercase tracking-luxe text-foreground/60 hover:text-gold transition-colors mb-4 md:mb-6"
+          className="inline-flex items-center gap-2 text-[10px] md:text-xs uppercase tracking-luxe text-foreground/60 hover:text-gold transition-colors mb-3 md:mb-6"
         >
           <ChevronLeft className="w-4 h-4" /> All destinations
         </Link>
 
-        <div className="relative rounded-[22px] overflow-hidden bg-card border border-border/50 shadow-luxe">
-          <div className="relative min-h-[420px] md:min-h-[520px]">
+        <div className="relative rounded-[18px] md:rounded-[22px] overflow-hidden bg-card border border-border/50 shadow-luxe">
+          <div className="relative min-h-[330px] md:min-h-[520px]">
             {heroPhoto ? (
               <img
                 src={heroPhoto}
@@ -153,33 +153,37 @@ const DestinationDetail = () => {
               aria-hidden
             />
 
-            <div className="relative grid lg:grid-cols-5 gap-8 p-6 md:p-10 lg:p-12 min-h-[420px] md:min-h-[520px] items-end lg:items-center">
+            <div className="relative grid lg:grid-cols-5 gap-8 p-5 md:p-10 lg:p-12 min-h-[330px] md:min-h-[520px] items-end lg:items-center">
               <div className="lg:col-span-3">
                 <p className="text-[10px] md:text-xs tracking-luxe uppercase text-amber-200/90">
                   {d.region} · {d.country}
                 </p>
-                <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-white leading-[1.05] mt-2">
+                <h1 className="font-serif text-[2.1rem] sm:text-5xl md:text-6xl lg:text-7xl text-white leading-[1.05] mt-1.5 md:mt-2 break-words">
                   {d.name}
                 </h1>
-                <p className="mt-2 font-serif italic text-lg md:text-2xl text-amber-200/90">{d.tagline}</p>
-                <p className="mt-3 text-sm md:text-base text-white/75 font-light leading-relaxed max-w-xl line-clamp-2">
+                <p className="mt-1.5 md:mt-2 font-serif italic text-base md:text-2xl text-amber-200/90">{d.tagline}</p>
+                <p className="mt-2 md:mt-3 text-[13px] md:text-base text-white/75 font-light leading-relaxed max-w-xl line-clamp-2">
                   {d.overview}
                 </p>
 
-                <div className="mt-6 md:mt-8 flex flex-wrap gap-x-8 gap-y-4">
+                {/* Facts: compact 2-up on mobile, full row on desktop */}
+                <div className="mt-4 md:mt-8 grid grid-cols-2 gap-x-4 gap-y-3 md:flex md:flex-wrap md:gap-x-8 md:gap-y-4">
                   {[
                     { icon: CalendarDays, label: "Duration", value: d.duration },
                     { icon: Globe2, label: "Region", value: d.region },
                     { icon: MapPin, label: "Country", value: d.country },
                     { icon: Sparkles, label: "Highlight", value: d.highlights?.[0] ?? "Curated stays" },
-                  ].map((f) => (
-                    <div key={f.label} className="flex items-center gap-2.5 min-w-0">
-                      <span className="shrink-0 w-8 h-8 rounded-full border border-amber-200/40 flex items-center justify-center">
-                        <f.icon className="w-3.5 h-3.5 text-amber-200" />
+                  ].map((f, fi) => (
+                    <div
+                      key={f.label}
+                      className={`flex items-center gap-2 md:gap-2.5 min-w-0 ${fi > 1 ? "hidden md:flex" : ""}`}
+                    >
+                      <span className="shrink-0 w-7 h-7 md:w-8 md:h-8 rounded-full border border-amber-200/40 flex items-center justify-center">
+                        <f.icon className="w-3 h-3 md:w-3.5 md:h-3.5 text-amber-200" />
                       </span>
                       <span className="min-w-0">
                         <span className="block text-[9px] uppercase tracking-luxe text-amber-200/80">{f.label}</span>
-                        <span className="block text-xs md:text-sm text-white/90 truncate max-w-[150px]">{f.value}</span>
+                        <span className="block text-[11px] md:text-sm text-white/90 truncate max-w-[110px] md:max-w-[150px]">{f.value}</span>
                       </span>
                     </div>
                   ))}
@@ -193,20 +197,20 @@ const DestinationDetail = () => {
         </div>
 
         {/* Enquiry / price card — stacked below hero on mobile & tablet */}
-        <div className="lg:hidden mt-5">{priceCard}</div>
+        <div className="lg:hidden mt-4">{priceCard}</div>
       </section>
 
       {/* Gallery */}
       {photos.length > 0 && (
-        <section className="container py-12 md:py-20">
-          <div className="flex items-end justify-between gap-4 mb-5 md:mb-7">
+        <section className="container py-9 md:py-20 overflow-x-clip">
+          <div className="flex items-end justify-between gap-3 mb-4 md:mb-7">
             <h2 className="text-xs md:text-sm uppercase tracking-luxe text-foreground/80">
               Explore {d.name}
-              <span className="inline-block align-middle ml-3 h-px w-8 bg-gold" />
+              <span className="hidden sm:inline-block align-middle ml-3 h-px w-8 bg-gold" />
             </h2>
             <button
               onClick={() => setLightbox(0)}
-              className="shrink-0 inline-flex items-center gap-1.5 text-[11px] uppercase tracking-luxe text-foreground/70 hover:text-gold transition"
+              className="shrink-0 inline-flex items-center gap-1.5 text-[10px] md:text-[11px] uppercase tracking-luxe text-foreground/70 hover:text-gold transition"
             >
               View all photos <ChevronRight className="w-3.5 h-3.5" />
             </button>
@@ -222,7 +226,7 @@ const DestinationDetail = () => {
                 <button
                   key={`${p}-${i}`}
                   onClick={() => setLightbox(i)}
-                  className="group relative shrink-0 w-[70%] sm:w-[45%] md:w-auto snap-start rounded-xl overflow-hidden bg-muted aspect-[4/3]"
+                  className="group relative shrink-0 w-[68%] max-w-[280px] sm:w-[45%] md:w-auto md:max-w-none snap-center md:snap-start rounded-xl overflow-hidden bg-muted aspect-[4/3]"
                 >
                   <img
                     src={p}
@@ -252,18 +256,18 @@ const DestinationDetail = () => {
         ).slice(0, 3);
         if (relatedBlogs.length === 0) return null;
         return (
-          <section aria-labelledby="dest-blogs" className="container py-14 md:py-20 border-t border-border/40">
-            <div className="flex items-end justify-between mb-7 gap-4">
+          <section aria-labelledby="dest-blogs" className="container py-10 md:py-20 border-t border-border/40 overflow-x-clip">
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-5 md:mb-7 gap-2 md:gap-3">
               <div>
                 <p className="text-[10px] md:text-xs uppercase tracking-luxe text-foreground/80">
                   Before you go
-                  <span className="inline-block align-middle ml-3 h-px w-8 bg-gold" />
+                  <span className="hidden sm:inline-block align-middle ml-3 h-px w-8 bg-gold" />
                 </p>
-                <h2 id="dest-blogs" className="font-serif text-2xl md:text-4xl text-foreground mt-2">
+                <h2 id="dest-blogs" className="font-serif text-xl md:text-4xl text-foreground mt-1.5 md:mt-2">
                   {d.name} travel guides
                 </h2>
               </div>
-              <Link to="/blog" className="shrink-0 inline-flex items-center gap-1.5 text-[11px] uppercase tracking-luxe text-foreground/70 hover:text-gold transition">
+              <Link to="/blog" className="self-start shrink-0 inline-flex items-center gap-1.5 text-[10px] md:text-[11px] uppercase tracking-luxe text-foreground/70 hover:text-gold transition">
                 View all blogs <ChevronRight className="w-3.5 h-3.5" />
               </Link>
             </div>
@@ -275,7 +279,7 @@ const DestinationDetail = () => {
                 <Link
                   key={p.slug}
                   to={`/blog/${p.slug}`}
-                  className="group snap-start shrink-0 w-[260px] md:w-auto bg-card border border-border/60 rounded-2xl overflow-hidden hover:border-gold/50 hover:shadow-luxe transition"
+                  className="group snap-center md:snap-start shrink-0 w-[calc(100vw-4.5rem)] max-w-[300px] md:w-auto md:max-w-none bg-card border border-border/60 rounded-2xl overflow-hidden hover:border-gold/50 hover:shadow-luxe transition"
                 >
                   <div className="aspect-[16/9] overflow-hidden">
                     <img src={p.cover} alt={p.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />

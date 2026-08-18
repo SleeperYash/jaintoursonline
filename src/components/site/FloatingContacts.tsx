@@ -14,22 +14,25 @@ const WhatsAppIcon = ({ className }: { className?: string }) => (
 
 const FloatingContacts = () => {
   return (
-    <div className="fixed bottom-6 right-6 z-40 flex flex-col gap-3">
+    <div
+      className="fixed right-4 md:right-6 z-40 flex flex-col gap-2.5 md:gap-3"
+      style={{ bottom: "calc(1rem + env(safe-area-inset-bottom, 0px))" }}
+    >
       <a
         href={waLink()}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="WhatsApp Jain Tours"
-        className="w-14 h-14 rounded-full bg-[hsl(140_60%_38%)] shadow-luxe flex items-center justify-center text-white hover:scale-110 transition-transform"
+        className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-[hsl(140_60%_38%)] shadow-luxe flex items-center justify-center text-white hover:scale-110 transition-transform"
       >
-        <WhatsAppIcon className="w-7 h-7" />
+        <WhatsAppIcon className="w-6 h-6 md:w-7 md:h-7" />
       </a>
       <a
         href={`tel:${BRAND.phoneDigits}`}
         aria-label="Call Jain Tours"
-        className="w-14 h-14 rounded-full bg-gold shadow-gold flex items-center justify-center text-primary-foreground hover:scale-110 transition-transform"
+        className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-gold shadow-gold flex items-center justify-center text-primary-foreground hover:scale-110 transition-transform"
       >
-        <Phone className="w-6 h-6" />
+        <Phone className="w-5 h-5 md:w-6 md:h-6" />
       </a>
     </div>
   );
