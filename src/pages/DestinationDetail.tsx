@@ -257,7 +257,7 @@ const DestinationDetail = () => {
         if (relatedBlogs.length === 0) return null;
         return (
           <section aria-labelledby="dest-blogs" className="container py-10 md:py-20 border-t border-border/40 overflow-x-clip">
-            <div className="flex items-end justify-between mb-5 md:mb-7 gap-3">
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-5 md:mb-7 gap-2 md:gap-3">
               <div>
                 <p className="text-[10px] md:text-xs uppercase tracking-luxe text-foreground/80">
                   Before you go
@@ -267,7 +267,7 @@ const DestinationDetail = () => {
                   {d.name} travel guides
                 </h2>
               </div>
-              <Link to="/blog" className="shrink-0 inline-flex items-center gap-1.5 text-[10px] md:text-[11px] uppercase tracking-luxe text-foreground/70 hover:text-gold transition">
+              <Link to="/blog" className="self-start shrink-0 inline-flex items-center gap-1.5 text-[10px] md:text-[11px] uppercase tracking-luxe text-foreground/70 hover:text-gold transition">
                 View all blogs <ChevronRight className="w-3.5 h-3.5" />
               </Link>
             </div>
