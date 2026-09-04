@@ -30,6 +30,7 @@ const Index = () => {
       <HeroLuxe />
       <MotionReveal><HeroTrustBadges /></MotionReveal>
       <MotionReveal><TopTrending /></MotionReveal>
+      <MotionReveal><SpecialOffersBanner /></MotionReveal>
       <MotionReveal><SignatureTravelCollections /></MotionReveal>
       <MotionReveal><HandpickedPackages /></MotionReveal>
       <MotionReveal><HowItWorks /></MotionReveal>
