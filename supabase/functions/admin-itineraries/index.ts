@@ -702,6 +702,42 @@ Deno.serve(async (req) => {
       return json({ ok: true });
     }
 
+    // ---------- SPECIAL OFFER BANNERS ----------
+    if (action === "offer_list") {
+      const { data, error } = await supabase.storage
+        .from("itineraries")
+        .list("special-offers", { limit: 100, sortBy: { column: "name", order: "asc" } });
+      if (error) return json({ error: error.message }, 500);
+      return json({ ok: true, offers: data ?? [] });
+    }
+
+    if (action === "offer_upload") {
+      const { file_base64, file_name, content_type } = body ?? {};
+      if (!file_base64 || !file_name || !content_type) return json({ error: "Missing fields" }, 400);
+      if (!ALLOWED_IMAGE_TYPES.has(String(content_type).toLowerCase())) {
+        return json({ error: "Only JPG, PNG, WEBP or AVIF images allowed" }, 400);
+      }
+      const bin = atob(file_base64);
+      const bytes = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      if (bytes.byteLength > 5 * 1024 * 1024) return json({ error: "Max 5MB per image" }, 400);
+      const safe = String(file_name).replace(/[^a-zA-Z0-9._-]/g, "_");
+      const path = `special-offers/${Date.now()}-${safe}`;
+      const { error: upErr } = await supabase.storage
+        .from("itineraries")
+        .upload(path, bytes, { contentType: String(content_type), upsert: false });
+      if (upErr) return json({ error: upErr.message }, 500);
+      return json({ ok: true, path });
+    }
+
+    if (action === "offer_delete") {
+      const { path } = body ?? {};
+      if (!path || !String(path).startsWith("special-offers/")) return json({ error: "Invalid path" }, 400);
+      const { error: delErr } = await supabase.storage.from("itineraries").remove([String(path)]);
+      if (delErr) return json({ error: delErr.message }, 500);
+      return json({ ok: true });
+    }
+
     // ---------- STAMP PHOTOS ----------
     if (action === "stamp_upload") {
       const { stamp_key, file_base64, file_name, content_type } = body ?? {};
