@@ -16,6 +16,7 @@ import { Loader2, Plus, Pencil, Trash2, ImagePlus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { fileToBase64, adminPublicUrl } from "@/hooks/useAdminAuth";
 import { useDeals, type Deal } from "@/hooks/useDeals";
+import SpecialOffersAdminSection from "@/components/site/SpecialOffersAdminSection";
 
 type Props = {
   callAdmin: (action: string, payload?: Record<string, unknown>) => Promise<any>;
@@ -225,6 +226,9 @@ const DealsAdminPanel = ({ callAdmin }: Props) => {
           </div>
         )}
       </div>
+
+      {/* Special offers banner uploads */}
+      <SpecialOffersAdminSection callAdmin={callAdmin} />
 
       {/* Add/Edit dialog */}
       <Dialog open={open} onOpenChange={setOpen}>
