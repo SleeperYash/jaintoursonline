@@ -38,7 +38,14 @@ const SpecialOffersAdminSection = ({ callAdmin }: Props) => {
       toast({ title: "Offer banner uploaded" });
       await refetch();
     } catch (err) {
-      toast({ title: "Upload failed", description: (err as Error).message, variant: "destructive" });
+      const msg = (err as Error).message;
+      toast({
+        title: "Upload failed",
+        description: /unknown action/i.test(msg)
+          ? "Offer banner uploads go live once this draft is accepted."
+          : msg,
+        variant: "destructive",
+      });
     } finally {
       setUploading(false);
     }
