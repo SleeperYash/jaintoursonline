@@ -3,6 +3,7 @@ import SiteLayout from "@/components/site/SiteLayout";
 import HeroLuxe from "@/components/site/home/HeroLuxe";
 import HeroTrustBadges from "@/components/site/home/HeroTrustBadges";
 import TopTrending from "@/components/site/home/TopTrending";
+import SpecialOffersBanner from "@/components/site/home/SpecialOffersBanner";
 import SignatureTravelCollections from "@/components/site/home/SignatureTravelCollections";
 import HandpickedPackages from "@/components/site/home/HandpickedPackages";
 import HowItWorks from "@/components/site/home/HowItWorks";
