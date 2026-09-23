@@ -62,7 +62,7 @@ const SpecialOffersBanner = () => {
     <section className="py-0 bg-background overflow-hidden">
       <div className="container px-3 sm:px-6">
         <div
-          className="relative w-full touch-pan-y select-none overflow-hidden rounded-xl md:grid md:overflow-visible md:rounded-[20px] border border-border/40 shadow-luxe aspect-[16/8] sm:aspect-[21/7] md:aspect-auto"
+          className="relative w-full touch-pan-y select-none overflow-hidden rounded-xl md:grid md:overflow-visible md:rounded-[20px] md:w-fit md:max-w-full md:mx-auto md:justify-items-center border border-border/40 shadow-luxe aspect-[16/8] sm:aspect-[21/7] md:aspect-auto"
           onPointerDown={handlePointerDown}
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerCancel}
@@ -75,7 +75,7 @@ const SpecialOffersBanner = () => {
               src={slide.src}
               alt={slide.alt}
               loading="lazy"
-              className="pointer-events-none absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-1000 ease-in-out md:relative md:inset-auto md:col-start-1 md:row-start-1 md:h-auto md:object-contain"
+              className="pointer-events-none absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-1000 ease-in-out md:relative md:inset-auto md:col-start-1 md:row-start-1 md:w-auto md:h-auto md:max-w-full md:max-h-[400px] lg:max-h-[430px] md:object-contain"
               style={{ opacity: i === idx ? 1 : 0 }}
               aria-hidden={i !== idx}
             />
