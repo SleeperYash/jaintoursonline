@@ -36,7 +36,7 @@ const SignatureTravelCollections = () => {
   };
 
   return (
-    <section className="py-20 md:py-28 bg-background">
+    <section className="py-20 md:py-28 bg-background pt-[75px] md:pt-[75px]">
       <div className="container">
         <h2 className="text-center font-serif text-2xl md:text-4xl text-foreground tracking-wide uppercase mb-10 md:mb-14">
           Signature Travel Collections:{" "}

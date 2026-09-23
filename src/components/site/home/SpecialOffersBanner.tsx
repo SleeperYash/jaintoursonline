@@ -59,7 +59,7 @@ const SpecialOffersBanner = () => {
   if (slides.length === 0) return null;
 
   return (
-    <section className="py-3 sm:py-4 md:py-6 bg-background overflow-hidden">
+    <section className="py-0 bg-background overflow-hidden">
       <div className="container px-3 sm:px-6">
         <div
           className="relative w-full touch-pan-y select-none overflow-hidden rounded-xl md:rounded-[20px] border border-border/40 shadow-luxe aspect-[16/8] sm:aspect-[21/7] md:aspect-[64/15]"
