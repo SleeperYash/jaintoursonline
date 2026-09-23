@@ -28,7 +28,7 @@ const TopTrending = () => {
     .filter(Boolean) as typeof destinations;
 
   return (
-    <section className="py-20 md:py-28 bg-background pt-[112px]">
+    <section className="bg-background pt-[112px] pb-[75px]">
       <div className="container">
         <div className="flex items-end justify-between gap-6 mb-10 md:mb-14">
           <div>
