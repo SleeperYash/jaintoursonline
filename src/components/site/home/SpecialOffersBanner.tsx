@@ -12,12 +12,18 @@ const SpecialOffersBanner = () => {
 
   // Dedicated offer banners take priority; fall back to active deal images.
   const slides = useMemo(() => {
-    if (offers.length > 0) return offers.map((o) => ({ id: o.path, src: o.url, alt: "Special offer" }));
+    if (offers.length > 0) return offers.map((offer) => ({
+      id: offer.id,
+      desktopSrc: offer.desktop?.url ?? offer.legacy?.url ?? offer.mobile?.url ?? "",
+      mobileSrc: offer.mobile?.url ?? offer.legacy?.url ?? offer.desktop?.url ?? "",
+      alt: "Special offer",
+    }));
     return deals
       .filter((d) => !!d.image_path)
       .map((d) => ({
         id: d.id,
-        src: adminPublicUrl(d.image_path as string),
+        desktopSrc: adminPublicUrl(d.image_path as string),
+        mobileSrc: adminPublicUrl(d.image_path as string),
         alt: `${d.destination_name} special offer`,
       }));
   }, [offers, deals]);
@@ -62,7 +68,7 @@ const SpecialOffersBanner = () => {
     <section className="py-0 bg-background overflow-hidden">
       <div className="container px-3 sm:px-6">
         <div
-          className="relative w-full touch-pan-y select-none overflow-hidden rounded-xl md:grid md:overflow-visible md:rounded-[20px] md:w-fit md:max-w-full md:mx-auto md:justify-items-center border border-border/40 shadow-luxe aspect-[16/8] sm:aspect-[21/7] md:aspect-auto"
+          className="relative w-full touch-pan-y select-none overflow-hidden rounded-xl md:grid md:rounded-[20px] md:w-fit md:max-w-full md:mx-auto md:justify-items-center border border-border/40 shadow-luxe aspect-[16/8] sm:aspect-[21/7] md:aspect-auto"
           onPointerDown={handlePointerDown}
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerCancel}
@@ -70,15 +76,20 @@ const SpecialOffersBanner = () => {
           aria-label="Special offers"
         >
           {slides.map((slide, i) => (
-            <img
+            <picture
               key={slide.id}
-              src={slide.src}
-              alt={slide.alt}
-              loading="lazy"
-              className="pointer-events-none absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-1000 ease-in-out md:relative md:inset-auto md:col-start-1 md:row-start-1 md:w-auto md:h-auto md:max-w-full md:max-h-[400px] lg:max-h-[430px] md:object-contain"
-              style={{ opacity: i === idx ? 1 : 0 }}
-              aria-hidden={i !== idx}
-            />
+              className="contents"
+            >
+              <source media="(min-width: 768px)" srcSet={slide.desktopSrc} />
+              <img
+                src={slide.mobileSrc}
+                alt={slide.alt}
+                loading="lazy"
+                className="pointer-events-none absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-1000 ease-in-out md:relative md:inset-auto md:col-start-1 md:row-start-1 md:w-auto md:h-auto md:max-w-full md:max-h-[320px] md:object-contain"
+                style={{ opacity: i === idx ? 1 : 0 }}
+                aria-hidden={i !== idx}
+              />
+            </picture>
           ))}
         </div>
       </div>

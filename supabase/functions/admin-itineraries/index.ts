@@ -712,8 +712,11 @@ Deno.serve(async (req) => {
     }
 
     if (action === "offer_upload") {
-      const { file_base64, file_name, content_type } = body ?? {};
+      const { file_base64, file_name, content_type, variant, offer_id } = body ?? {};
       if (!file_base64 || !file_name || !content_type) return json({ error: "Missing fields" }, 400);
+      if (variant !== undefined && variant !== "desktop" && variant !== "mobile") {
+        return json({ error: "Invalid banner variant" }, 400);
+      }
       if (!ALLOWED_IMAGE_TYPES.has(String(content_type).toLowerCase())) {
         return json({ error: "Only JPG, PNG, WEBP or AVIF images allowed" }, 400);
       }
@@ -722,7 +725,21 @@ Deno.serve(async (req) => {
       for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
       if (bytes.byteLength > 5 * 1024 * 1024) return json({ error: "Max 5MB per image" }, 400);
       const safe = String(file_name).replace(/[^a-zA-Z0-9._-]/g, "_");
-      const path = `special-offers/${Date.now()}-${safe}`;
+      const safeOfferId = String(offer_id || crypto.randomUUID()).replace(/[^a-zA-Z0-9-]/g, "");
+      const path = variant
+        ? `special-offers/${variant}/${safeOfferId}--${safe}`
+        : `special-offers/${Date.now()}-${safe}`;
+      if (variant && offer_id) {
+        const { data: existingVariants } = await supabase.storage
+          .from("itineraries")
+          .list(`special-offers/${variant}`, { search: `${safeOfferId}--` });
+        const pathsToReplace = (existingVariants ?? [])
+          .filter((file) => file.id && file.name.startsWith(`${safeOfferId}--`))
+          .map((file) => `special-offers/${variant}/${file.name}`);
+        if (pathsToReplace.length > 0) {
+          await supabase.storage.from("itineraries").remove(pathsToReplace);
+        }
+      }
       const { error: upErr } = await supabase.storage
         .from("itineraries")
         .upload(path, bytes, { contentType: String(content_type), upsert: false });
