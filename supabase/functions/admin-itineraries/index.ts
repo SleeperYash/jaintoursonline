@@ -729,6 +729,17 @@ Deno.serve(async (req) => {
       const path = variant
         ? `special-offers/${variant}/${safeOfferId}--${safe}`
         : `special-offers/${Date.now()}-${safe}`;
+      if (variant && offer_id) {
+        const { data: existingVariants } = await supabase.storage
+          .from("itineraries")
+          .list(`special-offers/${variant}`, { search: `${safeOfferId}--` });
+        const pathsToReplace = (existingVariants ?? [])
+          .filter((file) => file.id && file.name.startsWith(`${safeOfferId}--`))
+          .map((file) => `special-offers/${variant}/${file.name}`);
+        if (pathsToReplace.length > 0) {
+          await supabase.storage.from("itineraries").remove(pathsToReplace);
+        }
+      }
       const { error: upErr } = await supabase.storage
         .from("itineraries")
         .upload(path, bytes, { contentType: String(content_type), upsert: false });
