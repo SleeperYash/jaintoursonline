@@ -16,6 +16,7 @@ type BannerVariant = "desktop" | "mobile";
 const SpecialOffersAdminSection = ({ callAdmin }: Props) => {
   const { toast } = useToast();
   const { offers, refetch } = useSpecialOffers();
+  const [newOfferId, setNewOfferId] = useState(() => crypto.randomUUID());
   const [uploading, setUploading] = useState<string | null>(null);
   const [dragOver, setDragOver] = useState<string | null>(null);
   const desktopInputRef = useRef<HTMLInputElement>(null);
@@ -96,6 +97,9 @@ const SpecialOffersAdminSection = ({ callAdmin }: Props) => {
     </div>
   ) : <UploadBox variant={variant} offerId={offer.id} compact />;
 
+  const pendingOffer = offers.find((offer) => offer.id === newOfferId);
+  const pendingComplete = Boolean(pendingOffer?.desktop && pendingOffer.mobile);
+
   const remove = async (path: string) => {
     if (!confirm("Delete this offer banner?")) return;
     try {
@@ -116,9 +120,14 @@ const SpecialOffersAdminSection = ({ callAdmin }: Props) => {
       </p>
 
       <div className="grid gap-3 sm:grid-cols-2">
-        <UploadBox variant="desktop" />
-        <UploadBox variant="mobile" />
+        <UploadBox variant="desktop" offerId={newOfferId} />
+        <UploadBox variant="mobile" offerId={newOfferId} />
       </div>
+      {pendingComplete && (
+        <Button type="button" variant="outline" size="sm" className="mt-3" onClick={() => setNewOfferId(crypto.randomUUID())}>
+          <ImagePlus /> Add another offer
+        </Button>
+      )}
 
       {offers.length > 0 && (
         <div className="mt-3 space-y-2">

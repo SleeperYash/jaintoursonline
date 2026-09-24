@@ -85,7 +85,7 @@ const SpecialOffersBanner = () => {
                 src={slide.mobileSrc}
                 alt={slide.alt}
                 loading="lazy"
-                className="pointer-events-none absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-1000 ease-in-out md:relative md:inset-auto md:col-start-1 md:row-start-1 md:w-auto md:h-auto md:max-w-full md:max-h-[280px] md:object-contain"
+                className="pointer-events-none absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-1000 ease-in-out md:relative md:inset-auto md:col-start-1 md:row-start-1 md:w-auto md:h-auto md:max-w-full md:max-h-[320px] md:object-contain"
                 style={{ opacity: i === idx ? 1 : 0 }}
                 aria-hidden={i !== idx}
               />
