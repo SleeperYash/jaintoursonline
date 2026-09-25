@@ -32,7 +32,7 @@ const YouTubeIcon = () => (
 const Footer = () => {
   return (
     <footer id="contact" className="border-t border-border/60 bg-ink mt-32">
-      <div className="container py-20 grid gap-12 md:grid-cols-2 lg:grid-cols-4 pt-[60px]">
+      <div className="container py-20 grid gap-12 md:grid-cols-2 lg:grid-cols-5 pt-[60px]">
         <div>
           <Link to="/" className="block" aria-label={BRAND.name}>
             <img
@@ -96,6 +96,16 @@ const Footer = () => {
               <li className="text-slate-300">Visa & Travel Insurance</li>
             </ul>
           </div>
+        </div>
+
+        <div>
+          <h4 className="uppercase tracking-luxe mb-6 text-sm text-teal-400">Legal</h4>
+          <ul className="space-y-3 text-sm">
+            <li><Link to="/privacy" className="hover:text-foreground transition text-slate-300">Privacy Policy</Link></li>
+            <li><Link to="/terms" className="hover:text-foreground transition text-slate-300">Terms &amp; Conditions</Link></li>
+            <li><Link to="/refund-policy" className="hover:text-foreground transition text-slate-300">Cancellation &amp; Refund Policy</Link></li>
+            <li><Link to="/cookies" className="hover:text-foreground transition text-slate-300">Cookie Policy</Link></li>
+          </ul>
         </div>
 
         <div>
