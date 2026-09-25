@@ -5,6 +5,7 @@ import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Send } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const inquirySchema = z.object({
   name: z.string().trim().min(2, "Please enter your name").max(100),
@@ -135,6 +136,11 @@ const InquiryForm = () => {
         />
         {errors.message && <p className={errCls}>{errors.message.message}</p>}
       </div>
+
+      <p className="text-xs text-muted-foreground leading-relaxed">
+        By submitting this form, you authorize Jain Tours &amp; Travels to contact you via Call/WhatsApp/Email regarding your inquiry.{" "}
+        <Link to="/privacy" className="underline underline-offset-2 hover:text-foreground">View our Privacy Policy.</Link>
+      </p>
 
       <button
         type="submit"

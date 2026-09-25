@@ -18,7 +18,12 @@ const Contact = lazy(() => import("./pages/Contact.tsx"));
 const Blog = lazy(() => import("./pages/Blog.tsx"));
 const BlogPost = lazy(() => import("./pages/BlogPost.tsx"));
 const NotFound = lazy(() => import("./pages/NotFound.tsx"));
+const Privacy = lazy(() => import("./pages/legal.tsx").then((m) => ({ default: m.Privacy })));
+const Terms = lazy(() => import("./pages/legal.tsx").then((m) => ({ default: m.Terms })));
+const RefundPolicy = lazy(() => import("./pages/legal.tsx").then((m) => ({ default: m.RefundPolicy })));
+const CookiePolicy = lazy(() => import("./pages/legal.tsx").then((m) => ({ default: m.CookiePolicy })));
 import PageTransition from "./components/site/PageTransition";
+import CookieBanner from "./components/site/CookieBanner";
 import { trackPageView } from "@/lib/analytics";
 
 const queryClient = new QueryClient();
@@ -54,6 +59,10 @@ const AnimatedRoutes = () => {
         <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
         <Route path="/blog" element={<PageTransition><Blog /></PageTransition>} />
         <Route path="/blog/:slug" element={<PageTransition><BlogPost /></PageTransition>} />
+        <Route path="/privacy" element={<PageTransition><Privacy /></PageTransition>} />
+        <Route path="/terms" element={<PageTransition><Terms /></PageTransition>} />
+        <Route path="/refund-policy" element={<PageTransition><RefundPolicy /></PageTransition>} />
+        <Route path="/cookies" element={<PageTransition><CookiePolicy /></PageTransition>} />
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
       </Routes>
@@ -71,6 +80,7 @@ const App = () => (
         <ScrollToTop />
         <AnalyticsTracker />
         <AnimatedRoutes />
+        <CookieBanner />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
