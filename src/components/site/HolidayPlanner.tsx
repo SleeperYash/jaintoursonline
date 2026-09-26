@@ -74,9 +74,10 @@ async function saveEnquiry(a: Answers) {
     return false;
   }
   try {
-    await supabase.functions.invoke("enquiry-to-sheet", {
+    const sheet = await supabase.functions.invoke("enquiry-to-sheet", {
       body: { ...payload, message: `Category: ${a.category}; Party: ${a.party}; Hotel: ${a.hotel}; Style: ${a.style}; total budget: ${a.budget}` },
     });
+    if (sheet.error || sheet.data?.ok === false) console.error("Planner sheet sync failed", sheet.error ?? sheet.data?.error);
   } catch (error) {
     console.error("Planner sheet sync failed", error);
   }
@@ -130,9 +131,10 @@ const HolidayPlanner = () => {
     const value = draft.trim();
     if (!value) { setError("Please enter a value to continue."); return; }
     if (step === "people" && (!Number.isInteger(Number(value)) || Number(value) < 1 || Number(value) > 100)) { setError("Enter a number between 1 and 100."); return; }
+    if (step === "budget" && (!Number.isFinite(Number(value)) || Number(value) <= 0)) { setError("Enter an amount greater than zero."); return; }
     if (step === "phone" && value.replace(/\D/g, "").length < 10) { setError("Enter a valid mobile number."); return; }
     if (step === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) { setError("Enter a valid email address."); return; }
-    advance(step as keyof Answers, value);
+    advance(step as keyof Answers, step === "budget" ? `₹${Number(value).toLocaleString("en-IN")}` : value);
   };
 
   const reset = () => { setStep("category"); setAnswers({}); setDraft(""); setCustom(false); setError(""); setSaved("idle"); };
