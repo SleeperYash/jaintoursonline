@@ -148,7 +148,7 @@ const HolidayPlanner = () => {
   const stepNumber = Math.min(steps.indexOf(step) + 1, steps.length - 1);
 
   return <>
-    <Button ref={triggerRef} type="button" size="icon" aria-label="Open holiday planner" title="Plan your trip" onClick={() => setOpen(true)} className="h-12 w-12 md:h-14 md:w-14 rounded-full bg-primary text-primary-foreground shadow-gold hover:bg-primary/90 focus-visible:ring-ring">
+    <Button ref={triggerRef} type="button" size="icon" aria-label="Open holiday planner" title="Plan your trip" onClick={() => setOpen(true)} className="fixed right-4 z-40 h-12 w-12 rounded-full bg-primary text-primary-foreground shadow-gold hover:bg-primary/90 focus-visible:ring-ring md:right-6 md:h-14 md:w-14" style={{ bottom: "calc(4.625rem + env(safe-area-inset-bottom, 0px))" }}>
       <MessageCircle className="!h-6 !w-6 md:!h-7 md:!w-7" />
     </Button>
     {open && <>

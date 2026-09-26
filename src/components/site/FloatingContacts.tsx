@@ -4,11 +4,12 @@ import HolidayPlanner from "./HolidayPlanner";
 
 const FloatingContacts = () => {
   return (
-    <div
-      className="fixed right-4 md:right-6 z-40 flex flex-col gap-2.5 md:gap-3"
-      style={{ bottom: "calc(1rem + env(safe-area-inset-bottom, 0px))" }}
-    >
+    <>
       <HolidayPlanner />
+      <div
+        className="fixed right-4 md:right-6 z-40"
+        style={{ bottom: "calc(1rem + env(safe-area-inset-bottom, 0px))" }}
+      >
       <a
         href={`tel:${BRAND.phoneDigits}`}
         aria-label="Call Jain Tours"
@@ -16,7 +17,8 @@ const FloatingContacts = () => {
       >
         <Phone className="w-5 h-5 md:w-6 md:h-6" />
       </a>
-    </div>
+      </div>
+    </>
   );
 };
 
