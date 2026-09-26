@@ -1,0 +1,2 @@
+- Keep the holiday planner as a client-side component mounted by FloatingContacts and reuse the existing enquiries and sheet sync path, because it is available across the whole site without a new backend.
+- Use semantic design tokens in the holiday planner, because the site's light and dark themes share one component.
