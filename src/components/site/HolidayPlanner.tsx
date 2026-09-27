@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { BRAND, waLink } from "@/lib/brand";
+import robotImage from "@/assets/travel-assistant-robot.png";
 
 const steps = ["category", "destination", "date", "party", "people", "hotel", "style", "budget", "name", "phone", "email", "complete"] as const;
 type Step = typeof steps[number];
@@ -75,7 +76,7 @@ async function saveEnquiry(a: Answers) {
   }
   try {
     const sheet = await supabase.functions.invoke("enquiry-to-sheet", {
-      body: { ...payload, message: `Category: ${a.category}; Party: ${a.party}; Hotel: ${a.hotel}; Style: ${a.style}; total budget: ${a.budget}` },
+      body: { ...payload, source: "chatbot", message: `Category: ${a.category}; Party: ${a.party}; Hotel: ${a.hotel}; Style: ${a.style}; total budget: ${a.budget}` },
     });
     if (sheet.error || sheet.data?.ok === false) console.error("Planner sheet sync failed", sheet.error ?? sheet.data?.error);
   } catch (error) {
@@ -92,9 +93,28 @@ const HolidayPlanner = () => {
   const [custom, setCustom] = useState(false);
   const [error, setError] = useState("");
   const [saved, setSaved] = useState<"idle" | "saving" | "saved" | "failed">("idle");
+  const [showInvitation, setShowInvitation] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (sessionStorage.getItem("jt-planner-invitation-seen")) return;
+    const timer = window.setTimeout(() => {
+      if (!sessionStorage.getItem("jt-planner-invitation-seen")) setShowInvitation(true);
+    }, 30000);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  const dismissInvitation = () => {
+    setShowInvitation(false);
+    sessionStorage.setItem("jt-planner-invitation-seen", "1");
+  };
+
+  const openPlanner = () => {
+    dismissInvitation();
+    setOpen(true);
+  };
 
   useEffect(() => {
     if (!open) return;
@@ -150,21 +170,25 @@ const HolidayPlanner = () => {
   const stepNumber = Math.min(steps.indexOf(step) + 1, steps.length - 1);
 
   return <>
-    <Button ref={triggerRef} type="button" size="icon" aria-label="Open holiday planner" title="Plan your trip" onClick={() => setOpen(true)} className="fixed right-4 z-40 h-12 w-12 rounded-full bg-primary text-primary-foreground shadow-gold hover:bg-primary/90 focus-visible:ring-ring md:right-6 md:h-14 md:w-14" style={{ bottom: "calc(4.625rem + env(safe-area-inset-bottom, 0px))" }}>
-      <MessageCircle className="!h-6 !w-6 md:!h-7 md:!w-7" />
+    {showInvitation && !open && <div className="fixed right-4 z-40 flex w-[min(17rem,calc(100vw-5rem))] items-start gap-2 rounded-lg border border-border bg-card p-3 text-card-foreground shadow-gold bottom-[calc(11rem+env(safe-area-inset-bottom,0px))] md:right-6 md:bottom-[calc(8.5rem+env(safe-area-inset-bottom,0px))]" role="status">
+      <Button type="button" variant="ghost" onClick={openPlanner} className="h-auto min-w-0 flex-1 whitespace-normal p-0 text-left text-sm font-medium leading-snug hover:bg-transparent hover:text-primary">Where would you like to go?</Button>
+      <Button type="button" size="icon" variant="ghost" aria-label="Dismiss travel invitation" onClick={dismissInvitation} className="-mr-1 -mt-1 h-7 w-7 shrink-0"><X className="h-4 w-4" /></Button>
+    </div>}
+    <Button ref={triggerRef} type="button" size="icon" aria-label="Open holiday planner" title="Plan your trip" onClick={openPlanner} className="fixed right-4 z-40 h-12 w-12 overflow-hidden rounded-full bg-primary text-primary-foreground shadow-gold hover:bg-primary/90 focus-visible:ring-ring md:right-6 md:h-14 md:w-14" style={{ bottom: "calc(4.625rem + env(safe-area-inset-bottom, 0px))" }}>
+      <img src={robotImage} alt="" loading="lazy" width={1024} height={1024} className="h-11 w-11 object-contain md:h-12 md:w-12" />
     </Button>
     {open && <>
       <div className="fixed inset-0 z-[70] bg-foreground/30 md:bg-foreground/20" onClick={() => setOpen(false)} aria-hidden="true" />
       <section role="dialog" aria-modal="true" aria-labelledby="planner-title" className="fixed inset-x-0 bottom-0 z-[71] flex h-[min(92dvh,740px)] flex-col overflow-hidden rounded-t-lg border border-border bg-background text-foreground shadow-gold md:inset-x-auto md:right-6 md:bottom-24 md:h-[min(660px,calc(100dvh-120px))] md:w-[390px] md:rounded-lg">
         <header className="flex shrink-0 items-center gap-3 border-b border-border bg-primary px-4 py-3 text-primary-foreground">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary-foreground/15"><MessageCircle className="h-5 w-5" /></span>
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary-foreground/15"><img src={robotImage} alt="" loading="lazy" width={1024} height={1024} className="h-full w-full object-contain" /></span>
           <div className="min-w-0 flex-1"><h2 id="planner-title" className="font-serif text-xl leading-tight">Jain Tours &amp; Travels</h2><p className="text-xs text-primary-foreground/80">Holiday Planner · India &amp; International</p></div>
           <Button ref={closeRef} type="button" size="icon" variant="ghost" aria-label="Close holiday planner" title="Close" onClick={() => setOpen(false)} className="shrink-0 text-primary-foreground hover:bg-primary-foreground/15 hover:text-primary-foreground"><X /></Button>
         </header>
         <div className="h-1 shrink-0 bg-secondary"><div className="h-full bg-primary transition-[width] duration-300" style={{ width: `${stepNumber / (steps.length - 1) * 100}%` }} /></div>
         <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-5 sm:px-5">
           <div className="mb-5 flex items-center justify-between text-xs text-muted-foreground"><span>YOUR JOURNEY</span><span>{step === "complete" ? "READY" : `${stepNumber} / ${steps.length - 1}`}</span></div>
-          <div className="mb-5 flex items-start gap-2.5"><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-secondary text-primary"><MessageCircle className="h-4 w-4" /></span><p className="max-w-[85%] rounded-md rounded-tl-none bg-secondary px-4 py-3 text-sm leading-relaxed text-secondary-foreground">{step === "category" ? "Welcome! " : ""}{prompts[step]}</p></div>
+          <div className="mb-5 flex items-start gap-2.5"><span className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full bg-secondary"><img src={robotImage} alt="" loading="lazy" width={1024} height={1024} className="h-full w-full object-contain" /></span><p className="max-w-[85%] rounded-md rounded-tl-none bg-secondary px-4 py-3 text-sm leading-relaxed text-secondary-foreground">{step === "category" ? "Welcome! " : ""}{prompts[step]}</p></div>
           {step === "complete" ? <div className="space-y-4">
             <div className="border border-border bg-card p-5 text-card-foreground"><div className="mb-3 flex items-center gap-2 text-primary"><Check className="h-5 w-5" /><strong className="font-serif text-xl">Thank you, {answers.name}!</strong></div><p className="text-sm text-muted-foreground">Your {answers.destination} enquiry is ready. Review it and send it to our travel team on WhatsApp.</p>
               <dl className="mt-4 grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 border-t border-border pt-4 text-sm"><dt className="text-muted-foreground">Travel</dt><dd>{answers.destination} · {answers.date}</dd><dt className="text-muted-foreground">Guests</dt><dd>{answers.people} · {answers.party}</dd><dt className="text-muted-foreground">Hotel</dt><dd>{answers.hotel}</dd><dt className="text-muted-foreground">Budget</dt><dd>{answers.budget}</dd></dl>
