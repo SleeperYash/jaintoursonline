@@ -170,7 +170,7 @@ const HolidayPlanner = () => {
   const stepNumber = Math.min(steps.indexOf(step) + 1, steps.length - 1);
 
   return <>
-    {showInvitation && !open && <div className="fixed right-4 z-40 flex w-[min(17rem,calc(100vw-5rem))] items-start gap-2 rounded-lg border border-border bg-card p-3 text-card-foreground shadow-gold md:right-6" style={{ bottom: "calc(8.5rem + env(safe-area-inset-bottom, 0px))" }} role="status">
+    {showInvitation && !open && <div className="fixed right-4 z-40 flex w-[min(17rem,calc(100vw-5rem))] items-start gap-2 rounded-lg border border-border bg-card p-3 text-card-foreground shadow-gold bottom-[calc(11rem+env(safe-area-inset-bottom,0px))] md:right-6 md:bottom-[calc(8.5rem+env(safe-area-inset-bottom,0px))]" role="status">
       <Button type="button" variant="ghost" onClick={openPlanner} className="h-auto min-w-0 flex-1 whitespace-normal p-0 text-left text-sm font-medium leading-snug hover:bg-transparent hover:text-primary">Where would you like to go?</Button>
       <Button type="button" size="icon" variant="ghost" aria-label="Dismiss travel invitation" onClick={dismissInvitation} className="-mr-1 -mt-1 h-7 w-7 shrink-0"><X className="h-4 w-4" /></Button>
     </div>}
