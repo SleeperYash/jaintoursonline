@@ -1,3 +1,3 @@
-- [ ] Replace floating WhatsApp shortcut with a themed holiday-planner chat; keep Call.
-- [ ] Recreate reference questions, including typed Other Destination and Enter Amount.
-- [ ] Save enquiry and open a prefilled WhatsApp message to the business number; verify on desktop/mobile in both themes.
+- [x] Replace floating WhatsApp shortcut with a themed holiday-planner chat; keep Call.
+- [x] Recreate reference questions, including typed Other Destination and Enter Amount.
+- [x] Save enquiry and open a prefilled WhatsApp message to the business number; verify on desktop/mobile in both themes.
