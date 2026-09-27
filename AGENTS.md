@@ -1,2 +1,3 @@
 - Keep the holiday planner as a client-side component mounted by FloatingContacts and reuse the existing enquiries and sheet sync path, because it is available across the whole site without a new backend.
 - Use semantic design tokens in the holiday planner, because the site's light and dark themes share one component.
+- Keep the planner on the shared enquiry path but tag its sheet sync as chatbot; the sheet function selects only Chatbot or Enquiries so website forms stay separate.
