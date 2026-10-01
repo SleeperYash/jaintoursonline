@@ -3,3 +3,4 @@
 - [x] Save enquiry and open a prefilled WhatsApp message to the business number; verify on desktop/mobile in both themes.
 - [x] Route planner sheet entries to Chatbot while website forms continue using Enquiries.
 - [x] Replace planner icon with an original 3D-style robot and show a dismissible delayed invitation.
+- [ ] Extract usable embedded PDF images, associate them with itinerary days, and display them responsively without changing image-free itineraries.
