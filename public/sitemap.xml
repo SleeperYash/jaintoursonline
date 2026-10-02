@@ -271,6 +271,18 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://jaintoursonline.com/destinations/europe/rome-1n-arezzo-1n-venice-1n-innsbruck-1n-zurich-3n-frankfurt-1n-amsterdam-2n-par</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://jaintoursonline.com/destinations/vietnam/7-nights-phu-quoc-4-nights-danang</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://jaintoursonline.com/destinations/andaman/2-n-port-blair-2-nhavelock-island-1-n-neil-island</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://jaintoursonline.com/blog</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
