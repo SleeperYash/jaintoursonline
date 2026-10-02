@@ -275,6 +275,47 @@ export type Database = {
         }
         Relationships: []
       }
+      itinerary_day_images: {
+        Row: {
+          alt_text: string
+          created_at: string
+          day_number: number
+          file_path: string
+          id: string
+          itinerary_id: string
+          position: number
+          updated_at: string
+        }
+        Insert: {
+          alt_text?: string
+          created_at?: string
+          day_number: number
+          file_path: string
+          id?: string
+          itinerary_id: string
+          position?: number
+          updated_at?: string
+        }
+        Update: {
+          alt_text?: string
+          created_at?: string
+          day_number?: number
+          file_path?: string
+          id?: string
+          itinerary_id?: string
+          position?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "itinerary_day_images_itinerary_id_fkey"
+            columns: ["itinerary_id"]
+            isOneToOne: false
+            referencedRelation: "itineraries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       itinerary_days: {
         Row: {
           created_at: string
