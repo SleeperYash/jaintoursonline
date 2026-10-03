@@ -1,6 +1,6 @@
 import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors';
 import { createClient } from 'npm:@supabase/supabase-js@2';
-import { extractImages, getDocumentProxy } from 'https://esm.sh/unpdf@0.12.2';
+import { extractImages, getDocumentProxy, getResolvedPDFJS } from 'https://esm.sh/unpdf@0.12.2';
 import { PNG } from 'npm:pngjs@7.0.0';
 
 const reply = (data: unknown, status = 200) => new Response(JSON.stringify(data), { status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
@@ -34,22 +34,50 @@ Deno.serve(async (req) => {
   const seen = new Set<string>();
   let pdf;
   try {
+    const { OPS } = await getResolvedPDFJS();
     pdf = await getDocumentProxy(new Uint8Array(await pdfFile.arrayBuffer()));
     for (let pageNum = 1; pageNum <= Math.min(pdf.numPages, 50); pageNum++) {
       const page = await pdf.getPage(pageNum);
       const textContent = await page.getTextContent();
-      const pageText = textContent.items.map((item) => 'str' in item ? item.str : '').join(' ');
-      const dayNumbers = [...pageText.matchAll(/\bday\s*[-:#.]?\s*(\d{1,2})\b/gi)]
-        .map((match) => Number(match[1])).filter((num) => knownDays.has(num));
-      const uniqueDays = [...new Set(dayNumbers)];
-      if (!uniqueDays.length) continue;
+      const headings = textContent.items.flatMap((item) => {
+        if (!('str' in item) || !('transform' in item)) return [];
+        const match = item.str.match(/\bday\s*[-:#.]?\s*(\d{1,2})\b/i);
+        const number = match ? Number(match[1]) : 0;
+        return knownDays.has(number) ? [{ number, y: item.transform[5] }] : [];
+      }).sort((a, b) => b.y - a.y);
+      // Photos on a continuation page belong to the last day heading on the previous page.
+      const priorDay = headings.length ? headings[headings.length - 1].number : previousDay;
+      if (!headings.length && !priorDay) continue;
       const raw = await extractImages(pdf, pageNum);
-      const photos = raw.filter((image) => image.width >= 450 && image.height >= 300 &&
-        image.width / image.height < 3.5 && image.width * image.height <= 8_000_000);
-      if (uniqueDays.length > 1 && photos.length !== uniqueDays.length) continue;
-      for (let i = 0; i < photos.length && staged.length < 80; i++) {
-        const image = photos[i];
-        const dayNumber = uniqueDays.length === 1 ? uniqueDays[0] : uniqueDays[i];
+      const ops = await page.getOperatorList();
+      const placements: number[] = [];
+      const base = ops.fnArray[0] === OPS.transform ? ops.argsArray[0] as number[] : null;
+      for (let index = 0; index < ops.fnArray.length; index++) {
+        if (ops.fnArray[index] !== OPS.paintImageXObject && ops.fnArray[index] !== OPS.paintInlineImageXObject) continue;
+        // The image's own transform precedes its dependency and paint operations.
+        const transform = ops.fnArray[index - 2] === OPS.transform ? ops.argsArray[index - 2] as number[] : null;
+        placements.push(base && transform ? base[1] * (transform[4] + transform[0] / 2) +
+          base[3] * (transform[5] + transform[3] / 2) + base[5] : NaN);
+      }
+      // If PDF operators cannot be aligned with decoded images, do not guess which day owns them.
+      if (raw.length !== placements.length) continue;
+      for (let i = 0; i < raw.length && staged.length < 80; i++) {
+        const image = raw[i];
+        const y = placements[i];
+        if (!Number.isFinite(y) || image.width < 450 || image.height < 300 ||
+          image.width / image.height >= 3.5 || image.width * image.height > 8_000_000) continue;
+        // Reject the monochrome shadows and decorative overlays often embedded in brochures.
+        let nearGray = 0;
+        let samples = 0;
+        for (let pixel = 0; pixel < image.width * image.height; pixel += Math.max(1, Math.floor(image.width * image.height / 500))) {
+          const offset = pixel * image.channels;
+          if (image.channels < 3 || Math.max(image.data[offset], image.data[offset + 1], image.data[offset + 2]) -
+            Math.min(image.data[offset], image.data[offset + 1], image.data[offset + 2]) < 8) nearGray++;
+          samples++;
+        }
+        if (nearGray / samples > 0.93) continue;
+        const dayNumber = headings.find((heading) => heading.y >= y - 16)?.number ?? previousDay;
+        if (!dayNumber) continue;
         const digest = await crypto.subtle.digest('SHA-256', image.data);
         const fingerprint = [...new Uint8Array(digest)].map((v) => v.toString(16).padStart(2, '0')).join('');
         if (seen.has(fingerprint)) continue;
@@ -72,6 +100,7 @@ Deno.serve(async (req) => {
         const title = dayRows?.find((day) => day.day_number === dayNumber)?.title ?? itinerary.destination_slug;
         staged.push({ day_number: dayNumber, position, file_path: path, alt_text: `${title} — day ${dayNumber} photo from itinerary PDF` });
       }
+      if (headings.length) previousDay = priorDay;
     }
     const { data: old, error: oldError } = await db.from('itinerary_day_images').select('file_path').eq('itinerary_id', id);
     if (oldError) throw new Error('Could not read current photos');
