@@ -105,6 +105,7 @@ const ManageDestinationDialog = ({
   const [savingPriceId, setSavingPriceId] = useState<string | null>(null);
   const [durationDrafts, setDurationDrafts] = useState<Record<string, string>>({});
   const [savingDurationId, setSavingDurationId] = useState<string | null>(null);
+  const [extractingId, setExtractingId] = useState<string | null>(null);
 
   // Reviews
   const { reviews, refetch: refetchReviews } = useClientReviews();
@@ -393,7 +394,7 @@ const ManageDestinationDialog = ({
       toast({
         title: res?.parsed ? "Uploaded & parsed" : "Uploaded",
         description: res?.parsed
-          ? `${itinTitle} — AI extracted day-by-day, hotels & inclusions.`
+          ? `${itinTitle} — AI extracted day-by-day, hotels & inclusions.${res?.image_error ? ` Photos could not be extracted: ${res.image_error}` : ""}`
           : res?.parse_error
             ? `${itinTitle} — uploaded, but AI parse failed: ${res.parse_error}. Re-upload the PDF to retry.`
             : itinTitle,
@@ -420,6 +421,18 @@ const ManageDestinationDialog = ({
       fetchItineraries();
     } catch (err) {
       toast({ title: "Delete failed", description: (err as Error).message, variant: "destructive" });
+    }
+  };
+
+  const handleExtractImages = async (it: Itinerary) => {
+    setExtractingId(it.id);
+    try {
+      const result = await callAdmin("extract_images", { id: it.id });
+      toast({ title: result.images ? `${result.images} PDF photo${result.images === 1 ? "" : "s"} added` : "No suitable day photos in this PDF", description: it.title });
+    } catch (err) {
+      toast({ title: "Could not extract photos", description: (err as Error).message, variant: "destructive" });
+    } finally {
+      setExtractingId(null);
     }
   };
 
@@ -654,6 +667,12 @@ const ManageDestinationDialog = ({
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
+                          </div>
+                          <div className="flex flex-col sm:flex-row gap-2">
+                            <Button type="button" size="sm" variant="outline" className="self-start" disabled={extractingId === it.id} onClick={() => handleExtractImages(it)}>
+                              {extractingId === it.id ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <ImagePlus className="w-4 h-4 mr-2" />}
+                              Extract PDF photos
+                            </Button>
                           </div>
                           <div className="flex flex-col sm:flex-row gap-2">
                             <div className="flex items-center gap-2 flex-1">

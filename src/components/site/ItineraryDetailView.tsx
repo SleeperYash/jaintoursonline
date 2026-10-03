@@ -34,7 +34,7 @@ import {
   MessageCircle,
 } from "lucide-react";
 
-type ParsedDay = { title: string; body: string; activities?: string[] };
+type ParsedDay = { title: string; body: string; activities?: string[]; dayNumber?: number };
 type Parsed = {
   title?: string | null;
   starting_price?: string | null;
@@ -135,6 +135,7 @@ const ItineraryDetailView = ({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [parsed, setParsed] = useState<Parsed | null>(null);
+  const [dayImages, setDayImages] = useState<Record<number, { file_path: string; alt_text: string }[]>>({});
   const [openDays, setOpenDays] = useState<string[]>([]);
   const tabsBarRef = useRef<HTMLDivElement>(null);
   const [activeSection, setActiveSection] = useState<string>("overview");
@@ -186,7 +187,7 @@ const ItineraryDetailView = ({
       setError(null);
       // Pull editable, normalized data directly from Supabase.
       // No AI call — visitors never trigger Gemini.
-      const [itinRes, daysRes, incRes, excRes] = await Promise.all([
+      const [itinRes, daysRes, incRes, excRes, imagesRes] = await Promise.all([
         supabase
           .from("itineraries")
           .select(
@@ -209,8 +210,16 @@ const ItineraryDetailView = ({
           .select("exclusion_text,position")
           .eq("itinerary_id", itineraryId)
           .order("position", { ascending: true }),
+        supabase.from("itinerary_day_images").select("day_number,position,file_path,alt_text")
+          .eq("itinerary_id", itineraryId).order("position", { ascending: true }),
       ]);
       if (cancelled) return;
+
+      const photos: Record<number, { file_path: string; alt_text: string }[]> = {};
+      (imagesRes.data ?? []).forEach((image) => {
+        (photos[image.day_number] ??= []).push({ file_path: image.file_path, alt_text: image.alt_text });
+      });
+      setDayImages(photos);
 
       const row = itinRes.data;
       const days = daysRes.data ?? [];
@@ -231,6 +240,7 @@ const ItineraryDetailView = ({
           days: days.map((d) => ({
             title: d.title || `Day ${d.day_number}`,
             body: d.description ?? "",
+            dayNumber: d.day_number,
           })),
           inclusions: inclusions.map((i) => i.inclusion_text),
           exclusions: exclusions.map((e) => e.exclusion_text),
@@ -534,6 +544,22 @@ const ItineraryDetailView = ({
                       </AccordionTrigger>
                       <AccordionContent className="px-4 md:px-6 pb-5">
                         <div className="pl-0 md:pl-14 min-w-0 break-words">
+                          {!!dayImages[d.dayNumber ?? i + 1]?.length && (
+                            <div className="mb-5 space-y-2 md:space-y-3">
+                              {dayImages[d.dayNumber ?? i + 1].slice(0, 1).map((photo) => (
+                                <img key={photo.file_path} src={adminPublicUrl(photo.file_path)} alt={photo.alt_text}
+                                  loading="lazy" decoding="async" className="w-full aspect-[16/9] object-cover rounded-md" />
+                              ))}
+                              {dayImages[d.dayNumber ?? i + 1].length > 1 && (
+                                <div className="grid grid-cols-2 gap-2 md:gap-3">
+                                  {dayImages[d.dayNumber ?? i + 1].slice(1).map((photo) => (
+                                    <img key={photo.file_path} src={adminPublicUrl(photo.file_path)} alt={photo.alt_text}
+                                      loading="lazy" decoding="async" className="w-full aspect-[4/3] object-cover rounded-md" />
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          )}
                           {d.body && (
                             <p className="text-sm md:text-base text-foreground font-normal leading-relaxed whitespace-pre-line break-words [overflow-wrap:anywhere]">
                               {d.body}

@@ -1,4 +1,5 @@
-import { corsHeaders, createClient } from 'npm:@supabase/supabase-js@2';
+import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors';
+import { createClient } from 'npm:@supabase/supabase-js@2';
 import { extractImages, getDocumentProxy } from 'https://esm.sh/unpdf@0.12.2';
 import { PNG } from 'npm:pngjs@7.0.0';
 
