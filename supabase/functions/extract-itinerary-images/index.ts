@@ -32,6 +32,7 @@ Deno.serve(async (req) => {
   const staged: { day_number: number; position: number; file_path: string; alt_text: string }[] = [];
   const uploaded: string[] = [];
   const seen = new Set<string>();
+  let previousDay: number | undefined;
   let pdf;
   try {
     const { OPS } = await getResolvedPDFJS();
