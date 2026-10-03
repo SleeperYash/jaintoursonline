@@ -83,6 +83,22 @@ Deno.serve(async (req) => {
     }
   };
 
+  const runImageExtraction = async (itinerary_id: string) => {
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/extract-itinerary-images`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-admin-password": ADMIN_PASSWORD,
+        apikey: SERVICE_ROLE,
+        Authorization: `Bearer ${SERVICE_ROLE}`,
+      },
+      body: JSON.stringify({ itinerary_id }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data.ok) throw new Error(data.error ?? "Photo extraction failed");
+    return data.images as number;
+  };
+
   let body: any;
   try {
     body = await req.json();
@@ -144,11 +160,17 @@ Deno.serve(async (req) => {
       // Immediately parse the PDF with Gemini and write normalized rows.
       // We don't fail the upload if parsing fails — admin can re-parse later.
       const parseResult = await runParser(data.id);
+      let image_error: string | null = null;
+      if (parseResult.ok) {
+        try { await runImageExtraction(data.id); }
+        catch (e) { image_error = (e as Error).message; }
+      }
       return json({
         ok: true,
         itinerary: data,
         parsed: parseResult.ok,
         parse_error: parseResult.ok ? null : parseResult.data?.error ?? "Parse failed",
+        image_error,
       });
     }
 
@@ -159,7 +181,15 @@ Deno.serve(async (req) => {
       if (!result.ok) {
         return json({ error: result.data?.error ?? "Parse failed" }, 500);
       }
-      return json({ ok: true });
+      const images = await runImageExtraction(id);
+      return json({ ok: true, images });
+    }
+
+    if (action === "extract_images") {
+      const { id } = body ?? {};
+      if (typeof id !== "string" || !/^[0-9a-f-]{36}$/i.test(id)) return json({ error: "Invalid id" }, 400);
+      const images = await runImageExtraction(id);
+      return json({ ok: true, images });
     }
 
     if (action === "update_price") {
@@ -201,11 +231,14 @@ Deno.serve(async (req) => {
         .eq("id", id)
         .maybeSingle();
       if (fetchErr) return json({ error: fetchErr.message }, 500);
+      const { data: dayImages } = await supabase.from("itinerary_day_images")
+        .select("file_path").eq("itinerary_id", id);
       if (existing?.file_path) {
         await supabase.storage.from("itineraries").remove([existing.file_path]);
       }
       const { error: delErr } = await supabase.from("itineraries").delete().eq("id", id);
       if (delErr) return json({ error: delErr.message }, 500);
+      if (dayImages?.length) await supabase.storage.from("itineraries").remove(dayImages.map((image) => image.file_path));
       return json({ ok: true });
     }
 
