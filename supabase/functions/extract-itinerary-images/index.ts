@@ -77,7 +77,7 @@ Deno.serve(async (req) => {
           samples++;
         }
         if (nearGray / samples > 0.93) continue;
-        const dayNumber = headings.find((heading) => heading.y >= y - 16)?.number ?? previousDay;
+        const dayNumber = headings.filter((heading) => heading.y >= y - 16).at(-1)?.number ?? previousDay;
         if (!dayNumber) continue;
         const digest = await crypto.subtle.digest('SHA-256', image.data);
         const fingerprint = [...new Uint8Array(digest)].map((v) => v.toString(16).padStart(2, '0')).join('');
