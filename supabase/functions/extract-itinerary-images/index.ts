@@ -1,6 +1,6 @@
 import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors';
 import { createClient } from 'npm:@supabase/supabase-js@2';
-import { extractImages, getDocumentProxy, getResolvedPDFJS } from 'https://esm.sh/unpdf@0.12.2';
+import { getDocumentProxy, getResolvedPDFJS } from 'https://esm.sh/unpdf@0.12.2';
 import { PNG } from 'npm:pngjs@7.0.0';
 
 const reply = (data: unknown, status = 200) => new Response(JSON.stringify(data), { status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
@@ -49,22 +49,28 @@ Deno.serve(async (req) => {
       // Photos on a continuation page belong to the last day heading on the previous page.
       const priorDay = headings.length ? headings[headings.length - 1].number : previousDay;
       if (!headings.length && !priorDay) continue;
-      const raw = await extractImages(pdf, pageNum);
       const ops = await page.getOperatorList();
-      const placements: number[] = [];
+      const photos: { data: Uint8ClampedArray; width: number; height: number; channels: number; y: number }[] = [];
       const base = ops.fnArray[0] === OPS.transform ? ops.argsArray[0] as number[] : null;
       for (let index = 0; index < ops.fnArray.length; index++) {
-        if (ops.fnArray[index] !== OPS.paintImageXObject && ops.fnArray[index] !== OPS.paintInlineImageXObject) continue;
+        if (ops.fnArray[index] !== OPS.paintImageXObject) continue;
         // The image's own transform precedes its dependency and paint operations.
         const transform = ops.fnArray[index - 2] === OPS.transform ? ops.argsArray[index - 2] as number[] : null;
-        placements.push(base && transform ? base[1] * (transform[4] + transform[0] / 2) +
-          base[3] * (transform[5] + transform[3] / 2) + base[5] : NaN);
+        if (!base || !transform) continue;
+        const y = base[1] * (transform[4] + transform[0] / 2) +
+          base[3] * (transform[5] + transform[3] / 2) + base[5];
+        const key = ops.argsArray[index][0];
+        // A damaged or deferred image must not discard other usable day photos.
+        let image;
+        try { image = page.objs.get(key); } catch { continue; }
+        if (!image?.data || !image.width || !image.height) continue;
+        const channels = image.data.length / (image.width * image.height);
+        if (![1, 3, 4].includes(channels)) continue;
+        photos.push({ data: image.data, width: image.width, height: image.height, channels, y });
       }
-      // If PDF operators cannot be aligned with decoded images, do not guess which day owns them.
-      if (raw.length !== placements.length) continue;
-      for (let i = 0; i < raw.length && staged.length < 80; i++) {
-        const image = raw[i];
-        const y = placements[i];
+      for (const image of photos) {
+        if (staged.length >= 80) break;
+        const y = image.y;
         if (!Number.isFinite(y) || image.width < 450 || image.height < 300 ||
           image.width / image.height >= 3.5 || image.width * image.height > 8_000_000) continue;
         // Reject the monochrome shadows and decorative overlays often embedded in brochures.
