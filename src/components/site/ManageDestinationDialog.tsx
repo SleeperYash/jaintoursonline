@@ -428,7 +428,7 @@ const ManageDestinationDialog = ({
     setExtractingId(it.id);
     try {
       const result = await callAdmin("extract_images", { id: it.id });
-      toast({ title: result.images ? `${result.images} PDF photo${result.images === 1 ? "" : "s"} added` : "No suitable day photos in this PDF", description: it.title });
+      toast({ title: result.images ? `${result.images} PDF photo${result.images === 1 ? "" : "s"} added` : result.warning ? "Photos could not be scanned" : "No suitable day photos in this PDF", description: result.warning ?? it.title });
     } catch (err) {
       toast({ title: "Could not extract photos", description: (err as Error).message, variant: "destructive" });
     } finally {
