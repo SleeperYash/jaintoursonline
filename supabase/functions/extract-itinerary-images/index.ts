@@ -24,7 +24,7 @@ Deno.serve(async (req) => {
   if (lookupError || !itinerary) return reply({ error: 'Itinerary not found' }, 404);
   const { data: pdfFile, error: downloadError } = await db.storage.from('itineraries').download(itinerary.file_path);
   if (downloadError || !pdfFile) return reply({ error: 'PDF unavailable' }, 500);
-  const { data: dayRows, error: daysError } = await db.from('itinerary_days').select('day_number,title').eq('itinerary_id', id).order('day_number');
+  const { data: dayRows, error: daysError } = await db.from('itinerary_days').select('day_number,title,description').eq('itinerary_id', id).order('day_number');
   if (daysError) return reply({ error: 'Cannot read itinerary days' }, 500);
   const knownDays = new Set((dayRows ?? []).map((day) => day.day_number));
   if (!knownDays.size) return reply({ error: 'Parse this itinerary before extracting photos' }, 400);
@@ -33,6 +33,11 @@ Deno.serve(async (req) => {
   const uploaded: string[] = [];
   const seen = new Set<string>();
   let previousDay: number | undefined;
+  const normalize = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim().replace(/\s+/g, ' ');
+  const normalizedDays = (dayRows ?? []).map((day) => ({
+    number: day.day_number,
+    description: normalize(day.description ?? ''),
+  }));
   let pdf;
   try {
     const { OPS } = await getResolvedPDFJS();
@@ -42,13 +47,22 @@ Deno.serve(async (req) => {
       const textContent = await page.getTextContent();
       const headings = textContent.items.flatMap((item) => {
         if (!('str' in item) || !('transform' in item)) return [];
-        const match = item.str.match(/\bday\s*[-:#.]?\s*(\d{1,2})\b/i);
-        const number = match ? Number(match[1]) : 0;
-        return knownDays.has(number) ? [{ number, y: item.transform[5] }] : [];
+        const label = item.str.trim();
+        const match = label.match(/^day\s*[-:#.]?\s*(\d{1,2})\b/i);
+        const explicit = match ? Number(match[1]) : 0;
+        // Brochures often omit numbered headings. Anchor the page to its actual
+        // itinerary prose, never to a generic mention of "day" in a disclaimer.
+        const snippet = normalize(label).slice(0, 65);
+        const textual = snippet.length >= 32
+          ? normalizedDays.find((day) => day.description.includes(snippet))?.number
+          : undefined;
+        const number = knownDays.has(explicit) ? explicit : textual;
+        return number ? [{ number, y: item.transform[5] }] : [];
       }).sort((a, b) => b.y - a.y);
       // Photos on a continuation page belong to the last day heading on the previous page.
       const priorDay = headings.length ? headings[headings.length - 1].number : previousDay;
       if (!headings.length && !priorDay) continue;
+      if (headings.length) previousDay = priorDay;
       const ops = await page.getOperatorList();
       const photos: { data: Uint8ClampedArray; width: number; height: number; channels: number; y: number }[] = [];
       const base = ops.fnArray[0] === OPS.transform ? ops.argsArray[0] as number[] : null;
@@ -107,7 +121,6 @@ Deno.serve(async (req) => {
         const title = dayRows?.find((day) => day.day_number === dayNumber)?.title ?? itinerary.destination_slug;
         staged.push({ day_number: dayNumber, position, file_path: path, alt_text: `${title} — day ${dayNumber} photo from itinerary PDF` });
       }
-      if (headings.length) previousDay = priorDay;
     }
     const { data: old, error: oldError } = await db.from('itinerary_day_images').select('file_path').eq('itinerary_id', id);
     if (oldError) throw new Error('Could not read current photos');
