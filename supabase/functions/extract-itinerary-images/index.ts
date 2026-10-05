@@ -42,7 +42,7 @@ Deno.serve(async (req) => {
   try {
     const { OPS } = await getResolvedPDFJS();
     pdf = await getDocumentProxy(new Uint8Array(await pdfFile.arrayBuffer()));
-    for (let pageNum = 1; pageNum <= Math.min(pdf.numPages, 50); pageNum++) {
+    for (let pageNum = 1; pageNum <= Math.min(pdf.numPages, 20); pageNum++) {
       const page = await pdf.getPage(pageNum);
       const textContent = await page.getTextContent();
       const headings = textContent.items.flatMap((item) => {
@@ -83,7 +83,7 @@ Deno.serve(async (req) => {
         photos.push({ data: image.data, width: image.width, height: image.height, channels, y });
       }
       for (const image of photos) {
-        if (staged.length >= 80) break;
+        if (staged.length >= 24) break;
         const y = image.y;
         if (!Number.isFinite(y) || image.width < 450 || image.height < 300 ||
           image.width / image.height >= 3.5 || image.width * image.height > 8_000_000) continue;
@@ -103,16 +103,24 @@ Deno.serve(async (req) => {
         const fingerprint = [...new Uint8Array(digest)].map((v) => v.toString(16).padStart(2, '0')).join('');
         if (seen.has(fingerprint)) continue;
         seen.add(fingerprint);
-        const png = new PNG({ width: image.width, height: image.height });
-        for (let pixel = 0; pixel < image.width * image.height; pixel++) {
-          const source = pixel * image.channels;
-          const target = pixel * 4;
-          png.data[target] = image.data[source];
-          png.data[target + 1] = image.data[source + (image.channels === 1 ? 0 : 1)];
-          png.data[target + 2] = image.data[source + (image.channels === 1 ? 0 : 2)];
-          png.data[target + 3] = image.channels === 4 ? image.data[source + 3] : 255;
+        // Downscale to keep CPU within edge limits; 1400px wide is plenty for day cards.
+        const scale = Math.min(1, 1400 / image.width);
+        const w = Math.max(1, Math.round(image.width * scale));
+        const h = Math.max(1, Math.round(image.height * scale));
+        const png = new PNG({ width: w, height: h, deflateLevel: 1, filterType: 0 });
+        for (let ty = 0; ty < h; ty++) {
+          const sy = Math.min(image.height - 1, Math.floor(ty / scale));
+          for (let tx = 0; tx < w; tx++) {
+            const sx = Math.min(image.width - 1, Math.floor(tx / scale));
+            const source = (sy * image.width + sx) * image.channels;
+            const target = (ty * w + tx) * 4;
+            png.data[target] = image.data[source];
+            png.data[target + 1] = image.data[source + (image.channels === 1 ? 0 : 1)];
+            png.data[target + 2] = image.data[source + (image.channels === 1 ? 0 : 2)];
+            png.data[target + 3] = image.channels === 4 ? image.data[source + 3] : 255;
+          }
         }
-        const bytes = PNG.sync.write(png);
+        const bytes = PNG.sync.write(png, { deflateLevel: 1, filterType: 0 });
         const position = staged.filter((entry) => entry.day_number === dayNumber).length;
         const path = `day-images/${id}/${crypto.randomUUID()}.png`;
         const { error: uploadError } = await db.storage.from('itineraries').upload(path, bytes, { contentType: 'image/png' });

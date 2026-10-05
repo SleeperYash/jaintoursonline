@@ -181,15 +181,27 @@ Deno.serve(async (req) => {
       if (!result.ok) {
         return json({ error: result.data?.error ?? "Parse failed" }, 500);
       }
-      const images = await runImageExtraction(id);
-      return json({ ok: true, images });
+      try {
+        const images = await runImageExtraction(id);
+        return json({ ok: true, images });
+      } catch (e) {
+        // Heavy brochures can exceed processing limits; keep the itinerary unchanged.
+        console.error("extract_images failed", e);
+        return json({ ok: true, images: 0, warning: "This PDF is too large to scan for photos. The itinerary page is unchanged." });
+      }
     }
 
     if (action === "extract_images") {
       const { id } = body ?? {};
       if (typeof id !== "string" || !/^[0-9a-f-]{36}$/i.test(id)) return json({ error: "Invalid id" }, 400);
-      const images = await runImageExtraction(id);
-      return json({ ok: true, images });
+      try {
+        const images = await runImageExtraction(id);
+        return json({ ok: true, images });
+      } catch (e) {
+        // Heavy brochures can exceed processing limits; keep the itinerary unchanged.
+        console.error("extract_images failed", e);
+        return json({ ok: true, images: 0, warning: "This PDF is too large to scan for photos. The itinerary page is unchanged." });
+      }
     }
 
     if (action === "update_price") {
