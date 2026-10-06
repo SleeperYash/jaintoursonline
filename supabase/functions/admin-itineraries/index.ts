@@ -234,6 +234,19 @@ Deno.serve(async (req) => {
       return json({ ok: true });
     }
 
+    if (action === "update_title") {
+      const { id, title } = body ?? {};
+      if (!id) return json({ error: "Missing id" }, 400);
+      const value = typeof title === "string" ? title.trim().slice(0, 160) : "";
+      if (!value) return json({ error: "Title is required" }, 400);
+      const { error: updErr } = await supabase
+        .from("itineraries")
+        .update({ title: value })
+        .eq("id", id);
+      if (updErr) return json({ error: updErr.message }, 500);
+      return json({ ok: true });
+    }
+
     if (action === "delete") {
       const { id } = body ?? {};
       if (!id) return json({ error: "Missing id" }, 400);

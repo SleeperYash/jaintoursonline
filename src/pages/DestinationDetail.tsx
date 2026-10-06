@@ -202,8 +202,8 @@ const DestinationDetail = () => {
 
       {/* Gallery */}
       {photos.length > 0 && (
-        <section className="container py-9 md:py-20 overflow-x-clip">
-          <div className="flex items-end justify-between gap-3 mb-4 md:mb-7">
+        <section className="container pt-8 pb-4 md:pt-12 md:pb-6 overflow-x-clip">
+          <div className="flex items-end justify-between gap-3 mb-4 md:mb-5">
             <h2 className="text-xs md:text-sm uppercase tracking-luxe text-foreground/80">
               Explore {d.name}
               <span className="hidden sm:inline-block align-middle ml-3 h-px w-8 bg-gold" />
@@ -216,17 +216,15 @@ const DestinationDetail = () => {
             </button>
           </div>
 
-          <div
-            className="-mx-4 px-4 md:mx-0 md:px-0 flex md:grid md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 overflow-x-auto md:overflow-visible snap-x snap-mandatory pb-2 scrollbar-hide"
-            style={{ scrollbarWidth: "none" }}
-          >
-            {photos.slice(0, 8).map((p, i) => {
-              const isLast = i === 7 && photos.length > 8;
+          <div className="grid grid-cols-4 gap-1.5 sm:gap-2.5 md:gap-4">
+            {photos.slice(0, 4).map((p, i) => {
+              const hasMore = i === 3 && photos.length > 4;
               return (
                 <button
                   key={`${p}-${i}`}
                   onClick={() => setLightbox(i)}
-                  className="group relative shrink-0 w-[68%] max-w-[280px] sm:w-[45%] md:w-auto md:max-w-none snap-center md:snap-start rounded-xl overflow-hidden bg-muted aspect-[4/3]"
+                  className="group relative min-w-0 rounded-md sm:rounded-lg md:rounded-xl overflow-hidden bg-muted aspect-[4/3] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
+                  aria-label={hasMore ? `View ${photos.length - 4} more ${d.name} photos` : `View ${d.name} photo ${i + 1}`}
                 >
                   <img
                     src={p}
@@ -234,10 +232,10 @@ const DestinationDetail = () => {
                     loading={i < 4 ? "eager" : "lazy"}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
-                  {isLast && (
-                    <span className="absolute inset-0 bg-ink/70 flex flex-col items-center justify-center gap-1.5 text-white">
-                      <Camera className="w-4 h-4" />
-                      <span className="text-[10px] uppercase tracking-luxe">+{photos.length - 8} more</span>
+                  {hasMore && (
+                    <span className="absolute inset-0 bg-ink/75 flex flex-col items-center justify-center gap-1 text-primary-foreground">
+                      <Camera className="w-3.5 h-3.5 md:w-4 md:h-4" />
+                      <span className="text-[8px] sm:text-[10px] md:text-xs uppercase tracking-luxe text-center px-1">+{photos.length - 4} more</span>
                     </span>
                   )}
                 </button>
