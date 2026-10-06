@@ -72,7 +72,7 @@ const ItineraryViewer = ({
   }, [destinationSlug]);
 
   return (
-    <section className="bg-background border-t border-border/40 py-10 md:py-24 overflow-x-clip">
+    <section className="bg-background border-t border-border/40 pt-6 pb-10 md:pt-10 md:pb-24 overflow-x-clip">
       <div className="container">
         <div className="mb-6 md:mb-12">
           <p className="text-[10px] md:text-xs uppercase tracking-luxe text-foreground/80">

@@ -105,6 +105,8 @@ const ManageDestinationDialog = ({
   const [savingPriceId, setSavingPriceId] = useState<string | null>(null);
   const [durationDrafts, setDurationDrafts] = useState<Record<string, string>>({});
   const [savingDurationId, setSavingDurationId] = useState<string | null>(null);
+  const [titleDrafts, setTitleDrafts] = useState<Record<string, string>>({});
+  const [savingTitleId, setSavingTitleId] = useState<string | null>(null);
   const [extractingId, setExtractingId] = useState<string | null>(null);
 
   // Reviews
@@ -474,6 +476,29 @@ const ManageDestinationDialog = ({
     }
   };
 
+  const handleSaveTitle = async (it: Itinerary) => {
+    const value = (titleDrafts[it.id] ?? it.title).trim();
+    if (!value) {
+      toast({ title: "Title is required", variant: "destructive" });
+      return;
+    }
+    setSavingTitleId(it.id);
+    try {
+      await callAdmin("update_title", { id: it.id, title: value });
+      toast({ title: "Title updated", description: value });
+      setTitleDrafts((previous) => {
+        const next = { ...previous };
+        delete next[it.id];
+        return next;
+      });
+      fetchItineraries();
+    } catch (err) {
+      toast({ title: "Update failed", description: (err as Error).message, variant: "destructive" });
+    } finally {
+      setSavingTitleId(null);
+    }
+  };
+
   return (
     <>
       <button
@@ -674,62 +699,39 @@ const ManageDestinationDialog = ({
                               Extract PDF photos
                             </Button>
                           </div>
-                          <div className="flex flex-col sm:flex-row gap-2">
-                            <div className="flex items-center gap-2 flex-1">
-                            <Input
-                              value={priceDrafts[it.id] ?? it.starting_price ?? ""}
-                              onChange={(e) =>
-                                setPriceDrafts((p) => ({ ...p, [it.id]: e.target.value }))
-                              }
-                              placeholder="₹ price"
-                              maxLength={40}
-                              className="h-9 flex-1 text-sm"
-                            />
-                            <Button
-                              type="button"
-                              size="sm"
-                              variant="secondary"
-                              disabled={
-                                savingPriceId === it.id ||
-                                (priceDrafts[it.id] ?? it.starting_price ?? "") ===
-                                  (it.starting_price ?? "")
-                              }
-                              onClick={() => handleSavePrice(it)}
-                            >
-                              {savingPriceId === it.id ? (
-                                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                              ) : (
-                                "Save"
-                              )}
-                            </Button>
+                          <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+                            <div className="min-w-0">
+                              <Label className="text-[10px] uppercase tracking-luxe text-foreground/60">Title</Label>
+                              <div className="mt-1.5 flex items-center gap-2">
+                                <Input
+                                  value={titleDrafts[it.id] ?? it.title}
+                                  onChange={(e) => setTitleDrafts((p) => ({ ...p, [it.id]: e.target.value }))}
+                                  placeholder="Itinerary title"
+                                  maxLength={160}
+                                  className="h-9 min-w-0 flex-1 text-sm"
+                                />
+                                <Button type="button" size="sm" variant="secondary" disabled={savingTitleId === it.id || !(titleDrafts[it.id] ?? it.title).trim() || (titleDrafts[it.id] ?? it.title) === it.title} onClick={() => handleSaveTitle(it)}>
+                                  {savingTitleId === it.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : "Save"}
+                                </Button>
+                              </div>
                             </div>
-                            <div className="flex items-center gap-2 flex-1">
-                              <Input
-                                value={durationDrafts[it.id] ?? it.duration ?? ""}
-                                onChange={(e) =>
-                                  setDurationDrafts((p) => ({ ...p, [it.id]: e.target.value }))
-                                }
-                                placeholder="e.g. 5N / 6D"
-                                maxLength={40}
-                                className="h-9 flex-1 text-sm"
-                              />
-                              <Button
-                                type="button"
-                                size="sm"
-                                variant="secondary"
-                                disabled={
-                                  savingDurationId === it.id ||
-                                  (durationDrafts[it.id] ?? it.duration ?? "") ===
-                                    (it.duration ?? "")
-                                }
-                                onClick={() => handleSaveDuration(it)}
-                              >
-                                {savingDurationId === it.id ? (
-                                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                                ) : (
-                                  "Save"
-                                )}
-                              </Button>
+                            <div className="min-w-0">
+                              <Label className="text-[10px] uppercase tracking-luxe text-foreground/60">Price</Label>
+                              <div className="mt-1.5 flex items-center gap-2">
+                                <Input value={priceDrafts[it.id] ?? it.starting_price ?? ""} onChange={(e) => setPriceDrafts((p) => ({ ...p, [it.id]: e.target.value }))} placeholder="₹ price" maxLength={40} className="h-9 min-w-0 flex-1 text-sm" />
+                                <Button type="button" size="sm" variant="secondary" disabled={savingPriceId === it.id || (priceDrafts[it.id] ?? it.starting_price ?? "") === (it.starting_price ?? "")} onClick={() => handleSavePrice(it)}>
+                                  {savingPriceId === it.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : "Save"}
+                                </Button>
+                              </div>
+                            </div>
+                            <div className="min-w-0">
+                              <Label className="text-[10px] uppercase tracking-luxe text-foreground/60">Nights / Days</Label>
+                              <div className="mt-1.5 flex items-center gap-2">
+                                <Input value={durationDrafts[it.id] ?? it.duration ?? ""} onChange={(e) => setDurationDrafts((p) => ({ ...p, [it.id]: e.target.value }))} placeholder="e.g. 5N / 6D" maxLength={40} className="h-9 min-w-0 flex-1 text-sm" />
+                                <Button type="button" size="sm" variant="secondary" disabled={savingDurationId === it.id || (durationDrafts[it.id] ?? it.duration ?? "") === (it.duration ?? "")} onClick={() => handleSaveDuration(it)}>
+                                  {savingDurationId === it.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : "Save"}
+                                </Button>
+                              </div>
                             </div>
                           </div>
                         </div>
