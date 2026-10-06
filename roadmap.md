@@ -4,3 +4,5 @@
 - [x] Route planner sheet entries to Chatbot while website forms continue using Enquiries.
 - [x] Replace planner icon with an original 3D-style robot and show a dismissible delayed invitation.
 - [x] Extract usable embedded PDF images, associate them with itinerary days, and display them responsively without changing image-free itineraries.
+- [x] Show four compact destination gallery images with a fourth-tile gallery overlay and tighter itinerary spacing.
+- [ ] Add and activate editable itinerary titles in the admin panel (interface complete; protected save action awaits live activation).
