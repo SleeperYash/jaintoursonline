@@ -28,10 +28,8 @@ Deno.serve(async (req) => {
 
     const now = new Date().toISOString();
     // Neutralize spreadsheet formulas: visitor text must never execute in the sheet.
-    const cell = (v: unknown) => {
-      const s = String(v ?? "").slice(0, 2000);
-      return /^[=+\-@\t\r]/.test(s) ? `'${s}` : s;
-    };
+    // RAW input stores every value as plain text, so formulas never run.
+    const cell = (v: unknown) => String(v ?? "").slice(0, 2000);
     const row = [
       now,
       cell(body.name),
