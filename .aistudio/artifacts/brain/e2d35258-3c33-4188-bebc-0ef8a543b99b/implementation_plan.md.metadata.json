@@ -1,6 +1,6 @@
 {
-  "summary": "Implementation plan for redesigning the destination itinerary detail page into an editorial document brochure layout. Incorporates company logo branding, admin-entered title/duration/price, AI-extracted overview and highlights, day-by-day 2-column photo breakdowns, structured trip detail boxes, and dual PDF download / print-ready brochure views.",
-  "updatedAt": "2026-10-13T06:18:33.991719500Z",
+  "summary": "Implementation plan for elevating the Itinerary Detail experience with a sticky day-jumper bar, tabbed dossier views (Schedule, Hotels, Inclusions & Info), an ultra-lightweight full-screen photo lightbox, and refined editorial visual polish without lag.",
+  "updatedAt": "2026-10-13T09:32:19.903484862Z",
   "requestFeedback": true,
   "userFacing": true
 }

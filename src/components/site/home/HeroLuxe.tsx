@@ -84,36 +84,47 @@ const HeroLuxe = () => {
     return () => clearInterval(t);
   }, []);
 
-  // Preload ALL hero slideshow images so every crossfade is instant and seamless.
-  // The initial slide gets high priority; the rest warm the cache at low priority.
+  // Preload secondary hero slideshow images after initial paint so every crossfade is instant,
+  // without competing for bandwidth/CPU during the initial first-contentful-paint.
   useEffect(() => {
     const links: HTMLLinkElement[] = [];
-    slides.forEach((s, idx) => {
-      if (document.head.querySelector(`link[rel="preload"][imagesrcset="${s.avif}"]`)) return;
-      const link = document.createElement("link");
-      link.rel = "preload";
-      link.as = "image";
-      link.setAttribute("imagesrcset", s.avif);
-      link.setAttribute("imagesizes", SLIDE_SIZES);
-      link.setAttribute("type", "image/avif");
-      link.setAttribute("fetchpriority", idx === initial ? "high" : "low");
-      document.head.appendChild(link);
-      links.push(link);
-    });
-    return () => links.forEach((l) => l.remove());
+    const timer = setTimeout(() => {
+      slides.forEach((s, idx) => {
+        if (idx === initial) return;
+        if (document.head.querySelector(`link[rel="preload"][imagesrcset="${s.avif}"]`)) return;
+        const link = document.createElement("link");
+        link.rel = "preload";
+        link.as = "image";
+        link.setAttribute("imagesrcset", s.avif);
+        link.setAttribute("imagesizes", SLIDE_SIZES);
+        link.setAttribute("type", "image/avif");
+        link.setAttribute("fetchpriority", "low");
+        document.head.appendChild(link);
+        links.push(link);
+      });
+    }, 2000);
+
+    return () => {
+      clearTimeout(timer);
+      links.forEach((l) => l.remove());
+    };
   }, [initial]);
 
-  // Warm the browser decode cache for every slide right after mount so the
-  // first transition never hits an undecoded image (prevents visible flicker).
+  // Warm the browser decode cache for secondary slides after initial load
+  // so crossfades transition smoothly without visible flicker.
   useEffect(() => {
-    slides.forEach((s, idx) => {
-      if (idx === initial) return;
-      const img = new Image();
-      img.srcset = s.avif;
-      img.sizes = SLIDE_SIZES;
-      img.src = s.url;
-      img.decode?.().catch(() => {});
-    });
+    const timer = setTimeout(() => {
+      slides.forEach((s, idx) => {
+        if (idx === initial) return;
+        const img = new Image();
+        img.srcset = s.avif;
+        img.sizes = SLIDE_SIZES;
+        img.src = s.url;
+        img.decode?.().catch(() => {});
+      });
+    }, 2500);
+
+    return () => clearTimeout(timer);
   }, [initial]);
 
   return (

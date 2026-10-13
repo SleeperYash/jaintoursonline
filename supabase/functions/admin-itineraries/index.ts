@@ -83,22 +83,6 @@ Deno.serve(async (req) => {
     }
   };
 
-  const runImageExtraction = async (itinerary_id: string) => {
-    const res = await fetch(`${SUPABASE_URL}/functions/v1/extract-itinerary-images`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-admin-password": ADMIN_PASSWORD,
-        apikey: SERVICE_ROLE,
-        Authorization: `Bearer ${SERVICE_ROLE}`,
-      },
-      body: JSON.stringify({ itinerary_id }),
-    });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok || !data.ok) throw new Error(data.error ?? "Photo extraction failed");
-    return data.images as number;
-  };
-
   let body: any;
   try {
     body = await req.json();
@@ -160,17 +144,11 @@ Deno.serve(async (req) => {
       // Immediately parse the PDF with Gemini and write normalized rows.
       // We don't fail the upload if parsing fails — admin can re-parse later.
       const parseResult = await runParser(data.id);
-      let image_error: string | null = null;
-      if (parseResult.ok) {
-        try { await runImageExtraction(data.id); }
-        catch (e) { image_error = (e as Error).message; }
-      }
       return json({
         ok: true,
         itinerary: data,
         parsed: parseResult.ok,
         parse_error: parseResult.ok ? null : parseResult.data?.error ?? "Parse failed",
-        image_error,
       });
     }
 
@@ -181,27 +159,7 @@ Deno.serve(async (req) => {
       if (!result.ok) {
         return json({ error: result.data?.error ?? "Parse failed" }, 500);
       }
-      try {
-        const images = await runImageExtraction(id);
-        return json({ ok: true, images });
-      } catch (e) {
-        // Heavy brochures can exceed processing limits; keep the itinerary unchanged.
-        console.error("extract_images failed", e);
-        return json({ ok: true, images: 0, warning: "This PDF is too large to scan for photos. The itinerary page is unchanged." });
-      }
-    }
-
-    if (action === "extract_images") {
-      const { id } = body ?? {};
-      if (typeof id !== "string" || !/^[0-9a-f-]{36}$/i.test(id)) return json({ error: "Invalid id" }, 400);
-      try {
-        const images = await runImageExtraction(id);
-        return json({ ok: true, images });
-      } catch (e) {
-        // Heavy brochures can exceed processing limits; keep the itinerary unchanged.
-        console.error("extract_images failed", e);
-        return json({ ok: true, images: 0, warning: "This PDF is too large to scan for photos. The itinerary page is unchanged." });
-      }
+      return json({ ok: true });
     }
 
     if (action === "update_price") {
@@ -264,6 +222,288 @@ Deno.serve(async (req) => {
       const { error: delErr } = await supabase.from("itineraries").delete().eq("id", id);
       if (delErr) return json({ error: delErr.message }, 500);
       if (dayImages?.length) await supabase.storage.from("itineraries").remove(dayImages.map((image) => image.file_path));
+      return json({ ok: true });
+    }
+
+    if (action === "itinerary_get") {
+      const { id } = body ?? {};
+      if (!id) return json({ error: "Missing id" }, 400);
+
+      const [itinRes, daysRes, hotelsRes, incRes, excRes, imagesRes] = await Promise.all([
+        supabase
+          .from("itineraries")
+          .select("id,title,destination_slug,destination,duration,starting_price,overview,visa_information,terms_conditions,parsed_data")
+          .eq("id", id)
+          .maybeSingle(),
+        supabase
+          .from("itinerary_days")
+          .select("id,day_number,title,description")
+          .eq("itinerary_id", id)
+          .order("day_number", { ascending: true }),
+        supabase
+          .from("itinerary_hotels")
+          .select("id,city,hotel_name,nights,position")
+          .eq("itinerary_id", id)
+          .order("position", { ascending: true }),
+        supabase
+          .from("itinerary_inclusions")
+          .select("id,inclusion_text,position")
+          .eq("itinerary_id", id)
+          .order("position", { ascending: true }),
+        supabase
+          .from("itinerary_exclusions")
+          .select("id,exclusion_text,position")
+          .eq("itinerary_id", id)
+          .order("position", { ascending: true }),
+        supabase
+          .from("itinerary_day_images")
+          .select("id,day_number,position,file_path,alt_text")
+          .eq("itinerary_id", id)
+          .order("position", { ascending: true }),
+      ]);
+
+      if (itinRes.error) return json({ error: itinRes.error.message }, 500);
+      if (!itinRes.data) return json({ error: "Itinerary not found" }, 404);
+
+      const itin = itinRes.data;
+      const parsedData = (itin.parsed_data ?? {}) as Record<string, any>;
+      const highlights = Array.isArray(parsedData.highlights) ? parsedData.highlights : [];
+
+      const rawDays = (daysRes.data && daysRes.data.length > 0)
+        ? daysRes.data
+        : (Array.isArray(parsedData.days) ? parsedData.days.map((d: any, idx: number) => ({
+            id: undefined,
+            day_number: typeof d.dayNumber === "number" ? d.dayNumber : (typeof d.day_number === "number" ? d.day_number : idx + 1),
+            title: d.title ?? `Day ${idx + 1}`,
+            description: d.description ?? d.body ?? "",
+          })) : []);
+
+      const rawHotels = (hotelsRes.data && hotelsRes.data.length > 0)
+        ? hotelsRes.data
+        : (Array.isArray(parsedData.hotels) ? parsedData.hotels.map((h: any) => ({
+            id: undefined,
+            city: h.city ?? "",
+            hotel_name: h.hotel_name ?? h.name ?? "",
+            nights: typeof h.nights === "number" ? h.nights : null,
+          })) : []);
+
+      const rawInclusions = (incRes.data && incRes.data.length > 0)
+        ? incRes.data.map((i: any) => i.inclusion_text)
+        : (Array.isArray(parsedData.inclusions) ? parsedData.inclusions.map(String) : []);
+
+      const rawExclusions = (excRes.data && excRes.data.length > 0)
+        ? excRes.data.map((e: any) => e.exclusion_text)
+        : (Array.isArray(parsedData.exclusions) ? parsedData.exclusions.map(String) : []);
+
+      return json({
+        ok: true,
+        itinerary: {
+          id: itin.id,
+          title: itin.title,
+          destination_slug: itin.destination_slug,
+          destination: itin.destination,
+          duration: itin.duration || parsedData.duration || null,
+          starting_price: itin.starting_price || parsedData.starting_price || null,
+          overview: itin.overview || parsedData.overview || null,
+          highlights,
+          visa_information: itin.visa_information || parsedData.visa || parsedData.visa_information || null,
+          terms_conditions: itin.terms_conditions || parsedData.terms_conditions || null,
+          days: rawDays,
+          hotels: rawHotels,
+          inclusions: rawInclusions,
+          exclusions: rawExclusions,
+          day_images: imagesRes.data ?? [],
+        },
+      });
+    }
+
+    if (action === "itinerary_save") {
+      const {
+        id,
+        title,
+        duration,
+        starting_price,
+        overview,
+        highlights,
+        days,
+        hotels,
+        inclusions,
+        exclusions,
+        visa_information,
+        terms_conditions,
+      } = body ?? {};
+      if (!id) return json({ error: "Missing id" }, 400);
+
+      const { data: existing } = await supabase
+        .from("itineraries")
+        .select("parsed_data")
+        .eq("id", id)
+        .maybeSingle();
+
+      const existingParsed = (existing?.parsed_data ?? {}) as Record<string, any>;
+      const nextParsed = {
+        ...existingParsed,
+        title: title ? String(title).trim() : null,
+        duration: duration ? String(duration).trim() : null,
+        starting_price: starting_price ? String(starting_price).trim() : null,
+        overview: overview ? String(overview).trim() : null,
+        highlights: Array.isArray(highlights) ? highlights.map(String) : [],
+        visa_information: visa_information ? String(visa_information).trim() : null,
+        terms_conditions: terms_conditions ? String(terms_conditions).trim() : null,
+      };
+
+      const updateData: Record<string, unknown> = {
+        title: title ? String(title).trim().slice(0, 160) : undefined,
+        duration: duration ? String(duration).trim().slice(0, 40) : null,
+        starting_price: starting_price ? String(starting_price).trim().slice(0, 40) : null,
+        overview: overview ? String(overview).trim() : null,
+        visa_information: visa_information ? String(visa_information).trim() : null,
+        terms_conditions: terms_conditions ? String(terms_conditions).trim() : null,
+        parsed_data: nextParsed,
+      };
+
+      const { error: updErr } = await supabase
+        .from("itineraries")
+        .update(updateData)
+        .eq("id", id);
+      if (updErr) return json({ error: updErr.message }, 500);
+
+      if (Array.isArray(days)) {
+        await supabase.from("itinerary_days").delete().eq("itinerary_id", id);
+        if (days.length) {
+          await supabase.from("itinerary_days").insert(
+            days.map((d: any, idx: number) => ({
+              itinerary_id: id,
+              day_number: typeof d.day_number === "number" ? d.day_number : idx + 1,
+              title: String(d.title || `Day ${idx + 1}`).trim(),
+              description: String(d.description || "").trim(),
+            })),
+          );
+        }
+      }
+
+      if (Array.isArray(hotels)) {
+        await supabase.from("itinerary_hotels").delete().eq("itinerary_id", id);
+        if (hotels.length) {
+          await supabase.from("itinerary_hotels").insert(
+            hotels.map((h: any, idx: number) => ({
+              itinerary_id: id,
+              position: idx,
+              city: String(h.city || "").trim(),
+              hotel_name: String(h.hotel_name || "").trim(),
+              nights: typeof h.nights === "number" ? h.nights : null,
+            })),
+          );
+        }
+      }
+
+      if (Array.isArray(inclusions)) {
+        await supabase.from("itinerary_inclusions").delete().eq("itinerary_id", id);
+        if (inclusions.length) {
+          await supabase.from("itinerary_inclusions").insert(
+            inclusions.map((text: any, idx: number) => ({
+              itinerary_id: id,
+              position: idx,
+              inclusion_text: String(text).trim(),
+            })),
+          );
+        }
+      }
+
+      if (Array.isArray(exclusions)) {
+        await supabase.from("itinerary_exclusions").delete().eq("itinerary_id", id);
+        if (exclusions.length) {
+          await supabase.from("itinerary_exclusions").insert(
+            exclusions.map((text: any, idx: number) => ({
+              itinerary_id: id,
+              position: idx,
+              exclusion_text: String(text).trim(),
+            })),
+          );
+        }
+      }
+
+      return json({ ok: true });
+    }
+
+    if (action === "itinerary_day_image_upload") {
+      const { itinerary_id, day_number, position, file_base64, file_name, content_type, alt_text } = body ?? {};
+      if (!itinerary_id || typeof day_number !== "number" || typeof position !== "number" || !file_base64 || !file_name || !content_type) {
+        return json({ error: "Missing required fields" }, 400);
+      }
+      if (position !== 0 && position !== 1) {
+        return json({ error: "Position must be 0 or 1 (max 2 images per day)" }, 400);
+      }
+      if (!ALLOWED_IMAGE_TYPES.has(String(content_type).toLowerCase())) {
+        return json({ error: "Only JPG, PNG, WEBP or AVIF images allowed" }, 400);
+      }
+      const bin = atob(file_base64);
+      const bytes = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      if (bytes.byteLength > 10 * 1024 * 1024) return json({ error: "Max 10MB per image" }, 400);
+
+      const { data: existingImg } = await supabase
+        .from("itinerary_day_images")
+        .select("file_path")
+        .eq("itinerary_id", itinerary_id)
+        .eq("day_number", day_number)
+        .eq("position", position)
+        .maybeSingle();
+
+      if (existingImg?.file_path) {
+        await supabase.storage.from("itineraries").remove([existingImg.file_path]);
+      }
+
+      const safe = String(file_name).replace(/[^a-zA-Z0-9._-]/g, "_");
+      const path = `images/itineraries/${itinerary_id}/day-${day_number}-pos-${position}-${Date.now()}-${safe}`;
+      const { error: upErr } = await supabase.storage
+        .from("itineraries")
+        .upload(path, bytes, { contentType: String(content_type), upsert: true });
+      if (upErr) return json({ error: upErr.message }, 500);
+
+      const { data: row, error: upsertErr } = await supabase
+        .from("itinerary_day_images")
+        .upsert(
+          {
+            itinerary_id,
+            day_number,
+            position,
+            file_path: path,
+            alt_text: typeof alt_text === "string" ? alt_text.trim() : "",
+          },
+          { onConflict: "itinerary_id,day_number,position" },
+        )
+        .select()
+        .single();
+
+      if (upsertErr) return json({ error: upsertErr.message }, 500);
+      return json({ ok: true, day_image: row });
+    }
+
+    if (action === "itinerary_day_image_delete") {
+      const { itinerary_id, day_number, position } = body ?? {};
+      if (!itinerary_id || typeof day_number !== "number" || typeof position !== "number") {
+        return json({ error: "Missing required fields" }, 400);
+      }
+      const { data: existingImg } = await supabase
+        .from("itinerary_day_images")
+        .select("file_path")
+        .eq("itinerary_id", itinerary_id)
+        .eq("day_number", day_number)
+        .eq("position", position)
+        .maybeSingle();
+
+      if (existingImg?.file_path) {
+        await supabase.storage.from("itineraries").remove([existingImg.file_path]);
+      }
+      const { error: delErr } = await supabase
+        .from("itinerary_day_images")
+        .delete()
+        .eq("itinerary_id", itinerary_id)
+        .eq("day_number", day_number)
+        .eq("position", position);
+
+      if (delErr) return json({ error: delErr.message }, 500);
       return json({ ok: true });
     }
 

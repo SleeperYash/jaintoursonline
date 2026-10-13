@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { BRAND, waLink } from "@/lib/brand";
@@ -13,15 +13,31 @@ import {
   X as XIcon,
   Download,
   Loader2,
-  Printer,
   ShieldCheck,
   Hotel,
   MessageCircle,
   Phone,
   Mail,
-  Send,
   Share2,
+  FileText,
+  Copy,
+  Compass,
+  Maximize2,
+  ChevronLeft,
+  ChevronRight,
+  MapPin,
+  Sparkles,
 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 type ParsedDay = { title: string; body: string; activities?: string[]; dayNumber?: number };
 type ParsedHotel = { city: string; hotel_name: string; nights: number | null };
@@ -79,6 +95,17 @@ const ItineraryDetailView = ({
   const [parsed, setParsed] = useState<Parsed | null>(null);
   const [dayImages, setDayImages] = useState<Record<number, { file_path: string; alt_text: string }[]>>({});
   const [similar, setSimilar] = useState<{ id: string; title: string; starting_price: string | null; duration: string | null }[]>([]);
+  const [shareOpen, setShareOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [activeDayNumber, setActiveDayNumber] = useState<number>(1);
+  const [parallaxOffsets, setParallaxOffsets] = useState<Record<number, number>>({});
+  const [lightbox, setLightbox] = useState<{
+    isOpen: boolean;
+    index: number;
+  }>({ isOpen: false, index: 0 });
+  const [isDocked, setIsDocked] = useState(false);
+  const jumperScrollRef = useRef<HTMLDivElement | null>(null);
+  const dockSentinelRef = useRef<HTMLDivElement | null>(null);
 
   const { images: uploadedDestImages, loading: uploadedDestLoading } = useDestinationImages(destinationSlug ?? "");
   const { hidden: hiddenDestImages, loading: hiddenDestLoading } = useHiddenDefaultImages(destinationSlug);
@@ -303,25 +330,245 @@ const ItineraryDetailView = ({
     return derived.slice(0, 5);
   }, [parsed]);
 
-  const handlePrint = () => {
-    window.print();
+  // Flat list of all day photos for full-screen lightbox
+  const allDayPhotos = useMemo(() => {
+    if (!parsed?.days) return [];
+    const list: { url: string; caption: string; dayNum: number; dayTitle: string }[] = [];
+    parsed.days.forEach((d, idx) => {
+      const dayNum = d.dayNumber ?? idx + 1;
+      const extractedPhotos = dayImages[dayNum] ?? [];
+      const dayCleanTitle = d.title.replace(/^Day\s*\d+\s*[:\-–]\s*/i, "").trim();
+
+      const photo1 = extractedPhotos[0]
+        ? adminPublicUrl(extractedPhotos[0].file_path)
+        : photoPool.length > 0
+        ? photoPool[(idx * 2) % photoPool.length]
+        : null;
+      const caption1 = extractedPhotos[0]?.alt_text || dayCleanTitle || `${destinationName} Day ${dayNum}`;
+      if (photo1) list.push({ url: photo1, caption: caption1, dayNum, dayTitle: dayCleanTitle || d.title });
+
+      const photo2 = extractedPhotos[1]
+        ? adminPublicUrl(extractedPhotos[1].file_path)
+        : photoPool.length > 1
+        ? photoPool[(idx * 2 + 1) % photoPool.length]
+        : null;
+      const caption2 = extractedPhotos[1]?.alt_text || `${destinationName} Sightseeing`;
+      if (photo2) list.push({ url: photo2, caption: caption2, dayNum, dayTitle: dayCleanTitle || d.title });
+    });
+    return list;
+  }, [parsed?.days, dayImages, photoPool, destinationName]);
+
+  const openLightbox = (photoUrl: string) => {
+    const foundIdx = allDayPhotos.findIndex((p) => p.url === photoUrl);
+    setLightbox({
+      isOpen: true,
+      index: foundIdx >= 0 ? foundIdx : 0,
+    });
   };
 
-  const handleShare = async () => {
-    const url = window.location.href;
-    if (navigator.share) {
+  const closeLightbox = () => {
+    setLightbox((prev) => ({ ...prev, isOpen: false }));
+  };
+
+  const nextLightboxPhoto = () => {
+    setLightbox((prev) => ({
+      ...prev,
+      index: (prev.index + 1) % (allDayPhotos.length || 1),
+    }));
+  };
+
+  const prevLightboxPhoto = () => {
+    setLightbox((prev) => ({
+      ...prev,
+      index: (prev.index - 1 + (allDayPhotos.length || 1)) % (allDayPhotos.length || 1),
+    }));
+  };
+
+  // Keyboard navigation for lightbox
+  useEffect(() => {
+    if (!lightbox.isOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setLightbox((prev) => ({ ...prev, isOpen: false }));
+      } else if (e.key === "ArrowRight") {
+        setLightbox((prev) => ({
+          ...prev,
+          index: (prev.index + 1) % (allDayPhotos.length || 1),
+        }));
+      } else if (e.key === "ArrowLeft") {
+        setLightbox((prev) => ({
+          ...prev,
+          index: (prev.index - 1 + (allDayPhotos.length || 1)) % (allDayPhotos.length || 1),
+        }));
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [lightbox.isOpen, allDayPhotos.length]);
+
+  // Scroll spy observer for sticky day jumper
+  useEffect(() => {
+    if (!parsed?.days?.length) return;
+
+    const cards = parsed.days
+      .map((d, idx) => {
+        const num = d.dayNumber ?? idx + 1;
+        return document.getElementById(`day-card-${num}`);
+      })
+      .filter(Boolean) as HTMLElement[];
+
+    if (!cards.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const intersecting = entries.filter((e) => e.isIntersecting);
+        if (intersecting.length > 0) {
+          const closest = intersecting.reduce((prev, curr) =>
+            Math.abs(curr.boundingClientRect.top) < Math.abs(prev.boundingClientRect.top) ? curr : prev
+          );
+          const rawNum = closest.target.getAttribute("data-day-num");
+          if (rawNum) {
+            const num = parseInt(rawNum, 10);
+            setActiveDayNumber(num);
+
+            // Keep active chip centered in the horizontal jumper bar
+            const container = jumperScrollRef.current;
+            const chip = container?.querySelector(`[data-jumper-day="${num}"]`) as HTMLElement | null;
+            if (container && chip) {
+              const chipLeft = chip.offsetLeft;
+              const chipWidth = chip.offsetWidth;
+              const containerWidth = container.offsetWidth;
+              container.scrollTo({
+                left: chipLeft - containerWidth / 2 + chipWidth / 2,
+                behavior: "smooth",
+              });
+            }
+          }
+        }
+      },
+      {
+        root: null,
+        rootMargin: "-15% 0px -65% 0px",
+        threshold: 0,
+      }
+    );
+
+    cards.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, [parsed?.days]);
+
+  // Subtle luxury parallax effect on day-count headers as they scroll
+  useEffect(() => {
+    if (!parsed?.days?.length) return;
+
+    let rafId: number | null = null;
+    const updateParallax = () => {
+      const windowHeight = window.innerHeight;
+      const newOffsets: Record<number, number> = {};
+
+      parsed.days.forEach((d, idx) => {
+        const num = d.dayNumber ?? idx + 1;
+        const el = document.getElementById(`day-card-${num}`);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          // Check if card is currently near or within the viewport
+          if (rect.bottom > -80 && rect.top < windowHeight + 80) {
+            const cardCenter = rect.top + rect.height / 2;
+            const screenCenter = windowHeight / 2;
+            const delta = (cardCenter - screenCenter) / windowHeight;
+            // Subtle, luxurious parallax drift (max +/- 8px)
+            const offset = Math.max(-8, Math.min(8, Math.round(delta * 16)));
+            newOffsets[num] = offset;
+          }
+        }
+      });
+
+      setParallaxOffsets((prev) => {
+        let changed = false;
+        for (const k in newOffsets) {
+          if (prev[k] !== newOffsets[k]) {
+            changed = true;
+            break;
+          }
+        }
+        return changed ? { ...prev, ...newOffsets } : prev;
+      });
+      rafId = null;
+    };
+
+    const handleScroll = () => {
+      if (rafId === null) {
+        rafId = window.requestAnimationFrame(updateParallax);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll, { passive: true });
+    updateParallax();
+
+    return () => {
+      if (rafId !== null) window.cancelAnimationFrame(rafId);
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
+  }, [parsed?.days]);
+
+  // Docking listener: seamlessly attach WhatsApp & Share CTA bar below Need Help Customizing
+  // so it does not continue floating over More Packages and the footer
+  useEffect(() => {
+    const checkDock = () => {
+      const el = dockSentinelRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      // On mobile and desktop, when the dock slot reaches or passes the bottom of the viewport:
+      // it docks into place and ceases to float down into the footer!
+      const dockThreshold = window.innerHeight - 75;
+      setIsDocked(rect.top <= dockThreshold);
+    };
+
+    window.addEventListener("scroll", checkDock, { passive: true });
+    window.addEventListener("resize", checkDock, { passive: true });
+    checkDock();
+
+    return () => {
+      window.removeEventListener("scroll", checkDock);
+      window.removeEventListener("resize", checkDock);
+    };
+  }, []);
+
+  const scrollToDay = (dayNum: number) => {
+    const el = document.getElementById(`day-card-${dayNum}`);
+    if (el) {
+      const y = el.getBoundingClientRect().top + window.pageYOffset - 110;
+      window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
+      setActiveDayNumber(dayNum);
+    }
+  };
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      toast({ title: "Link copied to clipboard", description: "You can now share this itinerary." });
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      toast({ title: "Failed to copy link", variant: "destructive" });
+    }
+  };
+
+  const handleNativeShare = async () => {
+    if (typeof navigator !== "undefined" && navigator.share) {
       try {
         await navigator.share({
           title: `${displayTitle} | Jain Tours & Travels`,
           text: `Explore the ${displayTitle} tour package itinerary.`,
-          url,
+          url: window.location.href,
         });
       } catch {
         /* share dismissed */
       }
     } else {
-      await navigator.clipboard.writeText(url);
-      toast({ title: "Link copied to clipboard", description: "You can now share this itinerary." });
+      handleCopyLink();
     }
   };
 
@@ -374,7 +621,7 @@ const ItineraryDetailView = ({
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
           }
-          header, nav, footer, .no-print, [role="navigation"], .cookie-banner {
+          header, nav, footer, .no-print, [role="navigation"], .cookie-banner, .mobile-bar, .sticky-jumper {
             display: none !important;
           }
           .brochure-container {
@@ -384,6 +631,10 @@ const ItineraryDetailView = ({
             background-color: transparent !important;
             border: none !important;
             box-shadow: none !important;
+          }
+          .tab-pane {
+            display: block !important;
+            visibility: visible !important;
           }
           .day-card, .section-card, .hero-card {
             break-inside: avoid !important;
@@ -452,44 +703,15 @@ const ItineraryDetailView = ({
                 </span>
               </div>
 
-              {/* Utility actions inside header on desktop / tablet */}
-              <div className="no-print hidden sm:flex items-center justify-center gap-2 mt-4 pt-3 border-t border-border/60">
-                <button
-                  type="button"
-                  onClick={handlePrint}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border text-foreground text-xs font-semibold hover:bg-muted transition"
-                  title="Save or Print as PDF"
-                >
-                  <Printer className="w-3.5 h-3.5 text-foreground/80" /> Save as PDF
-                </button>
-                {onDownload && (
-                  <button
-                    type="button"
-                    onClick={onDownload}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border text-foreground text-xs font-semibold hover:bg-muted transition"
-                    title="Download Original PDF"
-                  >
-                    <Download className="w-3.5 h-3.5 text-primary" /> Source PDF
-                  </button>
-                )}
-                <button
-                  type="button"
-                  onClick={handleShare}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border text-foreground text-xs font-semibold hover:bg-muted transition"
-                  title="Share link"
-                >
-                  <Share2 className="w-3.5 h-3.5 text-foreground/80" /> Share
-                </button>
-              </div>
             </header>
 
             {/* Overview Section Card */}
             {parsed.overview && (
               <section className="section-card bg-card border border-border rounded-xl p-4 sm:p-5 mb-3.5 shadow-sm">
-                <h2 className="text-[15px] font-bold text-[#1c2833] dark:text-white mb-2 flex items-center gap-2">
+                <h2 className="text-[15px] md:text-2xl font-serif font-bold text-[#1c2833] dark:text-white mb-2 md:mb-3 flex items-center gap-2">
                   Trip Overview
                 </h2>
-                <p className="text-[13.5px] leading-relaxed text-slate-700 dark:text-slate-300 text-justify whitespace-pre-line">
+                <p className="text-[13.5px] md:text-base leading-relaxed text-slate-700 dark:text-slate-300 text-justify whitespace-pre-line">
                   {parsed.overview}
                 </p>
               </section>
@@ -498,8 +720,8 @@ const ItineraryDetailView = ({
             {/* Tour Highlights Card */}
             {highlights.length > 0 && (
               <section className="section-card bg-card border border-border rounded-xl p-4 sm:p-5 mb-3.5 shadow-sm">
-                <h2 className="text-[15px] font-bold text-[#1c2833] dark:text-white mb-2.5 flex items-center gap-2">
-                  Tour Highlights
+                <h2 className="text-[15px] md:text-2xl font-serif font-bold text-[#1c2833] dark:text-white mb-2.5 md:mb-3.5 flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 md:w-5 md:h-5 text-[#2e7d32] dark:text-gold" /> Tour Highlights
                 </h2>
                 <ul className="space-y-2">
                   {highlights.map((h, i) => (
@@ -515,6 +737,40 @@ const ItineraryDetailView = ({
                   ))}
                 </ul>
               </section>
+            )}
+
+            {/* Sticky Day Jumper Bar */}
+            {parsed.days.length > 1 && (
+              <div className="sticky-jumper no-print sticky top-14 z-10 bg-card/95 backdrop-blur-md border border-border/80 rounded-xl p-2 mb-3.5 shadow-sm">
+                <div
+                  ref={jumperScrollRef}
+                  className="flex items-center gap-1.5 overflow-x-auto scrollbar-none py-0.5"
+                  style={{ scrollbarWidth: "none" }}
+                >
+                  <span className="text-[10.5px] uppercase tracking-wider font-bold text-muted-foreground shrink-0 mr-1 pl-1 flex items-center gap-1">
+                    <Compass className="w-3.5 h-3.5 text-gold" /> Days:
+                  </span>
+                  {parsed.days.map((d, idx) => {
+                    const dayNum = d.dayNumber ?? idx + 1;
+                    const isActive = activeDayNumber === dayNum;
+                    return (
+                      <button
+                        key={dayNum}
+                        type="button"
+                        data-jumper-day={dayNum}
+                        onClick={() => scrollToDay(dayNum)}
+                        className={`shrink-0 px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${
+                          isActive
+                            ? "bg-[#1c2833] dark:bg-gold text-white dark:text-slate-950 shadow-sm scale-105"
+                            : "bg-muted/60 text-muted-foreground hover:text-foreground hover:bg-muted"
+                        }`}
+                      >
+                        Day {String(dayNum).padStart(2, "0")}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
             )}
 
             {/* Day-by-Day Cards */}
@@ -544,28 +800,51 @@ const ItineraryDetailView = ({
                 return (
                   <article
                     key={idx}
-                    className="day-card bg-card border border-border rounded-xl p-4 sm:p-5 shadow-sm"
+                    id={`day-card-${dayNum}`}
+                    data-day-num={dayNum}
+                    className="day-card relative bg-card border border-border rounded-xl p-4 sm:p-5 shadow-sm scroll-mt-28 overflow-hidden"
                   >
-                    {/* Day Pill & Heading Header */}
-                    <div className="flex items-center gap-2 mb-2.5">
-                      <span className="bg-[#1c2833] dark:bg-gold text-white dark:text-slate-950 text-[11px] font-bold uppercase px-2 py-0.5 rounded tracking-wide shrink-0">
+                    {/* Subtle Luxury Day Watermark with counter-parallax */}
+                    <span
+                      aria-hidden="true"
+                      className="pointer-events-none select-none absolute top-2.5 right-4 font-serif font-extrabold text-3xl sm:text-4xl md:text-5xl text-slate-900/[0.04] dark:text-white/[0.05] transition-transform duration-75 ease-out will-change-transform"
+                      style={{
+                        transform: `translate3d(0, ${-(parallaxOffsets[dayNum] ?? 0) * 1.2}px, 0)`,
+                      }}
+                    >
+                      {String(dayNum).padStart(2, "0")}
+                    </span>
+
+                    {/* Day Pill & Heading Header with Subtle Luxury Parallax */}
+                    <div
+                      className="flex items-center gap-2.5 md:gap-3.5 mb-2.5 md:mb-3.5 relative transition-transform duration-75 ease-out will-change-transform"
+                      style={{
+                        transform: `translate3d(0, ${parallaxOffsets[dayNum] ?? 0}px, 0)`,
+                      }}
+                    >
+                      <span className="bg-[#1c2833] dark:bg-gold text-white dark:text-slate-950 text-[11px] md:text-xs font-bold uppercase px-2.5 py-1 rounded-md tracking-wider shrink-0 shadow-sm transition-transform">
                         Day {String(dayNum).padStart(2, "0")}
                       </span>
-                      <h3 className="text-[14.5px] sm:text-base font-bold text-[#1c2833] dark:text-white leading-tight flex-1">
+                      <h3 className="text-[14.5px] sm:text-base md:text-2xl lg:text-[25px] font-bold md:font-serif text-[#1c2833] dark:text-white leading-tight flex-1">
                         {dayCleanTitle || d.title}
                       </h3>
                     </div>
 
                     {/* Day Description */}
-                    <p className="text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed mb-3 whitespace-pre-line text-justify">
+                    <p className="text-[13px] sm:text-[13.5px] md:text-base text-slate-600 dark:text-slate-300 leading-relaxed mb-3 whitespace-pre-line text-justify">
                       {d.body}
                     </p>
 
-                    {/* 2-Column Mobile Image Grid with Sleek Gradient Captions */}
+                    {/* 2-Column Mobile Image Grid with Zoom on Click */}
                     {(photo1 || photo2) && (
                       <div className="image-grid grid grid-cols-2 gap-2 mt-2">
                         {photo1 && (
-                          <div className="img-box h-[120px] sm:h-[140px] md:h-[160px] rounded-lg overflow-hidden bg-slate-200 dark:bg-slate-800 relative group">
+                          <button
+                            type="button"
+                            onClick={() => openLightbox(photo1)}
+                            className="img-box h-[120px] sm:h-[140px] md:h-[160px] rounded-lg overflow-hidden bg-slate-200 dark:bg-slate-800 relative group cursor-zoom-in text-left focus:outline-none focus:ring-2 focus:ring-gold"
+                            title="Click to view full photo"
+                          >
                             <img
                               src={photo1}
                               alt={caption1}
@@ -573,13 +852,23 @@ const ItineraryDetailView = ({
                               decoding="async"
                               className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                             />
+                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                              <span className="p-1.5 rounded-full bg-black/60 text-white backdrop-blur-sm">
+                                <Maximize2 className="w-3.5 h-3.5" />
+                              </span>
+                            </div>
                             <span className="img-caption absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent text-white text-[9.5px] font-semibold px-2 py-1 truncate">
                               {caption1}
                             </span>
-                          </div>
+                          </button>
                         )}
                         {photo2 && (
-                          <div className="img-box h-[120px] sm:h-[140px] md:h-[160px] rounded-lg overflow-hidden bg-slate-200 dark:bg-slate-800 relative group">
+                          <button
+                            type="button"
+                            onClick={() => openLightbox(photo2)}
+                            className="img-box h-[120px] sm:h-[140px] md:h-[160px] rounded-lg overflow-hidden bg-slate-200 dark:bg-slate-800 relative group cursor-zoom-in text-left focus:outline-none focus:ring-2 focus:ring-gold"
+                            title="Click to view full photo"
+                          >
                             <img
                               src={photo2}
                               alt={caption2}
@@ -587,10 +876,15 @@ const ItineraryDetailView = ({
                               decoding="async"
                               className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                             />
+                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                              <span className="p-1.5 rounded-full bg-black/60 text-white backdrop-blur-sm">
+                                <Maximize2 className="w-3.5 h-3.5" />
+                              </span>
+                            </div>
                             <span className="img-caption absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent text-white text-[9.5px] font-semibold px-2 py-1 truncate">
                               {caption2}
                             </span>
-                          </div>
+                          </button>
                         )}
                       </div>
                     )}
@@ -602,32 +896,65 @@ const ItineraryDetailView = ({
             {/* Hotel Accommodations Card */}
             {parsed.hotels && parsed.hotels.length > 0 && (
               <section className="section-card bg-card border border-border rounded-xl p-4 sm:p-5 mb-3.5 shadow-sm">
-                <h2 className="text-[15px] font-bold text-[#1c2833] dark:text-white mb-2 flex items-center gap-2">
-                  <Hotel className="w-4 h-4 text-[#2e7d32] dark:text-gold" /> Hotel Accommodations
-                </h2>
-                <ul className="space-y-2">
+                <div className="flex items-center justify-between mb-3 border-b border-border/60 pb-2.5">
+                  <h2 className="text-[15px] md:text-2xl font-serif font-bold text-[#1c2833] dark:text-white flex items-center gap-2">
+                    <Hotel className="w-4 h-4 md:w-5 md:h-5 text-[#2e7d32] dark:text-gold" /> Hotel Accommodations
+                  </h2>
+                  <span className="text-[11px] md:text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                    {parsed.hotels.length} Stays Selected
+                  </span>
+                </div>
+
+                <div className="grid gap-3">
                   {parsed.hotels.map((h, i) => (
-                    <li key={i} className="relative pl-5 text-[13px] text-slate-700 dark:text-slate-300 leading-snug">
-                      <span className="absolute left-1 top-0 text-[#2e7d32] dark:text-gold text-lg leading-none font-bold">
-                        •
-                      </span>
-                      <strong>{h.city} {h.nights ? `(${h.nights} Night${h.nights > 1 ? "s" : ""})` : ""}: </strong>
-                      <span>{h.hotel_name || "Quality 4-Star or equivalent"}</span>
-                    </li>
+                    <div
+                      key={i}
+                      className="p-3.5 rounded-lg border border-border/70 bg-muted/20 hover:bg-muted/40 transition flex flex-col sm:flex-row sm:items-center justify-between gap-2.5"
+                    >
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className="inline-flex items-center gap-1 text-[11px] md:text-xs font-bold uppercase tracking-wider text-[#2e7d32] dark:text-gold">
+                            <MapPin className="w-3 h-3" /> {h.city || "Destination"}
+                          </span>
+                          {h.nights && (
+                            <span className="text-[10px] md:text-[11px] font-semibold bg-muted px-2 py-0.5 rounded text-muted-foreground">
+                              {h.nights} Night{h.nights > 1 ? "s" : ""}
+                            </span>
+                          )}
+                        </div>
+                        <h3 className="font-serif text-[15px] md:text-xl font-bold text-foreground">
+                          {h.hotel_name || "Quality 4-Star or equivalent"}
+                        </h3>
+                      </div>
+                      <div className="flex items-center gap-2 text-[11px] md:text-xs text-muted-foreground shrink-0">
+                        <span className="bg-card border border-border/60 px-2 py-1 rounded text-[10.5px] md:text-[11px]">
+                          Daily Breakfast
+                        </span>
+                        <span className="bg-card border border-border/60 px-2 py-1 rounded text-[10.5px] md:text-[11px]">
+                          Ensuite AC
+                        </span>
+                      </div>
+                    </div>
                   ))}
-                </ul>
+                </div>
+
+                <div className="mt-4 pt-3 border-t border-border/60 flex items-center justify-between text-xs md:text-sm text-muted-foreground">
+                  <span className="flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 md:w-4 md:h-4 text-gold" /> Upgrades to 5-Star / Luxury resorts available on request
+                  </span>
+                </div>
               </section>
             )}
 
             {/* Package Inclusions Card */}
             {parsed.inclusions.length > 0 && (
               <section className="section-card bg-card border border-border rounded-xl p-4 sm:p-5 mb-3.5 shadow-sm">
-                <h2 className="text-[15px] font-bold text-[#1c2833] dark:text-white mb-2 flex items-center gap-2">
-                  <Check className="w-4 h-4 text-[#2e7d32] dark:text-gold" /> Package Inclusions
+                <h2 className="text-[15px] md:text-2xl font-serif font-bold text-[#1c2833] dark:text-white mb-2.5 md:mb-3.5 flex items-center gap-2">
+                  <Check className="w-4 h-4 md:w-5 md:h-5 text-[#2e7d32] dark:text-gold" /> Package Inclusions
                 </h2>
                 <ul className="space-y-2">
                   {parsed.inclusions.map((inc, i) => (
-                    <li key={i} className="relative pl-5 text-[13px] text-slate-700 dark:text-slate-300 leading-snug">
+                    <li key={i} className="relative pl-5 text-[13px] sm:text-[13.5px] md:text-base text-slate-700 dark:text-slate-300 leading-snug">
                       <span className="absolute left-1 top-0 text-[#2e7d32] dark:text-gold text-lg leading-none font-bold">
                         •
                       </span>
@@ -641,12 +968,12 @@ const ItineraryDetailView = ({
             {/* Exclusions Card */}
             {parsed.exclusions.length > 0 && (
               <section className="section-card bg-card border border-border rounded-xl p-4 sm:p-5 mb-3.5 shadow-sm">
-                <h2 className="text-[15px] font-bold text-[#1c2833] dark:text-white mb-2 flex items-center gap-2">
-                  <XIcon className="w-4 h-4 text-destructive" /> Exclusions
+                <h2 className="text-[15px] md:text-2xl font-serif font-bold text-[#1c2833] dark:text-white mb-2.5 md:mb-3.5 flex items-center gap-2">
+                  <XIcon className="w-4 h-4 md:w-5 md:h-5 text-destructive" /> Exclusions
                 </h2>
                 <ul className="space-y-2">
                   {parsed.exclusions.map((exc, i) => (
-                    <li key={i} className="relative pl-5 text-[13px] text-slate-700 dark:text-slate-300 leading-snug">
+                    <li key={i} className="relative pl-5 text-[13px] sm:text-[13.5px] md:text-base text-slate-700 dark:text-slate-300 leading-snug">
                       <span className="absolute left-1 top-0 text-destructive text-lg leading-none font-bold">
                         •
                       </span>
@@ -660,10 +987,10 @@ const ItineraryDetailView = ({
             {/* Visa Guidelines (if international) */}
             {!isDomestic && parsed.visa && (
               <section className="section-card bg-card border border-border rounded-xl p-4 sm:p-5 mb-3.5 shadow-sm">
-                <h2 className="text-[15px] font-bold text-[#1c2833] dark:text-white mb-2 flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-[#2e7d32] dark:text-gold" /> Visa Guidelines
+                <h2 className="text-[15px] md:text-2xl font-serif font-bold text-[#1c2833] dark:text-white mb-2.5 md:mb-3.5 flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 md:w-5 md:h-5 text-[#2e7d32] dark:text-gold" /> Visa Guidelines
                 </h2>
-                <p className="text-[13px] text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
+                <p className="text-[13px] sm:text-[13.5px] md:text-base text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
                   {parsed.visa}
                 </p>
               </section>
@@ -671,17 +998,17 @@ const ItineraryDetailView = ({
 
             {/* Important Notes Card */}
             <section className="section-card bg-card border border-border rounded-xl p-4 sm:p-5 mb-3.5 shadow-sm">
-              <h2 className="text-[15px] font-bold text-[#1c2833] dark:text-white mb-2 flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-[#2e7d32] dark:text-gold" /> Important Notes
+              <h2 className="text-[15px] md:text-2xl font-serif font-bold text-[#1c2833] dark:text-white mb-2.5 md:mb-3.5 flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 md:w-5 md:h-5 text-[#2e7d32] dark:text-gold" /> Important Notes
               </h2>
               <ul className="space-y-2">
                 {parsed.terms_conditions ? (
-                  <li className="text-[13px] text-slate-700 dark:text-slate-300 whitespace-pre-line leading-relaxed">
+                  <li className="text-[13px] sm:text-[13.5px] md:text-base text-slate-700 dark:text-slate-300 whitespace-pre-line leading-relaxed">
                     {parsed.terms_conditions}
                   </li>
                 ) : (
                   DEFAULT_TERMS.map((term, i) => (
-                    <li key={i} className="relative pl-5 text-[13px] text-slate-700 dark:text-slate-300 leading-snug">
+                    <li key={i} className="relative pl-5 text-[13px] sm:text-[13.5px] md:text-base text-slate-700 dark:text-slate-300 leading-snug">
                       <span className="absolute left-1 top-0 text-[#2e7d32] dark:text-gold text-lg leading-none font-bold">
                         •
                       </span>
@@ -693,14 +1020,14 @@ const ItineraryDetailView = ({
             </section>
 
             {/* Need Help Box */}
-            <div className="no-print rounded-xl border border-border bg-card p-4 sm:p-5 mb-4 shadow-sm">
-              <h3 className="font-serif text-lg font-bold text-[#1c2833] dark:text-white mb-1">
+            <div className="no-print rounded-xl border border-border bg-card p-4 sm:p-5 mb-3.5 shadow-sm">
+              <h3 className="font-serif text-lg md:text-3xl font-bold text-[#1c2833] dark:text-white mb-1 md:mb-2">
                 Need Help Customizing?
               </h3>
-              <p className="text-xs text-muted-foreground mb-3">
+              <p className="text-xs md:text-base text-muted-foreground mb-3 md:mb-4">
                 Talk directly to our travel designers to tweak hotels, dates, or additions.
               </p>
-              <div className="flex flex-wrap items-center gap-4 text-xs font-medium text-foreground">
+              <div className="flex flex-wrap items-center gap-4 text-xs md:text-sm font-medium text-foreground">
                 <a href={`tel:+${BRAND.phoneDigits}`} className="flex items-center gap-1.5 hover:text-gold transition">
                   <Phone className="w-3.5 h-3.5 text-gold" /> {BRAND.phone}
                 </a>
@@ -710,10 +1037,62 @@ const ItineraryDetailView = ({
               </div>
             </div>
 
+            {/* Attached WhatsApp & Share Action Bar:
+                - Floats while scrolling (mobile bottom-0, laptop centered floating dock)
+                - Docks seamlessly into place right below Need Help Customizing
+                - Never continues floating down into More Packages or the footer */}
+            <div
+              ref={dockSentinelRef}
+              className="no-print my-3.5 mb-5 w-full min-h-[58px]"
+            >
+              {isDocked && (
+                <div className="w-full rounded-xl bg-card border border-border p-3 sm:p-3.5 shadow-sm flex items-center gap-2.5 sm:gap-3 transition-all">
+                  <a
+                    href={waLink(`Hi Jain Tours, I'd like to get a quote for the ${displayTitle} package.`)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 py-3 px-3.5 rounded-lg bg-[#25D366] text-white text-xs sm:text-sm md:text-base font-bold flex items-center justify-center gap-2 hover:opacity-95 transition shadow-sm"
+                  >
+                    <MessageCircle className="w-4 h-4 md:w-5 md:h-5" /> WhatsApp
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => setShareOpen(true)}
+                    className="flex-1 py-3 px-3.5 rounded-lg bg-[#1c2833] dark:bg-gold text-white dark:text-slate-950 text-xs sm:text-sm md:text-base font-bold flex items-center justify-center gap-2 hover:opacity-95 transition shadow-sm"
+                    title="Share itinerary & source PDF"
+                  >
+                    <Share2 className="w-4 h-4 md:w-5 md:h-5" /> Share
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Floating Action Bar: Visible while scrolling until attached */}
+            {!isDocked && (
+              <div className="no-print fixed bottom-0 md:bottom-4 left-0 right-0 md:left-1/2 md:-translate-x-1/2 z-40 w-full max-w-[540px] md:max-w-[780px] p-2.5 px-3 md:px-4 bg-card/95 dark:bg-slate-900/95 backdrop-blur-md border-t md:border border-border md:rounded-2xl shadow-[0_-4px_20px_rgba(0,0,0,0.12)] md:shadow-2xl flex items-center gap-2.5 md:gap-3 transition-all duration-200">
+                <a
+                  href={waLink(`Hi Jain Tours, I'd like to get a quote for the ${displayTitle} package.`)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 py-2.5 md:py-3 px-3 md:px-4 rounded-lg bg-[#25D366] text-white text-xs sm:text-sm md:text-base font-bold flex items-center justify-center gap-2 hover:opacity-95 transition shadow-sm"
+                >
+                  <MessageCircle className="w-4 h-4 md:w-5 md:h-5" /> WhatsApp
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setShareOpen(true)}
+                  className="flex-1 py-2.5 md:py-3 px-3 md:px-4 rounded-lg bg-[#1c2833] dark:bg-gold text-white dark:text-slate-950 text-xs sm:text-sm md:text-base font-bold flex items-center justify-center gap-2 hover:opacity-95 transition shadow-sm"
+                  title="Share itinerary & source PDF"
+                >
+                  <Share2 className="w-4 h-4 md:w-5 md:h-5" /> Share
+                </button>
+              </div>
+            )}
+
             {/* Similar Tours */}
             {similar.length > 0 && destinationSlug && (
               <div className="no-print mt-6 pt-4 border-t border-border">
-                <h3 className="font-serif text-lg sm:text-xl font-bold text-foreground mb-3">
+                <h3 className="font-serif text-lg sm:text-xl md:text-3xl font-bold text-foreground mb-3 md:mb-4">
                   More {destinationName} Packages
                 </h3>
                 <div
@@ -744,32 +1123,195 @@ const ItineraryDetailView = ({
           </div>
         )}
 
-        {/* Mobile Floating Action Bar matching the sample */}
-        {parsed && (
-          <div className="mobile-bar no-print fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-border p-2.5 px-3 flex items-center gap-2 max-w-[540px] md:max-w-[780px] mx-auto shadow-lg">
-            <button
-              type="button"
-              onClick={handlePrint}
-              className="py-2.5 px-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 text-xs sm:text-sm font-semibold flex items-center justify-center gap-1.5 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
-              title="Save as PDF using phone print"
-            >
-              <Printer className="w-4 h-4 text-slate-600 dark:text-slate-300" /> Save PDF
-            </button>
-            <a
-              href={waLink(`Hi Jain Tours, I'd like to get a quote for the ${displayTitle} package.`)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex-1 py-2.5 px-3 rounded-lg bg-[#25D366] text-white text-xs sm:text-sm font-semibold flex items-center justify-center gap-1.5 hover:opacity-90 transition shadow-sm"
-            >
-              <MessageCircle className="w-4 h-4" /> WhatsApp
-            </a>
-            <button
-              type="button"
-              onClick={onEnquire}
-              className="flex-1 py-2.5 px-3 rounded-lg bg-[#1c2833] dark:bg-gold text-white dark:text-slate-950 text-xs sm:text-sm font-semibold flex items-center justify-center gap-1.5 hover:opacity-90 transition shadow-sm"
-            >
-              <Send className="w-3.5 h-3.5" /> Enquire
-            </button>
+        {/* Share Dialog incorporating Source PDF */}
+        <Dialog open={shareOpen} onOpenChange={setShareOpen}>
+          <DialogContent className="max-w-md w-[95vw] bg-card border-border/60">
+            <DialogHeader>
+              <DialogTitle className="font-serif text-xl sm:text-2xl text-foreground flex items-center gap-2">
+                <Share2 className="w-5 h-5 text-gold" /> Share Itinerary
+              </DialogTitle>
+              <DialogDescription className="text-muted-foreground text-xs sm:text-sm">
+                {displayTitle} · {destinationName}
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-4 pt-2">
+              {/* Source PDF Option inside Share */}
+              {(onDownload || pdfUrl) && (
+                <div className="p-3.5 rounded-xl border border-primary/25 bg-primary/5 dark:bg-primary/10 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                      <FileText className="w-5 h-5" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-xs sm:text-sm font-bold text-foreground truncate">
+                        Source PDF
+                      </p>
+                      <p className="text-[11px] text-muted-foreground truncate">
+                        Original document prepared by travel desk
+                      </p>
+                    </div>
+                  </div>
+                  <Button
+                    type="button"
+                    size="sm"
+                    onClick={() => {
+                      setShareOpen(false);
+                      if (onDownload) {
+                        onDownload();
+                      } else if (pdfUrl) {
+                        window.open(pdfUrl, "_blank");
+                      }
+                    }}
+                    className="bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-semibold shrink-0 gap-1.5 h-8 px-3"
+                  >
+                    <Download className="w-3.5 h-3.5" /> Download
+                  </Button>
+                </div>
+              )}
+
+              {/* Share Link Input */}
+              <div className="space-y-2">
+                <Label className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">
+                  Share Link
+                </Label>
+                <div className="flex items-center gap-2">
+                  <Input
+                    readOnly
+                    value={typeof window !== "undefined" ? window.location.href : ""}
+                    className="text-xs font-mono h-9 bg-muted/40"
+                  />
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={handleCopyLink}
+                    className="h-9 px-3 text-xs shrink-0 gap-1.5 font-semibold"
+                  >
+                    {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                    {copied ? "Copied" : "Copy"}
+                  </Button>
+                </div>
+              </div>
+
+              {/* Social / App Share Buttons */}
+              <div className="grid grid-cols-2 gap-2 pt-1">
+                <a
+                  href={`https://wa.me/?text=${encodeURIComponent(
+                    `Check out this ${displayTitle} itinerary from Jain Tours & Travels:\n${typeof window !== "undefined" ? window.location.href : ""}`
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 py-2 px-3 rounded-lg border border-border bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366]/20 transition text-xs font-semibold"
+                >
+                  <MessageCircle className="w-4 h-4" /> WhatsApp
+                </a>
+
+                {typeof navigator !== "undefined" && typeof navigator.share === "function" ? (
+                  <button
+                    type="button"
+                    onClick={handleNativeShare}
+                    className="inline-flex items-center justify-center gap-2 py-2 px-3 rounded-lg border border-border bg-muted/60 hover:bg-muted transition text-xs font-semibold text-foreground"
+                  >
+                    <Share2 className="w-4 h-4" /> More Apps…
+                  </button>
+                ) : (
+                  <a
+                    href={`mailto:?subject=${encodeURIComponent(
+                      `${displayTitle} Itinerary - Jain Tours & Travels`
+                    )}&body=${encodeURIComponent(
+                      `Explore this tour package itinerary:\n${typeof window !== "undefined" ? window.location.href : ""}`
+                    )}`}
+                    className="inline-flex items-center justify-center gap-2 py-2 px-3 rounded-lg border border-border bg-muted/60 hover:bg-muted transition text-xs font-semibold text-foreground"
+                  >
+                    <Mail className="w-4 h-4" /> Email
+                  </a>
+                )}
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Full-Screen Photo Lightbox Modal */}
+        {lightbox.isOpen && allDayPhotos.length > 0 && allDayPhotos[lightbox.index] && (
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Photo Lightbox"
+            className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex flex-col justify-between p-3 sm:p-6 text-white animate-in fade-in duration-200"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) closeLightbox();
+            }}
+          >
+            {/* Top Bar */}
+            <div className="flex items-center justify-between pb-3 border-b border-white/10 shrink-0">
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="bg-gold text-slate-950 font-bold px-2 py-0.5 rounded text-[11px] uppercase tracking-wide shrink-0">
+                  Day {String(allDayPhotos[lightbox.index].dayNum).padStart(2, "0")}
+                </span>
+                <span className="text-white/80 text-xs sm:text-sm font-medium truncate">
+                  {allDayPhotos[lightbox.index].dayTitle}
+                </span>
+              </div>
+              <div className="flex items-center gap-3 shrink-0 ml-3">
+                <span className="text-xs text-white/60 font-mono">
+                  {lightbox.index + 1} / {allDayPhotos.length}
+                </span>
+                <button
+                  type="button"
+                  onClick={closeLightbox}
+                  className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition text-white focus:outline-none focus:ring-2 focus:ring-gold"
+                  title="Close (Esc)"
+                  aria-label="Close"
+                >
+                  <XIcon className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Main Stage */}
+            <div className="relative flex-1 flex items-center justify-center my-3 overflow-hidden select-none">
+              {allDayPhotos.length > 1 && (
+                <button
+                  type="button"
+                  onClick={prevLightboxPhoto}
+                  className="absolute left-2 sm:left-4 z-10 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/60 hover:bg-black/90 border border-white/20 flex items-center justify-center text-white transition hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gold"
+                  title="Previous photo"
+                  aria-label="Previous photo"
+                >
+                  <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+                </button>
+              )}
+
+              <img
+                key={allDayPhotos[lightbox.index].url}
+                src={allDayPhotos[lightbox.index].url}
+                alt={allDayPhotos[lightbox.index].caption}
+                className="max-h-[75vh] max-w-full object-contain rounded-lg shadow-2xl transition-all duration-200"
+              />
+
+              {allDayPhotos.length > 1 && (
+                <button
+                  type="button"
+                  onClick={nextLightboxPhoto}
+                  className="absolute right-2 sm:right-4 z-10 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/60 hover:bg-black/90 border border-white/20 flex items-center justify-center text-white transition hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gold"
+                  title="Next photo"
+                  aria-label="Next photo"
+                >
+                  <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
+                </button>
+              )}
+            </div>
+
+            {/* Bottom Caption & Hints */}
+            <div className="text-center pt-2.5 border-t border-white/10 shrink-0">
+              <p className="text-xs sm:text-sm font-medium text-white/90 truncate max-w-xl mx-auto">
+                {allDayPhotos[lightbox.index].caption}
+              </p>
+              <p className="text-[11px] text-white/45 mt-0.5 hidden sm:block">
+                Use arrow keys ← → to browse · Esc to close
+              </p>
+            </div>
           </div>
         )}
       </div>

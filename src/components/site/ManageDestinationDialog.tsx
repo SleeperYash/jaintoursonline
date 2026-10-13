@@ -43,6 +43,7 @@ import { destinations as ALL_DESTINATIONS } from "@/data/destinations";
 import EditReviewDialog from "./EditReviewDialog";
 import ReviewPhotoEditor from "./ReviewPhotoEditor";
 import DealsAdminPanel from "./DealsAdminPanel";
+import ItineraryEditorDrawer from "./ItineraryEditorDrawer";
 
 type Itinerary = {
   id: string;
@@ -79,6 +80,14 @@ const ManageDestinationDialog = ({
   const [currentName, setCurrentName] = useState(initialName);
   const destinationSlug = currentSlug;
   const destinationName = currentName;
+
+  useEffect(() => {
+    if (propSlug) {
+      setCurrentSlug(propSlug);
+      setCurrentName(propName ?? ALL_DESTINATIONS.find((x) => x.slug === propSlug)?.name ?? propSlug);
+    }
+  }, [propSlug, propName]);
+
   const { images, refetch: refetchImages } = useDestinationImages(destinationSlug);
   const { hidden: hiddenDefaults, refetch: refetchHiddenDefaults } =
     useHiddenDefaultImages(destinationSlug);
@@ -107,7 +116,7 @@ const ManageDestinationDialog = ({
   const [savingDurationId, setSavingDurationId] = useState<string | null>(null);
   const [titleDrafts, setTitleDrafts] = useState<Record<string, string>>({});
   const [savingTitleId, setSavingTitleId] = useState<string | null>(null);
-  const [extractingId, setExtractingId] = useState<string | null>(null);
+  const [editingItineraryId, setEditingItineraryId] = useState<string | null>(null);
 
   // Reviews
   const { reviews, refetch: refetchReviews } = useClientReviews();
@@ -408,6 +417,9 @@ const ManageDestinationDialog = ({
       const input = document.getElementById("manage-pdf-input") as HTMLInputElement | null;
       if (input) input.value = "";
       fetchItineraries();
+      if (res?.itinerary?.id) {
+        setEditingItineraryId(res.itinerary.id);
+      }
     } catch (err) {
       toast({ title: "Upload failed", description: (err as Error).message, variant: "destructive" });
     } finally {
@@ -423,18 +435,6 @@ const ManageDestinationDialog = ({
       fetchItineraries();
     } catch (err) {
       toast({ title: "Delete failed", description: (err as Error).message, variant: "destructive" });
-    }
-  };
-
-  const handleExtractImages = async (it: Itinerary) => {
-    setExtractingId(it.id);
-    try {
-      const result = await callAdmin("extract_images", { id: it.id });
-      toast({ title: result.images ? `${result.images} PDF photo${result.images === 1 ? "" : "s"} added` : result.warning ? "Photos could not be scanned" : "No suitable day photos in this PDF", description: result.warning ?? it.title });
-    } catch (err) {
-      toast({ title: "Could not extract photos", description: (err as Error).message, variant: "destructive" });
-    } finally {
-      setExtractingId(null);
     }
   };
 
@@ -673,9 +673,18 @@ const ManageDestinationDialog = ({
                           key={it.id}
                           className="flex flex-col gap-3 border border-border/60 p-3 rounded-md"
                         >
-                          <div className="flex items-center gap-3 min-w-0">
+                          <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-wrap sm:flex-nowrap">
                             <FileText className="w-4 h-4 text-gold shrink-0" />
-                            <p className="text-sm text-foreground flex-1 truncate">{it.title}</p>
+                            <p className="text-sm font-semibold text-foreground flex-1 truncate">{it.title}</p>
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="outline"
+                              className="h-8 text-xs font-semibold gap-1.5"
+                              onClick={() => setEditingItineraryId(it.id)}
+                            >
+                              <Pencil className="w-3.5 h-3.5 text-primary" /> Edit Itinerary
+                            </Button>
                             <a
                               href={adminPublicUrl(it.file_path)}
                               target="_blank"
@@ -692,12 +701,6 @@ const ManageDestinationDialog = ({
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
-                          </div>
-                          <div className="flex flex-col sm:flex-row gap-2">
-                            <Button type="button" size="sm" variant="outline" className="self-start" disabled={extractingId === it.id} onClick={() => handleExtractImages(it)}>
-                              {extractingId === it.id ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <ImagePlus className="w-4 h-4 mr-2" />}
-                              Extract PDF photos
-                            </Button>
                           </div>
                           <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
                             <div className="min-w-0">
@@ -1235,6 +1238,16 @@ const ManageDestinationDialog = ({
         callAdmin={callAdmin}
         onClose={() => setEditingReview(null)}
         onSaved={refetchReviews}
+      />
+
+      <ItineraryEditorDrawer
+        open={!!editingItineraryId}
+        onOpenChange={(open) => !open && setEditingItineraryId(null)}
+        itineraryId={editingItineraryId}
+        destinationSlug={destinationSlug}
+        destinationName={destinationName}
+        callAdmin={callAdmin}
+        onSaved={fetchItineraries}
       />
     </>
   );

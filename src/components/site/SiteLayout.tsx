@@ -13,7 +13,6 @@ const SiteLayout = ({
 }) => {
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <PremiumLoader />
       <Header />
       <main>{children}</main>
       <Footer />
