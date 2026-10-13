@@ -194,7 +194,7 @@ const ItineraryDetailPage = () => {
   };
 
   return (
-    <SiteLayout>
+    <SiteLayout hideFloatingContacts>
       {item && (
         <JsonLd
           id="ld-itinerary"
@@ -223,7 +223,7 @@ const ItineraryDetailPage = () => {
           }}
         />
       )}
-      <div className="container pt-24 md:pt-28">
+      <div className="no-print container pt-20 sm:pt-24 md:pt-28 pb-1">
         <Link
           to={`/destinations/${slug}`}
           className="inline-flex items-center gap-2 text-[10px] md:text-xs uppercase tracking-luxe text-foreground/70 hover:text-gold transition-colors"

@@ -1,8 +1,13 @@
+import { useLocation } from "react-router-dom";
 import { Phone } from "lucide-react";
 import { BRAND } from "@/lib/brand";
 import HolidayPlanner from "./HolidayPlanner";
 
 const FloatingContacts = () => {
+  const location = useLocation();
+  // Hide call and chatbot floating buttons when viewing any itinerary page
+  const isItineraryPage = /^\/destinations\/[^/]+\/[^/]+/.test(location.pathname);
+  if (isItineraryPage) return null;
   return (
     <>
       <HolidayPlanner />

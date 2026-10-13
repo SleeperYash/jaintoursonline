@@ -1,48 +1,42 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import { useToast } from "@/hooks/use-toast";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { BRAND, waLink } from "@/lib/brand";
 import ItineraryCard from "@/components/site/ItineraryCard";
 import { destinations } from "@/data/destinations";
 import { useDestinationImages } from "@/hooks/useDestinationImages";
 import { useHiddenDefaultImages } from "@/hooks/useHiddenDefaultImages";
 import { adminPublicUrl } from "@/hooks/useAdminAuth";
+import jainLogo from "@/assets/jain-tours-logo.png";
 import {
   Check,
   X as XIcon,
   Download,
   Loader2,
-  FileText,
-  Plane,
-  ScrollText,
+  Printer,
   ShieldCheck,
-  CalendarDays,
-  Sparkles,
-  ChevronsDownUp,
-  ChevronsUpDown,
-  Tag,
+  Hotel,
+  MessageCircle,
   Phone,
   Mail,
-  MessageCircle,
+  Send,
+  Share2,
 } from "lucide-react";
 
 type ParsedDay = { title: string; body: string; activities?: string[]; dayNumber?: number };
+type ParsedHotel = { city: string; hotel_name: string; nights: number | null };
 type Parsed = {
   title?: string | null;
+  duration?: string | null;
   starting_price?: string | null;
   overview: string | null;
+  highlights?: string[];
   days: ParsedDay[];
+  hotels?: ParsedHotel[];
   inclusions: string[];
   exclusions: string[];
   visa: string | null;
+  terms_conditions?: string | null;
 };
 
 type Props = {
@@ -58,70 +52,19 @@ type Props = {
   onDownload?: () => void;
 };
 
-type TermBlock = { h: string; icon: React.ComponentType<{ className?: string }>; points: string[] };
-const TERMS: TermBlock[] = [
-  {
-    h: "Cancellation Policy",
-    icon: FileText,
-    points: [
-      "30+ days before departure — non-refundable",
-      "30–60 days before departure — 25% refund",
-      "Beyond 60 days: 10% admin fee.",
-    ],
-  },
-  {
-    h: "Payment Terms",
-    icon: Tag,
-    points: [
-      "25% advance at the time of booking",
-      "Remaining balance due 30 days before departure",
-      "All prices are per person on twin-sharing basis",
-      "Payments accepted via UPI, bank transfer or credit card. International cards may attract a small surcharge",
-    ],
-  },
-  {
-    h: "Travel Insurance",
-    icon: ShieldCheck,
-    points: [
-      "We strongly recommend purchasing comprehensive travel insurance covering trip cancellation, medical emergencies, and baggage loss. Insurance is not included in the package price.",
-    ],
-  },
-  {
-    h: "Important Notes",
-    icon: Sparkles,
-    points: [
-      "Itinerary is subject to change due to weather or unforeseen circumstances",
-      "Airfare is dynamic and subject to change until ticketed. Final pricing is locked at the time of issuance.",
-      "Valid passport with 6+ months validity required for international trips",
-      "Room allocation is subject to availability at the time of check-in",
-      "Price Are Subject To Change. Please Confirm Final Price At The Time Of Booking / Advance Payment.",
-    ],
-  },
+const DEFAULT_TERMS = [
+  "Standard check-in time: 2:00 PM | Standard check-out time: 11:00 AM.",
+  "Early check-in or late check-out is subject to room availability.",
+  "Airfare is dynamic and subject to change until confirmed ticketing.",
+  "Valid passport with minimum 6 months validity required for international trips.",
+  "Tour sequence may adjust based on real-time traffic and weather conditions.",
+  "25% advance payment required to confirm; balance due prior to departure.",
+  "Comprehensive travel insurance is highly recommended.",
 ];
-
-const Section = ({
-  icon: Icon,
-  label,
-}: {
-  icon: React.ComponentType<{ className?: string }>;
-  label: string;
-}) => (
-  <span className="inline-flex items-center gap-2">
-    <Icon className="w-4 h-4" />
-    <span>{label}</span>
-  </span>
-);
-
-const NotProvided = ({ children = "Not Provided" }: { children?: React.ReactNode }) => (
-  <div className="rounded-xl border border-dashed border-border/60 bg-muted/30 p-8 text-center text-muted-foreground font-light">
-    {children}
-  </div>
-);
 
 const ItineraryDetailView = ({
   itineraryId,
   title,
-  pdfUrl,
   heroImage,
   destinationName,
   destinationSlug,
@@ -131,21 +74,18 @@ const ItineraryDetailView = ({
   onDownload,
 }: Props) => {
   const { toast } = useToast();
-  const isMobile = useIsMobile();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [parsed, setParsed] = useState<Parsed | null>(null);
   const [dayImages, setDayImages] = useState<Record<number, { file_path: string; alt_text: string }[]>>({});
-  const [openDays, setOpenDays] = useState<string[]>([]);
-  const tabsBarRef = useRef<HTMLDivElement>(null);
-  const [activeSection, setActiveSection] = useState<string>("overview");
-  const suppressObserverUntil = useRef<number>(0);
   const [similar, setSimilar] = useState<{ id: string; title: string; starting_price: string | null; duration: string | null }[]>([]);
+
   const { images: uploadedDestImages, loading: uploadedDestLoading } = useDestinationImages(destinationSlug ?? "");
   const { hidden: hiddenDestImages, loading: hiddenDestLoading } = useHiddenDefaultImages(destinationSlug);
   const similarImagesReady = !uploadedDestLoading && !hiddenDestLoading;
 
-  const similarImagePool = useMemo(() => {
+  // Curated photo pool for day-by-day photo pairings
+  const photoPool = useMemo(() => {
     const pool: string[] = [];
     uploadedDestImages.forEach((img) => {
       const url = adminPublicUrl(img.file_path);
@@ -162,6 +102,7 @@ const ItineraryDetailView = ({
     return pool;
   }, [uploadedDestImages, hiddenDestImages, destinationSlug, heroImage]);
 
+  // Fetch similar tours
   useEffect(() => {
     if (!destinationSlug) return;
     let cancelled = false;
@@ -173,26 +114,26 @@ const ItineraryDetailView = ({
         .neq("id", itineraryId)
         .order("created_at", { ascending: false })
         .limit(6);
-      if (!cancelled) setSimilar((data ?? []) as { id: string; title: string; starting_price: string | null; duration: string | null }[]);
+      if (!cancelled) {
+        setSimilar((data ?? []) as { id: string; title: string; starting_price: string | null; duration: string | null }[]);
+      }
     })();
     return () => {
       cancelled = true;
     };
   }, [destinationSlug, itineraryId]);
 
+  // Fetch itinerary details
   useEffect(() => {
     let cancelled = false;
     const run = async () => {
       setLoading(true);
       setError(null);
-      // Pull editable, normalized data directly from Supabase.
-      // No AI call — visitors never trigger Gemini.
-      const [itinRes, daysRes, incRes, excRes, imagesRes] = await Promise.all([
+
+      const [itinRes, daysRes, incRes, excRes, hotelsRes, imagesRes] = await Promise.all([
         supabase
           .from("itineraries")
-          .select(
-            "id,title,starting_price,overview,visa_information,parsed_data",
-          )
+          .select("id,title,starting_price,duration,overview,visa_information,terms_conditions,parsed_data")
           .eq("id", itineraryId)
           .maybeSingle(),
         supabase
@@ -210,9 +151,18 @@ const ItineraryDetailView = ({
           .select("exclusion_text,position")
           .eq("itinerary_id", itineraryId)
           .order("position", { ascending: true }),
-        supabase.from("itinerary_day_images").select("day_number,position,file_path,alt_text")
-          .eq("itinerary_id", itineraryId).order("position", { ascending: true }),
+        supabase
+          .from("itinerary_hotels")
+          .select("city,hotel_name,nights,position")
+          .eq("itinerary_id", itineraryId)
+          .order("position", { ascending: true }),
+        supabase
+          .from("itinerary_day_images")
+          .select("day_number,position,file_path,alt_text")
+          .eq("itinerary_id", itineraryId)
+          .order("position", { ascending: true }),
       ]);
+
       if (cancelled) return;
 
       const photos: Record<number, { file_path: string; alt_text: string }[]> = {};
@@ -225,546 +175,563 @@ const ItineraryDetailView = ({
       const days = daysRes.data ?? [];
       const inclusions = incRes.data ?? [];
       const exclusions = excRes.data ?? [];
+      const hotels = hotelsRes.data ?? [];
+      const parsedData = (row?.parsed_data ?? {}) as Partial<Parsed>;
 
       const hasNormalized =
         days.length > 0 ||
         inclusions.length > 0 ||
         exclusions.length > 0 ||
+        hotels.length > 0 ||
         !!row?.overview;
 
       if (hasNormalized) {
         setParsed({
           title: row?.title ?? null,
-          starting_price: row?.starting_price ?? null,
-          overview: row?.overview ?? null,
+          duration: row?.duration ?? parsedData.duration ?? null,
+          starting_price: row?.starting_price ?? parsedData.starting_price ?? null,
+          overview: row?.overview ?? parsedData.overview ?? null,
+          highlights: parsedData.highlights ?? [],
           days: days.map((d) => ({
             title: d.title || `Day ${d.day_number}`,
             body: d.description ?? "",
             dayNumber: d.day_number,
           })),
+          hotels: hotels.map((h) => ({
+            city: h.city ?? "",
+            hotel_name: h.hotel_name ?? "",
+            nights: h.nights ?? null,
+          })),
           inclusions: inclusions.map((i) => i.inclusion_text),
           exclusions: exclusions.map((e) => e.exclusion_text),
-          visa: row?.visa_information ?? null,
+          visa: row?.visa_information ?? parsedData.visa ?? null,
+          terms_conditions: row?.terms_conditions ?? parsedData.terms_conditions ?? null,
         });
       } else if (row?.parsed_data) {
-        // Legacy: itinerary parsed under old schema (JSONB blob).
-        // Show what we have until an admin re-parses.
         const legacy = row.parsed_data as Parsed;
         setParsed({
           title: legacy.title ?? row.title,
+          duration: legacy.duration ?? row.duration ?? null,
           starting_price: legacy.starting_price ?? row.starting_price ?? null,
           overview: legacy.overview ?? null,
+          highlights: legacy.highlights ?? [],
           days: legacy.days ?? [],
+          hotels: legacy.hotels ?? [],
           inclusions: legacy.inclusions ?? [],
           exclusions: legacy.exclusions ?? [],
           visa: legacy.visa ?? null,
+          terms_conditions: legacy.terms_conditions ?? null,
         });
       } else {
         setParsed({
           title: row?.title ?? null,
+          duration: row?.duration ?? null,
           starting_price: row?.starting_price ?? null,
           overview: null,
+          highlights: [],
           days: [],
+          hotels: [],
           inclusions: [],
           exclusions: [],
           visa: null,
+          terms_conditions: null,
         });
       }
       setLoading(false);
     };
+
     run();
     return () => {
       cancelled = true;
     };
   }, [itineraryId]);
 
-  const dayValues = useMemo(() => (parsed?.days ?? []).map((_, i) => `d-${i}`), [parsed]);
-  const allOpen = dayValues.length > 0 && openDays.length === dayValues.length;
-
-  useEffect(() => {
-    // open first by default
-    if (parsed?.days?.length) setOpenDays(["d-0"]);
+  // Derive duration formatted string
+  const displayDuration = useMemo(() => {
+    if (parsed?.duration?.trim()) return parsed.duration.trim();
+    const dayCount = parsed?.days?.length ?? 0;
+    if (dayCount > 0) {
+      const nights = Math.max(1, dayCount - 1);
+      return `${nights} Nights / ${dayCount} Days`;
+    }
+    return "Custom Duration";
   }, [parsed]);
 
-  const onAccordionChange = (vals: string[]) => {
-    if (isMobile) {
-      // only one open at a time on mobile
-      const next = vals.filter((v) => !openDays.includes(v));
-      setOpenDays(next.length ? next : []);
-    } else {
-      setOpenDays(vals);
+  // Derive price formatted string
+  const displayPrice = useMemo(() => {
+    const raw = priceOverride?.trim() || parsed?.starting_price?.trim();
+    if (raw) return raw;
+    return "Available upon request";
+  }, [priceOverride, parsed]);
+
+  // Title: Uppercase clean brochure title
+  const displayTitle = useMemo(() => {
+    const raw = parsed?.title?.trim() || title.trim();
+    return raw;
+  }, [parsed, title]);
+
+  // Auto-generate 4-6 highlights if AI parsing did not supply them
+  const highlights = useMemo(() => {
+    if (parsed?.highlights && parsed.highlights.length > 0) {
+      return parsed.highlights;
     }
+    if (!parsed?.days?.length) {
+      return [];
+    }
+    const derived: string[] = [];
+    for (const d of parsed.days) {
+      if (derived.length >= 6) break;
+      const clean = d.title.replace(/^Day\s*\d+\s*[:\-–]\s*/i, "").trim();
+      const lower = clean.toLowerCase();
+      if (
+        clean.length > 5 &&
+        !lower.includes("arrival") &&
+        !lower.includes("departure") &&
+        !lower.includes("check-out")
+      ) {
+        derived.push(clean);
+      }
+    }
+    if (derived.length < 3) {
+      parsed.days.forEach((d) => {
+        const clean = d.title.replace(/^Day\s*\d+\s*[:\-–]\s*/i, "").trim();
+        if (clean && !derived.includes(clean) && derived.length < 5) {
+          derived.push(clean);
+        }
+      });
+    }
+    return derived.slice(0, 5);
+  }, [parsed]);
+
+  const handlePrint = () => {
+    window.print();
   };
 
-  const sections = useMemo(
-    () =>
-      [
-        { id: "overview", label: "Overview", icon: Sparkles },
-        { id: "days", label: "Day-by-Day", icon: CalendarDays },
-        { id: "inclusions", label: "Inclusions", icon: ScrollText },
-        { id: "terms", label: "Terms", icon: ShieldCheck },
-        ...(!isDomestic ? [{ id: "visa", label: "Visa", icon: Plane }] : []),
-      ] as const,
-    [isDomestic],
-  );
-
-  const scrollToSection = (id: string) => {
-    const el = document.getElementById(`section-${id}`);
-    if (!el) return;
-    const headerOffset =
-      (tabsBarRef.current?.getBoundingClientRect().height ?? 60) +
-      (window.innerWidth >= 768 ? 80 : 64) +
-      12;
-    const top = el.getBoundingClientRect().top + window.scrollY - headerOffset;
-    setActiveSection(id);
-    suppressObserverUntil.current = Date.now() + 1400;
-    window.scrollTo({ top, behavior: "smooth" });
-  };
-
-  useEffect(() => {
-    if (loading) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (Date.now() < suppressObserverUntil.current) return;
-        const triggerY =
-          (tabsBarRef.current?.getBoundingClientRect().bottom ?? 120) + 20;
-        let bestId: string | null = null;
-        let bestDist = Number.POSITIVE_INFINITY;
-        sections.forEach((s) => {
-          const el = document.getElementById(`section-${s.id}`);
-          if (!el) return;
-          const top = el.getBoundingClientRect().top;
-          const dist = triggerY - top;
-          if (dist >= 0 && dist < bestDist) {
-            bestDist = dist;
-            bestId = s.id;
-          }
+  const handleShare = async () => {
+    const url = window.location.href;
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `${displayTitle} | Jain Tours & Travels`,
+          text: `Explore the ${displayTitle} tour package itinerary.`,
+          url,
         });
-        if (bestId) setActiveSection(bestId);
-      },
-      { rootMargin: "-20% 0px -60% 0px", threshold: [0, 0.1, 0.25, 0.5, 0.75, 1] },
-    );
-    sections.forEach((s) => {
-      const el = document.getElementById(`section-${s.id}`);
-      if (el) observer.observe(el);
-    });
-    return () => observer.disconnect();
-  }, [loading, sections]);
-
-  // Keep the active tab pill in view inside the horizontally scrollable bar
-  useEffect(() => {
-    const bar = tabsBarRef.current;
-    if (!bar) return;
-    const btn = bar.querySelector<HTMLButtonElement>(`[data-section="${activeSection}"]`);
-    if (btn) {
-      btn.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+      } catch {
+        /* share dismissed */
+      }
+    } else {
+      await navigator.clipboard.writeText(url);
+      toast({ title: "Link copied to clipboard", description: "You can now share this itinerary." });
     }
-  }, [activeSection]);
+  };
 
+  // Structured data for rich travel package snippet
   const schema = useMemo(() => {
     if (!parsed) return null;
     return {
       "@context": "https://schema.org",
-      "@type": "TouristAttraction",
-      name: title,
-      description: parsed.overview ?? `${title} itinerary by Jain Tours & Travels`,
+      "@type": "TouristTrip",
+      name: displayTitle,
+      description: parsed.overview ?? `${displayTitle} tour package curated by Jain Tours & Travels`,
       image: heroImage || undefined,
-      touristType: "Travel package",
-      additionalProperty: parsed.days.map((d, i) => ({
-        "@type": "PropertyValue",
-        name: `Day ${i + 1}`,
-        value: d.title,
-      })),
-      isPartOf: {
-        "@type": "TouristDestination",
-        name: destinationName,
+      touristType: isDomestic ? "Domestic traveller" : "International traveller",
+      itinerary: {
+        "@type": "ItemList",
+        name: `${displayTitle} day-by-day`,
+        itemListElement: parsed.days.map((d, i) => ({
+          "@type": "ListItem",
+          position: i + 1,
+          name: d.title,
+          description: d.body,
+        })),
       },
       offers: {
         "@type": "Offer",
+        price: parsed.starting_price || undefined,
+        priceCurrency: "INR",
         availability: "https://schema.org/InStock",
-        seller: {
-          "@type": "TravelAgency",
-          name: "Jain Tours & Travels",
-        },
+      },
+      provider: {
+        "@type": "TravelAgency",
+        name: "Jain Tours & Travels",
+        telephone: "+91-9821235678",
       },
     };
-  }, [parsed, title, destinationName, heroImage]);
-
-  const displayTitle = parsed?.title?.trim() || title;
+  }, [parsed, displayTitle, heroImage, isDomestic]);
 
   return (
-    <div className="flex flex-col bg-background w-full max-w-[1280px] mx-auto">
-      {/* Hero */}
-      <div className="px-3 md:px-6 pt-3 md:pt-6">
-        <div className="relative w-full h-[180px] sm:h-[240px] md:h-[420px] overflow-hidden rounded-xl md:rounded-2xl">
-          <img
-            src={heroImage || "/placeholder.svg"}
-            alt={`${destinationName} — ${displayTitle} tour package`}
-            className="w-full h-full object-cover object-center"
-            loading="lazy"
-            decoding="async"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/40 to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 p-4 md:p-8">
-            <p className="text-[10px] md:text-xs uppercase tracking-luxe text-gold mb-1">
-              {destinationName}
-            </p>
-            <h2 className="font-serif text-xl sm:text-2xl md:text-4xl text-white leading-tight max-w-3xl">
-              {displayTitle}
-            </h2>
-          </div>
-        </div>
-      </div>
+    <>
+      {/* Print stylesheet matching the mobile and A4 document brochure layout */}
+      <style>{`
+        @media print {
+          @page {
+            size: A4;
+            margin: 12mm 15mm;
+          }
+          html, body {
+            background-color: #ffffff !important;
+            color: #1e293b !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+          header, nav, footer, .no-print, [role="navigation"], .cookie-banner {
+            display: none !important;
+          }
+          .brochure-container {
+            max-width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            background-color: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+          }
+          .day-card, .section-card, .hero-card {
+            break-inside: avoid !important;
+            page-break-inside: avoid !important;
+            box-shadow: none !important;
+            border: 1px solid #e2e8f0 !important;
+            margin-bottom: 15px !important;
+          }
+          .image-grid .img-box {
+            height: 130px !important;
+          }
+        }
+      `}</style>
 
-      {/* Structured data for SEO */}
       {schema && (
         <script type="application/ld+json">{JSON.stringify(schema)}</script>
       )}
 
-      {/* Section nav (scroll to) */}
-      <div
-        ref={tabsBarRef}
-        className="sticky top-16 md:top-20 z-20 bg-background/95 backdrop-blur border-y border-border/60 mt-4 md:mt-6"
-      >
-        <div className="px-3 md:px-6 py-3 flex items-center gap-2 md:gap-4">
-          <div className="flex-1 min-w-0 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            <div className="inline-flex gap-1 md:gap-2">
-              {sections.map((s) => {
-                const active = activeSection === s.id;
-                return (
+      {/* Main Container: Mobile-first 520px card-stack, smoothly expanding to 800px on desktop */}
+      <div className="w-full min-h-screen py-3 sm:py-6 px-3 sm:px-4 md:px-6 pb-24 md:pb-28">
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-24 text-muted-foreground">
+            <Loader2 className="w-8 h-8 animate-spin text-gold mb-3" />
+            <p className="text-sm font-medium">Loading itinerary brochure…</p>
+          </div>
+        ) : error ? (
+          <div className="max-w-lg mx-auto rounded-xl border border-destructive/30 bg-destructive/5 p-6 text-center text-sm text-destructive">
+            Unable to load itinerary: {error}
+          </div>
+        ) : !parsed ? (
+          <div className="max-w-lg mx-auto rounded-xl border border-dashed border-border/60 bg-muted/30 p-12 text-center text-muted-foreground">
+            Itinerary details not available.
+          </div>
+        ) : (
+          <div className="brochure-container max-w-[540px] md:max-w-[780px] mx-auto transition-colors">
+            
+            {/* Top Hero Card */}
+            <header className="hero-card bg-card border border-border rounded-xl p-5 sm:p-6 mb-3.5 text-center shadow-sm">
+              <div className="flex justify-center mb-2.5">
+                <img
+                  src={jainLogo}
+                  alt="Jain Tours & Travels"
+                  className="h-14 sm:h-16 w-auto object-contain"
+                />
+              </div>
+              <div className="text-[11px] font-bold uppercase tracking-[1.5px] text-[#2e7d32] dark:text-gold mb-1">
+                Jain Tours &amp; Travels Exclusive
+              </div>
+              <h1 className="font-serif text-2xl sm:text-3xl font-extrabold text-[#1c2833] dark:text-white leading-tight uppercase my-1.5">
+                {displayTitle}
+              </h1>
+              
+              {/* Badge Row matching mobile sample */}
+              <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2 mt-3">
+                <span className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold px-3 py-1 rounded-full">
+                  {displayDuration}
+                </span>
+                <span className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold px-3 py-1 rounded-full">
+                  {displayPrice}
+                </span>
+                <span className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold px-3 py-1 rounded-full">
+                  Private AC Vehicle
+                </span>
+                <span className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold px-3 py-1 rounded-full">
+                  Daily Breakfast
+                </span>
+              </div>
+
+              {/* Utility actions inside header on desktop / tablet */}
+              <div className="no-print hidden sm:flex items-center justify-center gap-2 mt-4 pt-3 border-t border-border/60">
+                <button
+                  type="button"
+                  onClick={handlePrint}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border text-foreground text-xs font-semibold hover:bg-muted transition"
+                  title="Save or Print as PDF"
+                >
+                  <Printer className="w-3.5 h-3.5 text-foreground/80" /> Save as PDF
+                </button>
+                {onDownload && (
                   <button
-                    key={s.id}
                     type="button"
-                    data-section={s.id}
-                    onClick={() => scrollToSection(s.id)}
-                    className={`shrink-0 rounded-full px-3 md:px-4 py-2 text-xs md:text-sm border transition ${
-                      active
-                        ? "bg-gold text-primary-foreground border-transparent shadow-sm"
-                        : "border-transparent text-foreground/70 hover:bg-muted"
-                    }`}
+                    onClick={onDownload}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border text-foreground text-xs font-semibold hover:bg-muted transition"
+                    title="Download Original PDF"
                   >
-                    <Section icon={s.icon} label={s.label} />
+                    <Download className="w-3.5 h-3.5 text-primary" /> Source PDF
                   </button>
+                )}
+                <button
+                  type="button"
+                  onClick={handleShare}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border text-foreground text-xs font-semibold hover:bg-muted transition"
+                  title="Share link"
+                >
+                  <Share2 className="w-3.5 h-3.5 text-foreground/80" /> Share
+                </button>
+              </div>
+            </header>
+
+            {/* Overview Section Card */}
+            {parsed.overview && (
+              <section className="section-card bg-card border border-border rounded-xl p-4 sm:p-5 mb-3.5 shadow-sm">
+                <h2 className="text-[15px] font-bold text-[#1c2833] dark:text-white mb-2 flex items-center gap-2">
+                  Trip Overview
+                </h2>
+                <p className="text-[13.5px] leading-relaxed text-slate-700 dark:text-slate-300 text-justify whitespace-pre-line">
+                  {parsed.overview}
+                </p>
+              </section>
+            )}
+
+            {/* Tour Highlights Card */}
+            {highlights.length > 0 && (
+              <section className="section-card bg-card border border-border rounded-xl p-4 sm:p-5 mb-3.5 shadow-sm">
+                <h2 className="text-[15px] font-bold text-[#1c2833] dark:text-white mb-2.5 flex items-center gap-2">
+                  Tour Highlights
+                </h2>
+                <ul className="space-y-2">
+                  {highlights.map((h, i) => (
+                    <li
+                      key={i}
+                      className="relative pl-5 text-[13px] sm:text-[13.5px] text-slate-700 dark:text-slate-300 leading-snug"
+                    >
+                      <span className="absolute left-1 top-0 text-[#2e7d32] dark:text-gold text-lg leading-none font-bold">
+                        •
+                      </span>
+                      <span>{h}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
+            {/* Day-by-Day Cards */}
+            <div className="space-y-3.5 mb-3.5">
+              {parsed.days.map((d, idx) => {
+                const dayNum = d.dayNumber ?? idx + 1;
+                const extractedPhotos = dayImages[dayNum] ?? [];
+                
+                // Pair photos: extracted first, else pool fallback
+                const photo1 = extractedPhotos[0]
+                  ? adminPublicUrl(extractedPhotos[0].file_path)
+                  : photoPool.length > 0
+                  ? photoPool[(idx * 2) % photoPool.length]
+                  : null;
+
+                const photo2 = extractedPhotos[1]
+                  ? adminPublicUrl(extractedPhotos[1].file_path)
+                  : photoPool.length > 1
+                  ? photoPool[(idx * 2 + 1) % photoPool.length]
+                  : null;
+
+                // Captions
+                const dayCleanTitle = d.title.replace(/^Day\s*\d+\s*[:\-–]\s*/i, "").trim();
+                const caption1 = extractedPhotos[0]?.alt_text || dayCleanTitle || `${destinationName} Day ${dayNum}`;
+                const caption2 = extractedPhotos[1]?.alt_text || `${destinationName} Sightseeing`;
+
+                return (
+                  <article
+                    key={idx}
+                    className="day-card bg-card border border-border rounded-xl p-4 sm:p-5 shadow-sm"
+                  >
+                    {/* Day Pill & Heading Header */}
+                    <div className="flex items-center gap-2 mb-2.5">
+                      <span className="bg-[#1c2833] dark:bg-gold text-white dark:text-slate-950 text-[11px] font-bold uppercase px-2 py-0.5 rounded tracking-wide shrink-0">
+                        Day {String(dayNum).padStart(2, "0")}
+                      </span>
+                      <h3 className="text-[14.5px] sm:text-base font-bold text-[#1c2833] dark:text-white leading-tight flex-1">
+                        {dayCleanTitle || d.title}
+                      </h3>
+                    </div>
+
+                    {/* Day Description */}
+                    <p className="text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed mb-3 whitespace-pre-line text-justify">
+                      {d.body}
+                    </p>
+
+                    {/* 2-Column Mobile Image Grid with Sleek Gradient Captions */}
+                    {(photo1 || photo2) && (
+                      <div className="image-grid grid grid-cols-2 gap-2 mt-2">
+                        {photo1 && (
+                          <div className="img-box h-[120px] sm:h-[140px] md:h-[160px] rounded-lg overflow-hidden bg-slate-200 dark:bg-slate-800 relative group">
+                            <img
+                              src={photo1}
+                              alt={caption1}
+                              loading="lazy"
+                              decoding="async"
+                              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                            />
+                            <span className="img-caption absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent text-white text-[9.5px] font-semibold px-2 py-1 truncate">
+                              {caption1}
+                            </span>
+                          </div>
+                        )}
+                        {photo2 && (
+                          <div className="img-box h-[120px] sm:h-[140px] md:h-[160px] rounded-lg overflow-hidden bg-slate-200 dark:bg-slate-800 relative group">
+                            <img
+                              src={photo2}
+                              alt={caption2}
+                              loading="lazy"
+                              decoding="async"
+                              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                            />
+                            <span className="img-caption absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent text-white text-[9.5px] font-semibold px-2 py-1 truncate">
+                              {caption2}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </article>
                 );
               })}
             </div>
-          </div>
-          <div className="hidden sm:flex items-center gap-2 shrink-0">
-            <button
-              type="button"
-              onClick={() => onDownload?.()}
-              className="inline-flex items-center gap-2 text-xs uppercase tracking-luxe text-foreground/80 hover:text-gold px-3 py-2 rounded-full border border-border/60 hover:border-gold/40 transition"
-            >
-              <Download className="w-3.5 h-3.5" /> PDF
-            </button>
-          </div>
-        </div>
-      </div>
 
-      <div className="px-4 md:px-8 py-6 md:py-10 pb-28 md:pb-12 w-full mx-auto space-y-10 md:space-y-14">
-        {loading ? (
-          <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">
-            <Loader2 className="w-6 h-6 animate-spin text-gold mb-3" />
-            <p className="text-sm font-light">Reading your itinerary…</p>
-          </div>
-        ) : error ? (
-          <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-6 text-sm text-destructive">
-            Couldn't parse this PDF: {error}
-          </div>
-        ) : !parsed ? (
-          <NotProvided />
-        ) : (
-          <>
-            <section id="section-overview" aria-label="Trip overview" className="scroll-mt-40">
-              <h2 className="text-xs uppercase tracking-luxe text-gold mb-4 flex items-center gap-2">
-                <Sparkles className="w-4 h-4" /> Overview
-              </h2>
-              {parsed.overview ? (
-                <div className="rounded-2xl border border-border/60 bg-card p-6 md:p-8 shadow-luxe">
-                  <p className="text-base md:text-lg leading-relaxed text-foreground font-semibold whitespace-pre-line">
-                    {parsed.overview}
-                  </p>
-                </div>
-              ) : (
-                <NotProvided />
-              )}
-            </section>
-
-            <div className="h-px bg-border/60" />
-
-            <section id="section-days" aria-label="Day by day itinerary" className="scroll-mt-40">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xs uppercase tracking-luxe text-gold flex items-center gap-2">
-                  <CalendarDays className="w-4 h-4" /> Day-by-Day
-                  {parsed.days?.length ? (
-                    <span className="ml-2 text-foreground/60 normal-case tracking-normal">
-                      · {parsed.days.length} day{parsed.days.length > 1 ? "s" : ""}
-                    </span>
-                  ) : null}
+            {/* Hotel Accommodations Card */}
+            {parsed.hotels && parsed.hotels.length > 0 && (
+              <section className="section-card bg-card border border-border rounded-xl p-4 sm:p-5 mb-3.5 shadow-sm">
+                <h2 className="text-[15px] font-bold text-[#1c2833] dark:text-white mb-2 flex items-center gap-2">
+                  <Hotel className="w-4 h-4 text-[#2e7d32] dark:text-gold" /> Hotel Accommodations
                 </h2>
-                {parsed.days?.length ? (
-                  <button
-                    onClick={() => setOpenDays(allOpen ? [] : dayValues)}
-                    className="inline-flex items-center gap-1.5 text-[11px] md:text-xs uppercase tracking-luxe text-gold hover:text-gold-deep transition"
-                  >
-                    {allOpen ? (
-                      <>
-                        <ChevronsDownUp className="w-3.5 h-3.5" /> Collapse all
-                      </>
-                    ) : (
-                      <>
-                        <ChevronsUpDown className="w-3.5 h-3.5" /> Expand all
-                      </>
-                    )}
-                  </button>
-                ) : null}
-              </div>
-              {parsed.days?.length ? (
-                <Accordion
-                  type="multiple"
-                  value={openDays}
-                  onValueChange={onAccordionChange as (v: string[]) => void}
-                  className="space-y-3"
-                >
-                  {parsed.days.map((d, i) => (
-                    <AccordionItem
-                      key={i}
-                      value={`d-${i}`}
-                      className="border border-border/60 rounded-2xl bg-card overflow-hidden hover:border-gold/40 hover:shadow-luxe transition-all"
-                    >
-                      <AccordionTrigger className="px-4 md:px-6 py-4 hover:no-underline group">
-                        <div className="flex items-center gap-3 md:gap-4 text-left flex-1 min-w-0">
-                          <span className="shrink-0 inline-flex items-center justify-center w-9 h-9 md:w-10 md:h-10 rounded-full bg-gold/10 text-gold text-xs md:text-sm font-medium border border-gold/20 group-hover:bg-gold group-hover:text-primary-foreground transition">
-                            {i + 1}
-                          </span>
-                          <h3 className="font-serif text-base md:text-lg font-bold text-foreground break-words flex-1 min-w-0 text-left">
-                            {d.title}
-                          </h3>
-                        </div>
-                      </AccordionTrigger>
-                      <AccordionContent className="px-4 md:px-6 pb-5">
-                        <div className="pl-0 md:pl-14 min-w-0 break-words">
-                          {!!dayImages[d.dayNumber ?? i + 1]?.length && (
-                            <div className="mb-5 space-y-2 md:space-y-3">
-                              {dayImages[d.dayNumber ?? i + 1].slice(0, 1).map((photo) => (
-                                <img key={photo.file_path} src={adminPublicUrl(photo.file_path)} alt={photo.alt_text}
-                                  loading="lazy" decoding="async" className="w-full aspect-[16/9] object-cover rounded-md" />
-                              ))}
-                              {dayImages[d.dayNumber ?? i + 1].length > 1 && (
-                                <div className="grid grid-cols-2 gap-2 md:gap-3">
-                                  {dayImages[d.dayNumber ?? i + 1].slice(1).map((photo) => (
-                                    <img key={photo.file_path} src={adminPublicUrl(photo.file_path)} alt={photo.alt_text}
-                                      loading="lazy" decoding="async" className="w-full aspect-[4/3] object-cover rounded-md" />
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-                          )}
-                          {d.body && (
-                            <p className="text-sm md:text-base text-foreground font-normal leading-relaxed whitespace-pre-line break-words [overflow-wrap:anywhere]">
-                              {d.body}
-                            </p>
-                          )}
-                          {d.activities?.length ? (
-                            <div className="mt-4">
-                              <h4 className="text-[11px] uppercase tracking-luxe text-gold mb-2 font-bold">
-                                Activities
-                              </h4>
-                              <ul className="space-y-1.5">
-                                {d.activities.map((a, ai) => (
-                                  <li key={ai} className="flex items-start gap-2 text-sm text-foreground font-normal break-words [overflow-wrap:anywhere]">
-                                    <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-gold shrink-0" />
-                                    <span>{a}</span>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          ) : null}
-                        </div>
-                      </AccordionContent>
-                    </AccordionItem>
+                <ul className="space-y-2">
+                  {parsed.hotels.map((h, i) => (
+                    <li key={i} className="relative pl-5 text-[13px] text-slate-700 dark:text-slate-300 leading-snug">
+                      <span className="absolute left-1 top-0 text-[#2e7d32] dark:text-gold text-lg leading-none font-bold">
+                        •
+                      </span>
+                      <strong>{h.city} {h.nights ? `(${h.nights} Night${h.nights > 1 ? "s" : ""})` : ""}: </strong>
+                      <span>{h.hotel_name || "Quality 4-Star or equivalent"}</span>
+                    </li>
                   ))}
-                </Accordion>
-              ) : (
-                <NotProvided />
-              )}
-            </section>
-
-            <div className="h-px bg-border/60" />
-
-            <section id="section-inclusions" aria-label="Inclusions and exclusions" className="scroll-mt-40">
-              <h2 className="text-xs uppercase tracking-luxe text-gold mb-4 flex items-center gap-2">
-                <ScrollText className="w-4 h-4" /> Inclusions
-              </h2>
-              {parsed.inclusions?.length || parsed.exclusions?.length ? (
-                <div className="grid md:grid-cols-2 gap-4 md:gap-6">
-                  <div className="rounded-2xl border border-border/60 bg-card p-5 md:p-6 shadow-luxe">
-                    <h3 className="flex items-center gap-2 text-xs uppercase tracking-luxe text-gold mb-4">
-                      <Check className="w-4 h-4" aria-hidden /> Included
-                    </h3>
-                    {parsed.inclusions?.length ? (
-                      <ul className="space-y-2.5">
-                        {parsed.inclusions.map((itm, k) => (
-                          <li key={k} className="flex items-start gap-2.5 text-sm text-foreground font-semibold">
-                            <Check className="w-4 h-4 mt-0.5 text-gold shrink-0" aria-hidden />
-                            <span>{itm}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p className="text-sm text-muted-foreground font-medium">Not Provided</p>
-                    )}
-                  </div>
-                  <div className="rounded-2xl border border-border/60 bg-card p-5 md:p-6 shadow-luxe">
-                    <h3 className="flex items-center gap-2 text-xs uppercase tracking-luxe text-destructive mb-4">
-                      <XIcon className="w-4 h-4" aria-hidden /> Not included
-                    </h3>
-                    {parsed.exclusions?.length ? (
-                      <ul className="space-y-2.5">
-                        {parsed.exclusions.map((itm, k) => (
-                          <li key={k} className="flex items-start gap-2.5 text-sm text-foreground font-semibold">
-                            <XIcon className="w-4 h-4 mt-0.5 text-destructive shrink-0" aria-hidden />
-                            <span>{itm}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p className="text-sm text-muted-foreground font-medium">Not Provided</p>
-                    )}
-                  </div>
-                </div>
-              ) : (
-                <NotProvided />
-              )}
-            </section>
-
-            <div className="h-px bg-border/60" />
-
-            <section id="section-terms" aria-label="Terms and conditions" className="scroll-mt-40">
-              <article className="rounded-2xl border border-border/60 bg-card p-5 sm:p-7 md:p-8 shadow-luxe">
-                <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl text-foreground mb-6 md:mb-8">
-                  Terms &amp; Conditions
-                </h2>
-                <div className="space-y-6 md:space-y-7">
-                  {TERMS.map((t, i) => {
-                    const Icon = t.icon;
-                    return (
-                      <div key={i}>
-                        <h3 className="flex items-center gap-2 font-semibold text-sm sm:text-base md:text-lg text-foreground mb-2 md:mb-3">
-                          <Icon className="w-4 h-4 md:w-[18px] md:h-[18px] text-foreground/90 shrink-0" />
-                          <span>{t.h}</span>
-                        </h3>
-                        {t.points.length === 1 ? (
-                          <p className="text-sm md:text-[15px] text-foreground font-semibold leading-relaxed [overflow-wrap:anywhere]">
-                            {t.points[0]}
-                          </p>
-                        ) : (
-                          <ul className="space-y-1.5 md:space-y-2 pl-1">
-                            {t.points.map((p, pi) => (
-                              <li
-                                key={pi}
-                                className="flex items-start gap-2.5 text-sm md:text-[15px] text-foreground font-semibold leading-relaxed [overflow-wrap:anywhere]"
-                              >
-                                <span className="mt-2 w-1.5 h-1.5 rounded-full bg-foreground/40 shrink-0" />
-                                <span>{p}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </article>
-            </section>
-
-            {!isDomestic && (
-              <>
-                <div className="h-px bg-border/60" />
-                <section id="section-visa" aria-label="Visa information" className="scroll-mt-40">
-                  <h2 className="text-xs uppercase tracking-luxe text-gold mb-4 flex items-center gap-2">
-                    <Plane className="w-4 h-4" /> Visa
-                  </h2>
-                  <div className="rounded-2xl border border-border/60 bg-card p-6 md:p-8 shadow-luxe">
-                    {parsed.visa ? (
-                      <p className="text-base leading-relaxed text-foreground font-semibold whitespace-pre-line">
-                        {parsed.visa}
-                      </p>
-                    ) : (
-                      <p className="text-sm md:text-base text-foreground font-semibold">
-                        Visa information will be shared by our travel expert.
-                      </p>
-                    )}
-                  </div>
-                </section>
-              </>
+                </ul>
+              </section>
             )}
-          </>
-        )}
 
-        {/* Need Help card */}
-        <div className="rounded-2xl border border-border/60 bg-card p-5 md:p-7 shadow-luxe">
-          <div className="flex items-start justify-between gap-3 mb-4">
-            <h2 className="font-serif text-xl md:text-2xl text-foreground">Need Help?</h2>
-            <span className="inline-flex items-center px-3 py-1 rounded-full border border-gold/40 text-gold text-[11px] uppercase tracking-luxe">
-              24×7 Support
-            </span>
-          </div>
-          <div className="space-y-3 mb-5">
-            <a
-              href={`tel:+${BRAND.phoneDigits}`}
-              className="flex items-center gap-3 text-foreground/85 hover:text-gold transition"
-            >
-              <Phone className="w-4 h-4 text-foreground/60" />
-              <span className="text-sm md:text-base">{BRAND.phone}</span>
-            </a>
-            <a
-              href={`mailto:${BRAND.email}`}
-              className="flex items-center gap-3 text-foreground/85 hover:text-gold transition break-all"
-            >
-              <Mail className="w-4 h-4 text-foreground/60 shrink-0" />
-              <span className="text-sm md:text-base">{BRAND.email}</span>
-            </a>
-          </div>
-          <div className="flex items-center gap-2">
-            <a
-              href={waLink(`Hello Jain Tours, I'd like help with ${displayTitle}.`)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-full bg-[#25D366] text-white text-sm md:text-base font-medium hover:opacity-90 transition shadow-sm"
-            >
-              <MessageCircle className="w-5 h-5" /> Enquire
-            </a>
-            <button
-              type="button"
-              onClick={() => onDownload?.()}
-              className="shrink-0 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-full border border-border bg-background text-foreground text-sm font-medium hover:border-gold hover:text-gold transition"
-              aria-label="Download itinerary PDF"
-            >
-              <Download className="w-4 h-4" /> PDF
-            </button>
-          </div>
-        </div>
+            {/* Package Inclusions Card */}
+            {parsed.inclusions.length > 0 && (
+              <section className="section-card bg-card border border-border rounded-xl p-4 sm:p-5 mb-3.5 shadow-sm">
+                <h2 className="text-[15px] font-bold text-[#1c2833] dark:text-white mb-2 flex items-center gap-2">
+                  <Check className="w-4 h-4 text-[#2e7d32] dark:text-gold" /> Package Inclusions
+                </h2>
+                <ul className="space-y-2">
+                  {parsed.inclusions.map((inc, i) => (
+                    <li key={i} className="relative pl-5 text-[13px] text-slate-700 dark:text-slate-300 leading-snug">
+                      <span className="absolute left-1 top-0 text-[#2e7d32] dark:text-gold text-lg leading-none font-bold">
+                        •
+                      </span>
+                      <span>{inc}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
 
-        {/* Similar tours */}
-        {similar.length > 0 && destinationSlug && (
-          <div>
-            <h2 className="font-serif text-2xl md:text-3xl text-foreground mb-5">
-              Similar Tours
-            </h2>
-            {(() => {
-              const dest = destinations.find((d) => d.slug === destinationSlug);
-              const locationLabel = (dest?.country ?? destinationName).toUpperCase();
-              return (
-                <div className="-mx-4 px-4 md:mx-0 md:px-0 flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 overflow-x-auto md:overflow-visible snap-x snap-mandatory pb-2 scrollbar-hide" style={{ scrollbarWidth: "none" }}>
+            {/* Exclusions Card */}
+            {parsed.exclusions.length > 0 && (
+              <section className="section-card bg-card border border-border rounded-xl p-4 sm:p-5 mb-3.5 shadow-sm">
+                <h2 className="text-[15px] font-bold text-[#1c2833] dark:text-white mb-2 flex items-center gap-2">
+                  <XIcon className="w-4 h-4 text-destructive" /> Exclusions
+                </h2>
+                <ul className="space-y-2">
+                  {parsed.exclusions.map((exc, i) => (
+                    <li key={i} className="relative pl-5 text-[13px] text-slate-700 dark:text-slate-300 leading-snug">
+                      <span className="absolute left-1 top-0 text-destructive text-lg leading-none font-bold">
+                        •
+                      </span>
+                      <span>{exc}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
+            {/* Visa Guidelines (if international) */}
+            {!isDomestic && parsed.visa && (
+              <section className="section-card bg-card border border-border rounded-xl p-4 sm:p-5 mb-3.5 shadow-sm">
+                <h2 className="text-[15px] font-bold text-[#1c2833] dark:text-white mb-2 flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-[#2e7d32] dark:text-gold" /> Visa Guidelines
+                </h2>
+                <p className="text-[13px] text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
+                  {parsed.visa}
+                </p>
+              </section>
+            )}
+
+            {/* Important Notes Card */}
+            <section className="section-card bg-card border border-border rounded-xl p-4 sm:p-5 mb-3.5 shadow-sm">
+              <h2 className="text-[15px] font-bold text-[#1c2833] dark:text-white mb-2 flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-[#2e7d32] dark:text-gold" /> Important Notes
+              </h2>
+              <ul className="space-y-2">
+                {parsed.terms_conditions ? (
+                  <li className="text-[13px] text-slate-700 dark:text-slate-300 whitespace-pre-line leading-relaxed">
+                    {parsed.terms_conditions}
+                  </li>
+                ) : (
+                  DEFAULT_TERMS.map((term, i) => (
+                    <li key={i} className="relative pl-5 text-[13px] text-slate-700 dark:text-slate-300 leading-snug">
+                      <span className="absolute left-1 top-0 text-[#2e7d32] dark:text-gold text-lg leading-none font-bold">
+                        •
+                      </span>
+                      <span>{term}</span>
+                    </li>
+                  ))
+                )}
+              </ul>
+            </section>
+
+            {/* Need Help Box */}
+            <div className="no-print rounded-xl border border-border bg-card p-4 sm:p-5 mb-4 shadow-sm">
+              <h3 className="font-serif text-lg font-bold text-[#1c2833] dark:text-white mb-1">
+                Need Help Customizing?
+              </h3>
+              <p className="text-xs text-muted-foreground mb-3">
+                Talk directly to our travel designers to tweak hotels, dates, or additions.
+              </p>
+              <div className="flex flex-wrap items-center gap-4 text-xs font-medium text-foreground">
+                <a href={`tel:+${BRAND.phoneDigits}`} className="flex items-center gap-1.5 hover:text-gold transition">
+                  <Phone className="w-3.5 h-3.5 text-gold" /> {BRAND.phone}
+                </a>
+                <a href={`mailto:${BRAND.email}`} className="flex items-center gap-1.5 hover:text-gold transition break-all">
+                  <Mail className="w-3.5 h-3.5 text-gold" /> {BRAND.email}
+                </a>
+              </div>
+            </div>
+
+            {/* Similar Tours */}
+            {similar.length > 0 && destinationSlug && (
+              <div className="no-print mt-6 pt-4 border-t border-border">
+                <h3 className="font-serif text-lg sm:text-xl font-bold text-foreground mb-3">
+                  More {destinationName} Packages
+                </h3>
+                <div
+                  className="-mx-3 px-3 flex md:grid md:grid-cols-2 gap-3 overflow-x-auto pb-2"
+                  style={{ scrollbarWidth: "none" }}
+                >
                   {similar.map((it, i) => (
-                    <div key={it.id} className="shrink-0 w-[78%] sm:w-[60%] md:w-auto snap-start">
+                    <div key={it.id} className="shrink-0 w-[82%] sm:w-[65%] md:w-auto">
                       <ItineraryCard
                         id={it.id}
                         title={it.title}
-                        image={similarImagesReady && similarImagePool.length ? similarImagePool[(i + 1) % similarImagePool.length] : undefined}
+                        image={
+                          similarImagesReady && photoPool.length
+                            ? photoPool[(i + 1) % photoPool.length]
+                            : undefined
+                        }
                         destinationSlug={destinationSlug}
-                        locationLabel={locationLabel}
+                        locationLabel={destinationName.toUpperCase()}
                         index={i}
                         initialPrice={it.starting_price ?? undefined}
                         durationOverride={it.duration ?? undefined}
@@ -772,43 +739,41 @@ const ItineraryDetailView = ({
                     </div>
                   ))}
                 </div>
-              );
-            })()}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Mobile Floating Action Bar matching the sample */}
+        {parsed && (
+          <div className="mobile-bar no-print fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-border p-2.5 px-3 flex items-center gap-2 max-w-[540px] md:max-w-[780px] mx-auto shadow-lg">
+            <button
+              type="button"
+              onClick={handlePrint}
+              className="py-2.5 px-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 text-xs sm:text-sm font-semibold flex items-center justify-center gap-1.5 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+              title="Save as PDF using phone print"
+            >
+              <Printer className="w-4 h-4 text-slate-600 dark:text-slate-300" /> Save PDF
+            </button>
+            <a
+              href={waLink(`Hi Jain Tours, I'd like to get a quote for the ${displayTitle} package.`)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 py-2.5 px-3 rounded-lg bg-[#25D366] text-white text-xs sm:text-sm font-semibold flex items-center justify-center gap-1.5 hover:opacity-90 transition shadow-sm"
+            >
+              <MessageCircle className="w-4 h-4" /> WhatsApp
+            </a>
+            <button
+              type="button"
+              onClick={onEnquire}
+              className="flex-1 py-2.5 px-3 rounded-lg bg-[#1c2833] dark:bg-gold text-white dark:text-slate-950 text-xs sm:text-sm font-semibold flex items-center justify-center gap-1.5 hover:opacity-90 transition shadow-sm"
+            >
+              <Send className="w-3.5 h-3.5" /> Enquire
+            </button>
           </div>
         )}
       </div>
-
-      {/* Sticky bottom price + Enquire CTA */}
-      <div className="sticky bottom-0 left-0 right-0 z-30 border-t border-border/60 bg-background/95 backdrop-blur px-3 md:px-6 py-3 flex items-center justify-between gap-3">
-        <div className="min-w-0">
-          {(priceOverride || parsed?.starting_price) ? (
-            <>
-              <p className="text-[10px] md:text-xs uppercase tracking-luxe text-foreground/60">
-                Starting from
-              </p>
-              <p className="font-serif text-lg md:text-2xl text-gold leading-tight truncate">
-                {priceOverride || parsed?.starting_price}
-                <span className="text-xs md:text-sm text-foreground/60 font-sans ml-1.5">
-                  / per person
-                </span>
-              </p>
-            </>
-          ) : (
-            <p className="text-xs md:text-sm text-foreground/70">Best price on request</p>
-          )}
-        </div>
-        <div className="shrink-0 flex items-center gap-2">
-          <a
-            href={waLink(`Hi Jain Tours, I'd like to enquire about ${displayTitle}.`)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 px-4 md:px-7 py-3 rounded-full bg-[#25D366] text-white text-xs md:text-sm font-medium uppercase tracking-luxe hover:opacity-90 transition shadow-sm"
-          >
-            <MessageCircle className="w-4 h-4" /> Enquire
-          </a>
-        </div>
-      </div>
-    </div>
+    </>
   );
 };
 

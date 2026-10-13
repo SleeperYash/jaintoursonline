@@ -4,14 +4,20 @@ import Footer from "./Footer";
 import FloatingContacts from "./FloatingContacts";
 import PremiumLoader from "./PremiumLoader";
 
-const SiteLayout = ({ children }: { children: ReactNode }) => {
+const SiteLayout = ({
+  children,
+  hideFloatingContacts = false,
+}: {
+  children: ReactNode;
+  hideFloatingContacts?: boolean;
+}) => {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <PremiumLoader />
       <Header />
       <main>{children}</main>
       <Footer />
-      <FloatingContacts />
+      {!hideFloatingContacts && <FloatingContacts />}
     </div>
   );
 };

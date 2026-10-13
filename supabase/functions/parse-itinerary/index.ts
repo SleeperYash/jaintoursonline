@@ -24,6 +24,7 @@ type Parsed = {
   duration: string | null;
   starting_price: string | null;
   overview: string | null;
+  highlights?: string[];
   visa_information: string | null;
   terms_conditions: string | null;
   days: { day_number: number; title: string; description: string }[];
@@ -39,6 +40,7 @@ Return STRICT JSON using the provided tool. Rules:
 - "duration": as printed (e.g. "5 Nights / 6 Days", "4N/5D"). null if not present.
 - "starting_price": lowest "starting from" / "per person" price exactly as printed with currency (e.g. "₹49,999"). null if not found.
 - "overview": 2-4 short sentences describing the trip. null if not present.
+- "highlights": array of 4-6 punchy, engaging bullet highlights of the trip (e.g. iconic landmarks, unique experiences, tours).
 - "visa_information": short paragraph about visa if mentioned, else null.
 - "terms_conditions": full terms & conditions / cancellation / payment terms text if printed, else null.
 - "days": array, one entry per day. day_number is 1-based. title like "Arrival in Dubai". description is the full paragraph for that day with activities merged in.
@@ -61,6 +63,11 @@ const TOOL = {
         duration: { type: ["string", "null"] },
         starting_price: { type: ["string", "null"] },
         overview: { type: ["string", "null"] },
+        highlights: {
+          type: "array",
+          items: { type: "string" },
+          description: "4-6 punchy bullet highlights of the trip",
+        },
         visa_information: { type: ["string", "null"] },
         terms_conditions: { type: ["string", "null"] },
         days: {
@@ -98,6 +105,7 @@ const TOOL = {
         "duration",
         "starting_price",
         "overview",
+        "highlights",
         "visa_information",
         "terms_conditions",
         "days",
