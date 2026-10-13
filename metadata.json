@@ -1,0 +1,7 @@
+{
+  "name": "Jain Tours & Travels",
+  "description": "Trusted travel agency in Mumbai offering international and domestic tour packages, visa services, and customized holidays.",
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

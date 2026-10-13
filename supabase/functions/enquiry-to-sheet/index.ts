@@ -27,23 +27,20 @@ Deno.serve(async (req) => {
     }
 
     const now = new Date().toISOString();
-    // Neutralize spreadsheet formulas: visitor text must never execute in the sheet.
-    // RAW input stores every value as plain text, so formulas never run.
-    const cell = (v: unknown) => String(v ?? "").slice(0, 2000);
     const row = [
       now,
-      cell(body.name),
-      cell(body.phone),
-      cell(body.email),
-      cell(body.destination_name ?? body.destination_slug),
-      cell(body.travel_dates),
-      cell(body.travellers),
-      cell(body.budget_per_person),
-      cell(body.message),
+      body.name ?? "",
+      body.phone ?? "",
+      body.email ?? "",
+      body.destination_name ?? body.destination_slug ?? "",
+      body.travel_dates ?? "",
+      body.travellers ?? "",
+      body.budget_per_person ?? "",
+      body.message ?? "",
     ];
 
     const range = `${SHEET_NAME}!A:I`;
-    const url = `${GATEWAY_URL}/spreadsheets/${SPREADSHEET_ID}/values/${range}:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS`;
+    const url = `${GATEWAY_URL}/spreadsheets/${SPREADSHEET_ID}/values/${range}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`;
 
     const res = await fetch(url, {
       method: "POST",

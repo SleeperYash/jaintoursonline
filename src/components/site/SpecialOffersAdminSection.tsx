@@ -7,7 +7,7 @@ import { useSpecialOffers, type SpecialOffer, type SpecialOfferVariant } from "@
 import { Button } from "@/components/ui/button";
 
 type Props = {
-  callAdmin: (action: string, payload?: Record<string, unknown>) => Promise<any>;
+  callAdmin: (action: string, payload?: Record<string, unknown>) => Promise<unknown>;
 };
 
 const ACCEPT_IMG = "image/jpeg,image/jpg,image/png,image/webp";

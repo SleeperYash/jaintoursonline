@@ -19,7 +19,7 @@ import { useDeals, type Deal } from "@/hooks/useDeals";
 import SpecialOffersAdminSection from "@/components/site/SpecialOffersAdminSection";
 
 type Props = {
-  callAdmin: (action: string, payload?: Record<string, unknown>) => Promise<any>;
+  callAdmin: (action: string, payload?: Record<string, unknown>) => Promise<unknown>;
 };
 
 const ACCEPT_IMG = "image/jpeg,image/jpg,image/png,image/webp";

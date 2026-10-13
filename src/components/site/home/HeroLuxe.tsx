@@ -136,7 +136,7 @@ const HeroLuxe = () => {
                 backfaceVisibility: "hidden",
               }}
               loading="eager"
-              fetchPriority={idx === initial ? "high" : "low"}
+              {...({ fetchpriority: idx === initial ? "high" : "low" } as Record<string, string>)}
               decoding="async"
               width={1920}
               height={1080}
