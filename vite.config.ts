@@ -33,7 +33,11 @@ export default defineConfig(({ mode }) => ({
     },
   },
   optimizeDeps: {
-    include: ["react", "react-dom", "react-dom/client", "react/jsx-runtime", "react/jsx-dev-runtime"],
+    include: [
+      "react", "react-dom", "react-dom/client", "react/jsx-runtime", "react/jsx-dev-runtime",
+      "react-router-dom", "react-router", "@tanstack/react-query", "framer-motion", "lucide-react",
+      "@supabase/supabase-js", "sonner",
+    ],
   },
   resolve: {
     alias: {
