@@ -5,7 +5,7 @@ import { componentTagger } from "lovable-tagger";
 import { imagetools } from "vite-imagetools";
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => ({
+export default defineConfig({
   server: {
     host: "0.0.0.0",
     port: 3000,
@@ -13,7 +13,11 @@ export default defineConfig(({ mode }) => ({
       overlay: false,
     },
   },
-  plugins: [react(), imagetools(), mode === "development" && componentTagger()].filter(Boolean),
+  plugins: [
+    react(),
+    imagetools(),
+    componentTagger(),
+  ],
   build: {
     target: "es2020",
     cssCodeSplit: true,
@@ -36,4 +40,4 @@ export default defineConfig(({ mode }) => ({
     },
     dedupe: ["react", "react-dom", "react/jsx-runtime", "react/jsx-dev-runtime", "@tanstack/react-query", "@tanstack/query-core"],
   },
-}));
+});
