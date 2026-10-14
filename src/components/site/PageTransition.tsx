@@ -2,17 +2,23 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 
-const isMobile = () => window.matchMedia("(max-width: 768px)").matches;
+const isMobile = () =>
+  typeof window !== "undefined" && window.matchMedia ? window.matchMedia("(max-width: 768px)").matches : false;
 
 const PageTransition = ({ children }: { children: ReactNode }) => {
   const [mobile, setMobile] = useState(false);
 
   useEffect(() => {
-    const mq = window.matchMedia("(max-width: 768px)");
-    const handler = () => setMobile(mq.matches);
-    handler();
-    mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
+    if (typeof window === "undefined" || !window.matchMedia) return;
+    try {
+      const mq = window.matchMedia("(max-width: 768px)");
+      const handler = () => setMobile(mq.matches);
+      handler();
+      mq.addEventListener("change", handler);
+      return () => mq.removeEventListener("change", handler);
+    } catch {
+      return;
+    }
   }, []);
 
   const duration = mobile ? 0.3 : 0.5;

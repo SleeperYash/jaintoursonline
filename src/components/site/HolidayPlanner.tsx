@@ -99,16 +99,28 @@ const HolidayPlanner = () => {
   const closeRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    if (sessionStorage.getItem("jt-planner-invitation-seen")) return;
-    const timer = window.setTimeout(() => {
-      if (!sessionStorage.getItem("jt-planner-invitation-seen")) setShowInvitation(true);
-    }, 30000);
-    return () => window.clearTimeout(timer);
+    try {
+      if (sessionStorage.getItem("jt-planner-invitation-seen")) return;
+      const timer = window.setTimeout(() => {
+        try {
+          if (!sessionStorage.getItem("jt-planner-invitation-seen")) setShowInvitation(true);
+        } catch {
+          /* storage unavailable */
+        }
+      }, 30000);
+      return () => window.clearTimeout(timer);
+    } catch {
+      return;
+    }
   }, []);
 
   const dismissInvitation = () => {
     setShowInvitation(false);
-    sessionStorage.setItem("jt-planner-invitation-seen", "1");
+    try {
+      sessionStorage.setItem("jt-planner-invitation-seen", "1");
+    } catch {
+      /* storage unavailable */
+    }
   };
 
   const openPlanner = () => {

@@ -12,7 +12,11 @@ export function getConsent(): Consent | null {
 }
 
 export function saveConsent(analytics: boolean) {
-  localStorage.setItem(CONSENT_KEY, JSON.stringify({ analytics, date: new Date().toISOString() }));
+  try {
+    localStorage.setItem(CONSENT_KEY, JSON.stringify({ analytics, date: new Date().toISOString() }));
+  } catch {
+    /* storage unavailable or restricted */
+  }
   const w = window as unknown as { __loadGA?: () => void; "ga-disable-G-BNXFBV2MFW"?: boolean };
   if (analytics) {
     w["ga-disable-G-BNXFBV2MFW"] = false;

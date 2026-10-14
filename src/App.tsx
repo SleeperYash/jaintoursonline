@@ -24,6 +24,7 @@ const RefundPolicy = lazy(() => import("./pages/legal.tsx").then((m) => ({ defau
 const CookiePolicy = lazy(() => import("./pages/legal.tsx").then((m) => ({ default: m.CookiePolicy })));
 import PageTransition from "./components/site/PageTransition";
 import CookieBanner from "./components/site/CookieBanner";
+import ErrorBoundary from "./components/site/ErrorBoundary";
 import { trackPageView } from "@/lib/analytics";
 
 const queryClient = new QueryClient();
@@ -72,18 +73,20 @@ const AnimatedRoutes = () => {
 };
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <ScrollToTop />
-        <AnalyticsTracker />
-        <AnimatedRoutes />
-        <CookieBanner />
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
+  <ErrorBoundary>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <ScrollToTop />
+          <AnalyticsTracker />
+          <AnimatedRoutes />
+          <CookieBanner />
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  </ErrorBoundary>
 );
 
 export default App;

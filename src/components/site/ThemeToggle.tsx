@@ -6,8 +6,12 @@ const STORAGE_KEY = "jtt-theme";
 
 const getInitial = (): "light" | "dark" => {
   if (typeof window === "undefined") return "light";
-  const saved = localStorage.getItem(STORAGE_KEY);
-  if (saved === "dark" || saved === "light") return saved;
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved === "dark" || saved === "light") return saved;
+  } catch {
+    /* storage unavailable */
+  }
   return "light";
 };
 
@@ -23,7 +27,11 @@ const ThemeToggle = ({ className }: { className?: string }) => {
 
   useEffect(() => {
     applyTheme(theme);
-    localStorage.setItem(STORAGE_KEY, theme);
+    try {
+      localStorage.setItem(STORAGE_KEY, theme);
+    } catch {
+      /* storage unavailable */
+    }
   }, [theme]);
 
   const toggle = () => setTheme((t) => (t === "dark" ? "light" : "dark"));

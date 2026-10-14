@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string;
+const SUPABASE_URL = (import.meta.env.VITE_SUPABASE_URL as string) || "https://tddtcsdbqrlabbqqotqd.supabase.co";
 const publicUrl = (path: string) =>
   `${SUPABASE_URL}/storage/v1/object/public/itineraries/${path}`;
 

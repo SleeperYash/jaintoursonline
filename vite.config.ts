@@ -22,22 +22,13 @@ export default defineConfig(({ mode }) => ({
     rollupOptions: {
       output: {
         manualChunks(id: string) {
-          if (!id.includes("node_modules")) return;
-          if (id.includes("framer-motion")) return "motion";
           if (id.includes("jspdf")) return "pdf";
-          if (id.includes("@supabase")) return "supabase";
-          if (id.includes("react-router") || id.includes("react-dom") || id.includes("/react/")) return "react-vendor";
-          return "vendor";
         },
       },
     },
   },
   optimizeDeps: {
-    include: [
-      "react", "react-dom", "react-dom/client", "react/jsx-runtime", "react/jsx-dev-runtime",
-      "react-router-dom", "react-router", "@tanstack/react-query", "framer-motion", "lucide-react",
-      "@supabase/supabase-js", "sonner",
-    ],
+    include: ["react", "react-dom", "react-dom/client", "react/jsx-runtime", "react/jsx-dev-runtime"],
   },
   resolve: {
     alias: {
