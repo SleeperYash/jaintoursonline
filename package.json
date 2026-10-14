@@ -7,6 +7,7 @@
     "dev": "vite --port 3000 --host 0.0.0.0",
     "prebuild": "npx tsx scripts/generate-sitemap.ts",
     "build": "vite build",
+    "postbuild": "node --input-type=module -e \"import fs from 'node:fs'; if (fs.existsSync('dist/index.html')) fs.copyFileSync('dist/index.html', 'dist/200.html');\"",
     "build:dev": "vite build --mode development",
     "seo:check": "npx tsx scripts/seo-check.ts",
     "lint": "eslint .",
