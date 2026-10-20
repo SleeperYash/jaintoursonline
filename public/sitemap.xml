@@ -219,10 +219,6 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://jaintoursonline.com/destinations/himachal/unexplored-himachal</loc>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://jaintoursonline.com/destinations/andaman/3n-port-blair-1n-havelock</loc>
     <priority>0.6</priority>
   </url>
@@ -284,10 +280,6 @@
   </url>
   <url>
     <loc>https://jaintoursonline.com/destinations/georgia/testing</loc>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://jaintoursonline.com/destinations/bali/testing</loc>
     <priority>0.6</priority>
   </url>
   <url>

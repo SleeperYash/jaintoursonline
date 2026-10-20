@@ -1,6 +1,6 @@
 {
-  "summary": "Implementation plan for elevating the Itinerary Detail experience with a sticky day-jumper bar, tabbed dossier views (Schedule, Hotels, Inclusions & Info), an ultra-lightweight full-screen photo lightbox, and refined editorial visual polish without lag.",
-  "updatedAt": "2026-10-13T09:32:19.903484862Z",
+  "summary": "Implementation plan to eliminate image size mismatches and cropping between mobile and desktop by replacing forced aspect-ratios with an adaptive zero-crop container and streamlining the admin panel into a single auto-scaling upload system.",
+  "updatedAt": "2026-10-19T12:02:33.524054130Z",
   "requestFeedback": true,
   "userFacing": true
 }

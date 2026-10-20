@@ -74,3 +74,49 @@ export const generateEstimatedPrice = (
 
 export const formatINR = (n: number) =>
   `₹${n.toLocaleString("en-IN")}`;
+
+// Realistic roundtrip economy flight fares per person departing from Mumbai (BOM)
+const FLIGHT_OVERRIDES: Record<string, number> = {
+  // Domestic from Mumbai
+  goa: 6500,
+  delhi: 7500,
+  gujarat: 6000,
+  kerala: 7500,
+  rajasthan: 7500,
+  "madhya-pradesh": 7000,
+  "tamil-nadu": 8000,
+  uttarakhand: 9500,
+  himachal: 10500,
+  "himachal-pradesh": 10500,
+  kashmir: 11500,
+  "leh-ladakh": 14500,
+  "char-dham": 10500,
+  "north-east": 13500,
+  andaman: 16500,
+
+  // International from Mumbai
+  dubai: 24000,
+  thailand: 26000,
+  "sri-lanka": 22000,
+  nepal: 21000,
+  "singapore-malaysia": 29000,
+  vietnam: 32000,
+  bhutan: 34000,
+  maldives: 28000,
+  bali: 38000,
+  hongkong: 42000,
+  georgia: 44000,
+  mauritius: 52000,
+  japan: 58000,
+  "united-kingdom": 65000,
+  europe: 68000,
+  australia: 78000,
+};
+
+export const getEstimatedFlightPrice = (
+  slug: string,
+  region: Region,
+): number => {
+  if (FLIGHT_OVERRIDES[slug]) return FLIGHT_OVERRIDES[slug];
+  return region === "International" ? 38000 : 8500;
+};
