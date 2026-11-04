@@ -246,7 +246,7 @@ export const HolidayPlanner = () => {
       setSearchQuery("");
       choose("explore", "International packages");
     } else if (label === "Group Tours") {
-      setAnswers((prev) => ({ ...prev, party: "Group" }));
+      setAnswers((prev) => ({ ...prev, party: "Friends" }));
       choose("plan", "Group tours");
     } else if (label === "Flight Bookings") {
       showInfo("Do you book flights?", "Flight Bookings", "Yes! We book domestic and international flights alongside your holiday package.");
