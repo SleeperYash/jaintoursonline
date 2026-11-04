@@ -121,7 +121,7 @@ const UserBubble = ({ children, time }: { children: React.ReactNode; time?: stri
 
 const MAIN_ACTIONS: { tab: ConciergeTab; label: string; icon: typeof Search; imageSlug: string }[] = [
   { tab: "explore", label: "Explore Destinations & Packages", icon: Compass, imageSlug: "bali" },
-  { tab: "estimator", label: "Estimate My Trip", icon: Calculator, imageSlug: "kashmir" },
+  { tab: "estimator", label: "Estimate My Trip", icon: Calculator, imageSlug: "kerala" },
   { tab: "plan", label: "Plan My Trip", icon: Briefcase, imageSlug: "dubai" },
 ];
 
