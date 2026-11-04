@@ -534,53 +534,118 @@ export const HolidayPlanner = () => {
               </div>
             </header>
 
-            {/* Segmented Navigation Dock (3 Clean Tabs) */}
-            <nav
-              aria-label="Concierge Sections"
-              className="grid grid-cols-3 border-b border-border/60 bg-muted/40 p-1.5 gap-1 shrink-0 text-xs font-medium"
-            >
-              <button
-                type="button"
-                onClick={() => setActiveTab("explore")}
-                className={`flex flex-col items-center justify-center gap-1 rounded-xl py-2 px-1 text-center transition-all ${
-                  activeTab === "explore"
-                    ? "bg-background text-foreground shadow-sm font-semibold"
-                    : "text-muted-foreground hover:text-foreground hover:bg-background/50"
-                }`}
-              >
-                <Search className="h-3.5 w-3.5" />
-                <span className="truncate w-full text-[11px]">Explore</span>
-              </button>
+            {/* Single continuous conversation */}
+            <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain bg-muted/40 px-3 py-4 sm:px-4">
+              <div className="space-y-4">
+              {/* Welcome message — always the first message */}
+              <BotBubble time={openedAt}>
+                <p className="font-semibold">Namaste! Welcome to {BRAND.name} 👋</p>
+                <p className="mt-1">I'm your travel assistant. How can I help you plan your next holiday?</p>
+              </BotBubble>
 
-              <button
-                type="button"
-                onClick={() => setActiveTab("estimator")}
-                className={`flex flex-col items-center justify-center gap-1 rounded-xl py-2 px-1 text-center transition-all ${
-                  activeTab === "estimator"
-                    ? "bg-background text-foreground shadow-sm font-semibold"
-                    : "text-muted-foreground hover:text-foreground hover:bg-background/50"
-                }`}
-              >
-                <Briefcase className="h-3.5 w-3.5" />
-                <span className="truncate w-full text-[11px]">Estimator</span>
-              </button>
+              {activeTab === "home" && (
+                <>
+                  <div className="space-y-2.5">
+                    {MAIN_ACTIONS.map((a) => {
+                      const dest = destinations.find((d) => d.slug === a.imageSlug) ?? destinations[0];
+                      const Icon = a.icon;
+                      return (
+                        <button
+                          key={a.tab}
+                          type="button"
+                          onClick={() => choose(a.tab, a.label)}
+                          className="group flex w-full items-stretch overflow-hidden rounded-2xl border border-border bg-card text-left shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
+                        >
+                          <img
+                            src={dest?.image}
+                            alt=""
+                            loading="lazy"
+                            className="h-[72px] w-24 shrink-0 object-cover sm:w-28"
+                          />
+                          <span className="flex min-w-0 flex-1 items-center gap-3 px-3">
+                            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-secondary text-primary">
+                              <Icon className="h-4 w-4" />
+                            </span>
+                            <span className="min-w-0 flex-1 text-sm font-semibold text-foreground">{a.label}</span>
+                            <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
 
-              <button
-                type="button"
-                onClick={() => setActiveTab("plan")}
-                className={`flex flex-col items-center justify-center gap-1 rounded-xl py-2 px-1 text-center transition-all ${
-                  activeTab === "plan"
-                    ? "bg-background text-foreground shadow-sm font-semibold"
-                    : "text-muted-foreground hover:text-foreground hover:bg-background/50"
-                }`}
-              >
-                <Sparkles className="h-3.5 w-3.5 text-gold" />
-                <span className="truncate w-full text-[11px]">Plan Trip</span>
-              </button>
-            </nav>
+                  <div>
+                    <p className="mb-2 px-1 text-xs font-semibold text-foreground">Quick Questions</p>
+                    <div className="flex flex-wrap gap-2">
+                      {QUICK_QUESTIONS.map((q) => (
+                        <button
+                          key={q.label}
+                          type="button"
+                          onClick={() => handleQuick(q.label)}
+                          className="min-h-9 rounded-full border border-border bg-card px-3.5 py-1.5 text-xs font-medium text-foreground shadow-sm transition-colors hover:border-primary hover:text-primary"
+                        >
+                          {q.label}
+                        </button>
+                      ))}
+                      <button
+                        type="button"
+                        onClick={() => choose("team", "Talk to our team")}
+                        className="min-h-9 rounded-full border border-primary/40 bg-secondary px-3.5 py-1.5 text-xs font-semibold text-primary shadow-sm transition-colors hover:bg-primary hover:text-primary-foreground"
+                      >
+                        Talk to Our Team
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
 
-            {/* Scrollable Main Content Area */}
-            <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-4 sm:p-5">
+              {activeTab !== "home" && (
+                <>
+                  <UserBubble time={chosenAt}>{chosenLabel}</UserBubble>
+                  <BotBubble time={chosenAt}>{BOT_INTROS[activeTab] ?? infoText}</BotBubble>
+                </>
+              )}
+
+              {activeTab === "info" && (
+                <div className="rounded-2xl border border-border bg-secondary/60 p-4 shadow-sm">
+                  <p className="font-serif text-lg text-foreground">{infoTitle}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">Our travel experts reply quickly on WhatsApp or by phone.</p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <Button asChild size="sm" className="rounded-full">
+                      <a href={waLink(`Hi Jain Tours, I'd like help with ${infoTitle}.`)} target="_blank" rel="noopener noreferrer">
+                        <MessageCircle className="mr-1.5 h-3.5 w-3.5" /> Ask on WhatsApp
+                      </a>
+                    </Button>
+                    <Button type="button" size="sm" variant="outline" className="rounded-full" onClick={() => choose("plan", "Plan my trip")}>
+                      Plan My Trip
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === "team" && (
+                <div className="space-y-2.5 rounded-2xl border border-border bg-card p-4 text-sm shadow-sm">
+                  <a href={`tel:${BRAND.phoneDigits}`} className="flex items-center gap-2.5 font-semibold text-foreground hover:text-primary">
+                    <Phone className="h-4 w-4 shrink-0 text-primary" /> {BRAND.phoneDisplay}
+                  </a>
+                  <a href={`mailto:${BRAND.email}`} className="flex items-center gap-2.5 break-all text-foreground hover:text-primary">
+                    <Mail className="h-4 w-4 shrink-0 text-primary" /> {BRAND.email}
+                  </a>
+                  <p className="flex items-start gap-2.5 text-muted-foreground">
+                    <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" /> {BRAND.address}
+                  </p>
+                  <div className="grid grid-cols-2 gap-2 pt-1">
+                    <Button asChild className="rounded-full">
+                      <a href={`tel:${BRAND.phoneDigits}`}><Phone className="mr-1.5 h-4 w-4" /> Call Now</a>
+                    </Button>
+                    <Button asChild variant="outline" className="rounded-full">
+                      <a href={waLink("Hi Jain Tours, I'd like to talk to your team.")} target="_blank" rel="noopener noreferrer">
+                        <MessageCircle className="mr-1.5 h-4 w-4" /> WhatsApp
+                      </a>
+                    </Button>
+                  </div>
+                </div>
+              )}
               {/* TAB 1: EXPLORE PACKAGES */}
               {activeTab === "explore" && (
                 <div className="space-y-4">
