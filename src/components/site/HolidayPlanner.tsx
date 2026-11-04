@@ -2,7 +2,12 @@ import { useEffect, useId, useMemo, useRef, useState } from "react";
 import {
   ArrowRight,
   Briefcase,
+  Calculator,
   Check,
+  CheckCheck,
+  ChevronRight,
+  Compass,
+  Mail,
   Download,
   MapPin,
   MessageCircle,
@@ -23,7 +28,7 @@ import { destinations, type Destination } from "@/data/destinations";
 import { generateEstimatedPrice, formatINR, getEstimatedFlightPrice } from "@/lib/estimatedPrice";
 import robotImage from "@/assets/travel-assistant-robot.png";
 
-type ConciergeTab = "explore" | "estimator" | "plan";
+type ConciergeTab = "home" | "explore" | "estimator" | "plan" | "info" | "team";
 
 type LeadAnswers = {
   destination?: string;
@@ -86,9 +91,64 @@ const OdometerNumber = ({ value, duration = 850 }: { value: number; duration?: n
   );
 };
 
+const nowTime = () =>
+  new Date().toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit" });
+
+const BotBubble = ({ children, time }: { children: React.ReactNode; time?: string }) => (
+  <div className="flex items-end gap-2">
+    <div className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full border border-border bg-card">
+      <img src={robotImage} alt="" width={28} height={28} className="h-6 w-6 object-contain" />
+    </div>
+    <div className="max-w-[85%] rounded-2xl rounded-bl-sm border border-border bg-card px-3.5 py-2.5 text-sm leading-relaxed text-foreground shadow-sm">
+      {children}
+      {time && <p className="mt-1 text-right text-[10px] text-muted-foreground">{time}</p>}
+    </div>
+  </div>
+);
+
+const UserBubble = ({ children, time }: { children: React.ReactNode; time?: string }) => (
+  <div className="flex justify-end">
+    <div className="max-w-[85%] rounded-2xl rounded-br-sm bg-primary px-3.5 py-2 text-sm font-medium text-primary-foreground shadow-sm">
+      <span className="break-words">{children}</span>
+      {time && (
+        <span className="ml-2 inline-flex items-center gap-0.5 align-bottom text-[10px] text-primary-foreground/70">
+          {time} <CheckCheck className="h-3 w-3" />
+        </span>
+      )}
+    </div>
+  </div>
+);
+
+const MAIN_ACTIONS: { tab: ConciergeTab; label: string; icon: typeof Search; imageSlug: string }[] = [
+  { tab: "explore", label: "Explore Destinations & Packages", icon: Compass, imageSlug: "bali" },
+  { tab: "estimator", label: "Estimate My Trip", icon: Calculator, imageSlug: "kerala" },
+  { tab: "plan", label: "Plan My Trip", icon: Briefcase, imageSlug: "dubai" },
+];
+
+const QUICK_QUESTIONS = [
+  { label: "Visa Services" },
+  { label: "International Packages" },
+  { label: "Group Tours" },
+  { label: "Flight Bookings" },
+];
+
+const BOT_INTROS: Partial<Record<ConciergeTab, string>> = {
+  explore: "Here are some of our popular destinations:",
+  estimator: "Please tell us your travel details to get an approximate cost.",
+  plan: "Tell us what kind of trip you have in mind.",
+  team: "We'd be happy to assist you! You can reach us at:",
+};
+
 export const HolidayPlanner = () => {
   const [open, setOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<ConciergeTab>("explore");
+  const [activeTab, setActiveTab] = useState<ConciergeTab>("home");
+  const [chosenLabel, setChosenLabel] = useState("");
+  const [chosenAt, setChosenAt] = useState("");
+  const [openedAt, setOpenedAt] = useState("");
+  const [infoTitle, setInfoTitle] = useState("");
+  const [infoText, setInfoText] = useState("");
+  const [composerText, setComposerText] = useState("");
+  const composerId = useId();
   const [showInvitation, setShowInvitation] = useState(false);
 
   // Explore tab state
@@ -153,10 +213,65 @@ export const HolidayPlanner = () => {
     }
   };
 
-  const openPlanner = (tab: ConciergeTab = "explore") => {
+  const openPlanner = (tab: ConciergeTab = "home") => {
     dismissInvitation();
     setActiveTab(tab);
+    setOpenedAt(nowTime());
     setOpen(true);
+  };
+
+  const choose = (tab: ConciergeTab, label: string) => {
+    setChosenLabel(label);
+    setChosenAt(nowTime());
+    setActiveTab(tab);
+    requestAnimationFrame(() => scrollRef.current?.scrollTo({ top: 0, behavior: "smooth" }));
+  };
+
+  const goHome = () => {
+    setActiveTab("home");
+    requestAnimationFrame(() => scrollRef.current?.scrollTo({ top: 0, behavior: "smooth" }));
+  };
+
+  const showInfo = (label: string, title: string, text: string) => {
+    setInfoTitle(title);
+    setInfoText(text);
+    choose("info", label);
+  };
+
+  const handleQuick = (label: string) => {
+    if (label === "Visa Services") {
+      showInfo("Do you provide visa services?", "Visa Services", "Yes! We provide visa assistance for popular destinations including Schengen, Dubai, USA, UK and more.");
+    } else if (label === "International Packages") {
+      setRegionFilter("International");
+      setSearchQuery("");
+      choose("explore", "International packages");
+    } else if (label === "Group Tours") {
+      setAnswers((prev) => ({ ...prev, party: "Friends" }));
+      choose("plan", "Group tours");
+    } else if (label === "Flight Bookings") {
+      showInfo("Do you book flights?", "Flight Bookings", "Yes! We book domestic and international flights alongside your holiday package.");
+    }
+  };
+
+  // Simple keyword routing — no AI, no extra cost
+  const handleComposerSend = () => {
+    const text = composerText.trim();
+    if (!text) return;
+    setComposerText("");
+    const t = text.toLowerCase();
+    if (/visa/.test(t)) return handleQuick("Visa Services");
+    if (/flight|ticket/.test(t)) return handleQuick("Flight Bookings");
+    if (/group/.test(t)) return handleQuick("Group Tours");
+    if (/cost|price|budget|estimat/.test(t)) return choose("estimator", text);
+    if (/plan|honeymoon|family|trip/.test(t)) return choose("plan", text);
+    if (/call|talk|contact|team|human|agent/.test(t)) return choose("team", text);
+    const match = destinations.find((d) => t.includes(d.name.toLowerCase()));
+    if (match || /package|destination|tour|explore/.test(t)) {
+      setRegionFilter("All");
+      setSearchQuery(match ? match.name : "");
+      return choose("explore", text);
+    }
+    choose("team", text);
   };
 
   // Keyboard accessibility
@@ -492,20 +607,21 @@ export const HolidayPlanner = () => {
             role="dialog"
             aria-modal="true"
             aria-labelledby="concierge-title"
-            className="fixed inset-x-0 bottom-0 z-[71] flex h-[min(94dvh,720px)] flex-col overflow-hidden rounded-t-2xl border border-border/80 bg-background/95 text-foreground shadow-2xl backdrop-blur-xl md:inset-x-auto md:right-6 md:bottom-20 md:h-[min(650px,calc(100dvh-100px))] md:w-[430px] md:rounded-2xl transition-all"
+            className="fixed inset-0 z-[71] flex h-[100dvh] w-full flex-col overflow-hidden bg-background text-foreground shadow-2xl pt-[env(safe-area-inset-top,0px)] pb-[env(safe-area-inset-bottom,0px)] md:inset-auto md:right-6 md:bottom-6 md:h-[min(720px,calc(100dvh-48px))] md:w-[460px] md:rounded-3xl md:border md:border-border md:pt-0 md:pb-0 animate-in fade-in slide-in-from-bottom-4 duration-200"
           >
             {/* Header Zone */}
-            <header className="flex shrink-0 items-center justify-between gap-3 border-b border-border/70 bg-gradient-to-r from-primary to-primary/90 px-4 py-3.5 text-primary-foreground">
+            <header className="flex shrink-0 items-center justify-between gap-3 bg-primary px-4 py-3 text-primary-foreground">
               <div className="flex items-center gap-2.5 min-w-0">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary-foreground/15 ring-1 ring-primary-foreground/20">
-                  <img src={robotImage} alt="" width={36} height={36} className="h-8 w-8 object-contain" />
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary-foreground ring-2 ring-primary-foreground/30">
+                  <img src={robotImage} alt="" width={40} height={40} className="h-9 w-9 object-contain" />
                 </div>
                 <div className="min-w-0">
                   <h2 id="concierge-title" className="font-serif text-lg leading-tight truncate">
                     {BRAND.name}
                   </h2>
-                  <p className="text-[11px] text-primary-foreground/80 truncate">
-                    Travel Concierge · Mumbai (Goregaon West)
+                  <p className="flex items-center gap-1.5 text-[11px] text-primary-foreground/80 truncate">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary-foreground" aria-hidden="true" />
+                    Travel Concierge · Online
                   </p>
                 </div>
               </div>
@@ -534,53 +650,118 @@ export const HolidayPlanner = () => {
               </div>
             </header>
 
-            {/* Segmented Navigation Dock (3 Clean Tabs) */}
-            <nav
-              aria-label="Concierge Sections"
-              className="grid grid-cols-3 border-b border-border/60 bg-muted/40 p-1.5 gap-1 shrink-0 text-xs font-medium"
-            >
-              <button
-                type="button"
-                onClick={() => setActiveTab("explore")}
-                className={`flex flex-col items-center justify-center gap-1 rounded-xl py-2 px-1 text-center transition-all ${
-                  activeTab === "explore"
-                    ? "bg-background text-foreground shadow-sm font-semibold"
-                    : "text-muted-foreground hover:text-foreground hover:bg-background/50"
-                }`}
-              >
-                <Search className="h-3.5 w-3.5" />
-                <span className="truncate w-full text-[11px]">Explore</span>
-              </button>
+            {/* Single continuous conversation */}
+            <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain bg-muted/40 px-3 py-4 sm:px-4">
+              <div className="space-y-4">
+              {/* Welcome message — always the first message */}
+              <BotBubble time={openedAt}>
+                <p className="font-semibold">Namaste! Welcome to {BRAND.name} 👋</p>
+                <p className="mt-1">I'm your travel assistant. How can I help you plan your next holiday?</p>
+              </BotBubble>
 
-              <button
-                type="button"
-                onClick={() => setActiveTab("estimator")}
-                className={`flex flex-col items-center justify-center gap-1 rounded-xl py-2 px-1 text-center transition-all ${
-                  activeTab === "estimator"
-                    ? "bg-background text-foreground shadow-sm font-semibold"
-                    : "text-muted-foreground hover:text-foreground hover:bg-background/50"
-                }`}
-              >
-                <Briefcase className="h-3.5 w-3.5" />
-                <span className="truncate w-full text-[11px]">Estimator</span>
-              </button>
+              {activeTab === "home" && (
+                <>
+                  <div className="space-y-2.5">
+                    {MAIN_ACTIONS.map((a) => {
+                      const dest = destinations.find((d) => d.slug === a.imageSlug) ?? destinations[0];
+                      const Icon = a.icon;
+                      return (
+                        <button
+                          key={a.tab}
+                          type="button"
+                          onClick={() => choose(a.tab, a.label)}
+                          className="group flex w-full items-stretch overflow-hidden rounded-2xl border border-border bg-card text-left shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
+                        >
+                          <img
+                            src={dest?.image}
+                            alt=""
+                            loading="lazy"
+                            className="h-[72px] w-24 shrink-0 object-cover sm:w-28"
+                          />
+                          <span className="flex min-w-0 flex-1 items-center gap-3 px-3">
+                            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-secondary text-primary">
+                              <Icon className="h-4 w-4" />
+                            </span>
+                            <span className="min-w-0 flex-1 text-sm font-semibold text-foreground">{a.label}</span>
+                            <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
 
-              <button
-                type="button"
-                onClick={() => setActiveTab("plan")}
-                className={`flex flex-col items-center justify-center gap-1 rounded-xl py-2 px-1 text-center transition-all ${
-                  activeTab === "plan"
-                    ? "bg-background text-foreground shadow-sm font-semibold"
-                    : "text-muted-foreground hover:text-foreground hover:bg-background/50"
-                }`}
-              >
-                <Sparkles className="h-3.5 w-3.5 text-gold" />
-                <span className="truncate w-full text-[11px]">Plan Trip</span>
-              </button>
-            </nav>
+                  <div>
+                    <p className="mb-2 px-1 text-xs font-semibold text-foreground">Quick Questions</p>
+                    <div className="flex flex-wrap gap-2">
+                      {QUICK_QUESTIONS.map((q) => (
+                        <button
+                          key={q.label}
+                          type="button"
+                          onClick={() => handleQuick(q.label)}
+                          className="min-h-9 rounded-full border border-border bg-card px-3.5 py-1.5 text-xs font-medium text-foreground shadow-sm transition-colors hover:border-primary hover:text-primary"
+                        >
+                          {q.label}
+                        </button>
+                      ))}
+                      <button
+                        type="button"
+                        onClick={() => choose("team", "Talk to our team")}
+                        className="min-h-9 rounded-full border border-primary/40 bg-secondary px-3.5 py-1.5 text-xs font-semibold text-primary shadow-sm transition-colors hover:bg-primary hover:text-primary-foreground"
+                      >
+                        Talk to Our Team
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
 
-            {/* Scrollable Main Content Area */}
-            <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-4 sm:p-5">
+              {activeTab !== "home" && (
+                <>
+                  <UserBubble time={chosenAt}>{chosenLabel}</UserBubble>
+                  <BotBubble time={chosenAt}>{BOT_INTROS[activeTab] ?? infoText}</BotBubble>
+                </>
+              )}
+
+              {activeTab === "info" && (
+                <div className="rounded-2xl border border-border bg-secondary/60 p-4 shadow-sm">
+                  <p className="font-serif text-lg text-foreground">{infoTitle}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">Our travel experts reply quickly on WhatsApp or by phone.</p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <Button asChild size="sm" className="rounded-full">
+                      <a href={waLink(`Hi Jain Tours, I'd like help with ${infoTitle}.`)} target="_blank" rel="noopener noreferrer">
+                        <MessageCircle className="mr-1.5 h-3.5 w-3.5" /> Ask on WhatsApp
+                      </a>
+                    </Button>
+                    <Button type="button" size="sm" variant="outline" className="rounded-full" onClick={() => choose("plan", "Plan my trip")}>
+                      Plan My Trip
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === "team" && (
+                <div className="space-y-2.5 rounded-2xl border border-border bg-card p-4 text-sm shadow-sm">
+                  <a href={`tel:${BRAND.phoneDigits}`} className="flex items-center gap-2.5 font-semibold text-foreground hover:text-primary">
+                    <Phone className="h-4 w-4 shrink-0 text-primary" /> {BRAND.phoneDisplay}
+                  </a>
+                  <a href={`mailto:${BRAND.email}`} className="flex items-center gap-2.5 break-all text-foreground hover:text-primary">
+                    <Mail className="h-4 w-4 shrink-0 text-primary" /> {BRAND.email}
+                  </a>
+                  <p className="flex items-start gap-2.5 text-muted-foreground">
+                    <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" /> {BRAND.address}
+                  </p>
+                  <div className="grid grid-cols-2 gap-2 pt-1">
+                    <Button asChild className="rounded-full">
+                      <a href={`tel:${BRAND.phoneDigits}`}><Phone className="mr-1.5 h-4 w-4" /> Call Now</a>
+                    </Button>
+                    <Button asChild variant="outline" className="rounded-full">
+                      <a href={waLink("Hi Jain Tours, I'd like to talk to your team.")} target="_blank" rel="noopener noreferrer">
+                        <MessageCircle className="mr-1.5 h-4 w-4" /> WhatsApp
+                      </a>
+                    </Button>
+                  </div>
+                </div>
+              )}
               {/* TAB 1: EXPLORE PACKAGES */}
               {activeTab === "explore" && (
                 <div className="space-y-4">
@@ -1617,18 +1798,55 @@ export const HolidayPlanner = () => {
                   )}
                 </div>
               )}
+
+              {activeTab !== "home" && (
+                <div className="flex justify-center pt-1">
+                  <button
+                    type="button"
+                    onClick={goHome}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-xs font-medium text-primary shadow-sm transition-colors hover:bg-secondary"
+                  >
+                    <RotateCcw className="h-3.5 w-3.5" />
+                    Back to Main Menu
+                  </button>
+                </div>
+              )}
+              </div>
             </div>
 
-            {/* Quiet Footer with Call Button */}
-            <footer className="shrink-0 flex items-center justify-between border-t border-border/60 bg-muted/20 px-4 py-2.5 text-xs text-muted-foreground">
-              <span className="truncate">Need urgent help? Call our Goregaon office</span>
+            {/* Composer */}
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleComposerSend();
+              }}
+              className="shrink-0 border-t border-border/60 bg-card px-3 pt-2.5 pb-1.5"
+            >
+              <div className="flex items-center gap-2">
+                <label htmlFor={composerId} className="sr-only">Type your message</label>
+                <input
+                  id={composerId}
+                  value={composerText}
+                  onChange={(e) => setComposerText(e.target.value)}
+                  placeholder="Type your message…"
+                  className="h-11 min-w-0 flex-1 rounded-full border border-border bg-muted/40 px-4 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring md:text-sm"
+                />
+                <button
+                  type="submit"
+                  aria-label="Send message"
+                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm transition-transform hover:scale-105"
+                >
+                  <Send className="h-4 w-4" />
+                </button>
+              </div>
               <a
                 href={`tel:${BRAND.phoneDigits}`}
-                className="font-semibold text-primary hover:underline shrink-0 ml-2"
+                className="mt-1.5 flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground hover:text-primary"
               >
-                {BRAND.phoneDisplay}
+                <Phone className="h-3 w-3" />
+                Need urgent help? Call our Goregaon office · <span className="font-semibold text-primary">{BRAND.phoneDisplay}</span>
               </a>
-            </footer>
+            </form>
           </section>
         </>
       )}
