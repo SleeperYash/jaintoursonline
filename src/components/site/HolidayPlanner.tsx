@@ -1617,18 +1617,55 @@ export const HolidayPlanner = () => {
                   )}
                 </div>
               )}
+
+              {activeTab !== "home" && (
+                <div className="flex justify-center pt-1">
+                  <button
+                    type="button"
+                    onClick={goHome}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-xs font-medium text-primary shadow-sm transition-colors hover:bg-secondary"
+                  >
+                    <RotateCcw className="h-3.5 w-3.5" />
+                    Back to Main Menu
+                  </button>
+                </div>
+              )}
+              </div>
             </div>
 
-            {/* Quiet Footer with Call Button */}
-            <footer className="shrink-0 flex items-center justify-between border-t border-border/60 bg-muted/20 px-4 py-2.5 text-xs text-muted-foreground">
-              <span className="truncate">Need urgent help? Call our Goregaon office</span>
+            {/* Composer */}
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleComposerSend();
+              }}
+              className="shrink-0 border-t border-border/60 bg-card px-3 pt-2.5 pb-1.5"
+            >
+              <div className="flex items-center gap-2">
+                <label htmlFor={composerId} className="sr-only">Type your message</label>
+                <input
+                  id={composerId}
+                  value={composerText}
+                  onChange={(e) => setComposerText(e.target.value)}
+                  placeholder="Type your message…"
+                  className="h-11 min-w-0 flex-1 rounded-full border border-border bg-muted/40 px-4 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring md:text-sm"
+                />
+                <button
+                  type="submit"
+                  aria-label="Send message"
+                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm transition-transform hover:scale-105"
+                >
+                  <Send className="h-4 w-4" />
+                </button>
+              </div>
               <a
                 href={`tel:${BRAND.phoneDigits}`}
-                className="font-semibold text-primary hover:underline shrink-0 ml-2"
+                className="mt-1.5 flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground hover:text-primary"
               >
-                {BRAND.phoneDisplay}
+                <Phone className="h-3 w-3" />
+                Need urgent help? Call our Goregaon office · <span className="font-semibold text-primary">{BRAND.phoneDisplay}</span>
               </a>
-            </footer>
+            </form>
           </section>
         </>
       )}
