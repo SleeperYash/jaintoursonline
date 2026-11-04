@@ -492,20 +492,21 @@ export const HolidayPlanner = () => {
             role="dialog"
             aria-modal="true"
             aria-labelledby="concierge-title"
-            className="fixed inset-x-0 bottom-0 z-[71] flex h-[min(94dvh,720px)] flex-col overflow-hidden rounded-t-2xl border border-border/80 bg-background/95 text-foreground shadow-2xl backdrop-blur-xl md:inset-x-auto md:right-6 md:bottom-20 md:h-[min(650px,calc(100dvh-100px))] md:w-[430px] md:rounded-2xl transition-all"
+            className="fixed inset-0 z-[71] flex h-[100dvh] w-full flex-col overflow-hidden bg-background text-foreground shadow-2xl pt-[env(safe-area-inset-top,0px)] pb-[env(safe-area-inset-bottom,0px)] md:inset-auto md:right-6 md:bottom-6 md:h-[min(720px,calc(100dvh-48px))] md:w-[460px] md:rounded-3xl md:border md:border-border md:pt-0 md:pb-0 animate-in fade-in slide-in-from-bottom-4 duration-200"
           >
             {/* Header Zone */}
-            <header className="flex shrink-0 items-center justify-between gap-3 border-b border-border/70 bg-gradient-to-r from-primary to-primary/90 px-4 py-3.5 text-primary-foreground">
+            <header className="flex shrink-0 items-center justify-between gap-3 bg-primary px-4 py-3 text-primary-foreground">
               <div className="flex items-center gap-2.5 min-w-0">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary-foreground/15 ring-1 ring-primary-foreground/20">
-                  <img src={robotImage} alt="" width={36} height={36} className="h-8 w-8 object-contain" />
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary-foreground ring-2 ring-primary-foreground/30">
+                  <img src={robotImage} alt="" width={40} height={40} className="h-9 w-9 object-contain" />
                 </div>
                 <div className="min-w-0">
                   <h2 id="concierge-title" className="font-serif text-lg leading-tight truncate">
                     {BRAND.name}
                   </h2>
-                  <p className="text-[11px] text-primary-foreground/80 truncate">
-                    Travel Concierge · Mumbai (Goregaon West)
+                  <p className="flex items-center gap-1.5 text-[11px] text-primary-foreground/80 truncate">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary-foreground" aria-hidden="true" />
+                    Travel Concierge · Online
                   </p>
                 </div>
               </div>
