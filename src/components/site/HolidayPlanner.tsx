@@ -2,7 +2,12 @@ import { useEffect, useId, useMemo, useRef, useState } from "react";
 import {
   ArrowRight,
   Briefcase,
+  Calculator,
   Check,
+  CheckCheck,
+  ChevronRight,
+  Compass,
+  Mail,
   Download,
   MapPin,
   MessageCircle,
@@ -23,7 +28,7 @@ import { destinations, type Destination } from "@/data/destinations";
 import { generateEstimatedPrice, formatINR, getEstimatedFlightPrice } from "@/lib/estimatedPrice";
 import robotImage from "@/assets/travel-assistant-robot.png";
 
-type ConciergeTab = "explore" | "estimator" | "plan";
+type ConciergeTab = "home" | "explore" | "estimator" | "plan" | "info" | "team";
 
 type LeadAnswers = {
   destination?: string;
@@ -86,9 +91,64 @@ const OdometerNumber = ({ value, duration = 850 }: { value: number; duration?: n
   );
 };
 
+const nowTime = () =>
+  new Date().toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit" });
+
+const BotBubble = ({ children, time }: { children: React.ReactNode; time?: string }) => (
+  <div className="flex items-end gap-2">
+    <div className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full border border-border bg-card">
+      <img src={robotImage} alt="" width={28} height={28} className="h-6 w-6 object-contain" />
+    </div>
+    <div className="max-w-[85%] rounded-2xl rounded-bl-sm border border-border bg-card px-3.5 py-2.5 text-sm leading-relaxed text-foreground shadow-sm">
+      {children}
+      {time && <p className="mt-1 text-right text-[10px] text-muted-foreground">{time}</p>}
+    </div>
+  </div>
+);
+
+const UserBubble = ({ children, time }: { children: React.ReactNode; time?: string }) => (
+  <div className="flex justify-end">
+    <div className="max-w-[85%] rounded-2xl rounded-br-sm bg-primary px-3.5 py-2 text-sm font-medium text-primary-foreground shadow-sm">
+      <span className="break-words">{children}</span>
+      {time && (
+        <span className="ml-2 inline-flex items-center gap-0.5 align-bottom text-[10px] text-primary-foreground/70">
+          {time} <CheckCheck className="h-3 w-3" />
+        </span>
+      )}
+    </div>
+  </div>
+);
+
+const MAIN_ACTIONS: { tab: ConciergeTab; label: string; icon: typeof Search; imageSlug: string }[] = [
+  { tab: "explore", label: "Explore Destinations & Packages", icon: Compass, imageSlug: "bali" },
+  { tab: "estimator", label: "Estimate My Trip", icon: Calculator, imageSlug: "kashmir" },
+  { tab: "plan", label: "Plan My Trip", icon: Briefcase, imageSlug: "dubai" },
+];
+
+const QUICK_QUESTIONS = [
+  { label: "Visa Services" },
+  { label: "International Packages" },
+  { label: "Group Tours" },
+  { label: "Flight Bookings" },
+];
+
+const BOT_INTROS: Partial<Record<ConciergeTab, string>> = {
+  explore: "Here are some of our popular destinations:",
+  estimator: "Please tell us your travel details to get an approximate cost.",
+  plan: "Tell us what kind of trip you have in mind.",
+  team: "We'd be happy to assist you! You can reach us at:",
+};
+
 export const HolidayPlanner = () => {
   const [open, setOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<ConciergeTab>("explore");
+  const [activeTab, setActiveTab] = useState<ConciergeTab>("home");
+  const [chosenLabel, setChosenLabel] = useState("");
+  const [chosenAt, setChosenAt] = useState("");
+  const [openedAt, setOpenedAt] = useState("");
+  const [infoTitle, setInfoTitle] = useState("");
+  const [infoText, setInfoText] = useState("");
+  const [composerText, setComposerText] = useState("");
+  const composerId = useId();
   const [showInvitation, setShowInvitation] = useState(false);
 
   // Explore tab state
@@ -153,10 +213,65 @@ export const HolidayPlanner = () => {
     }
   };
 
-  const openPlanner = (tab: ConciergeTab = "explore") => {
+  const openPlanner = (tab: ConciergeTab = "home") => {
     dismissInvitation();
     setActiveTab(tab);
+    setOpenedAt(nowTime());
     setOpen(true);
+  };
+
+  const choose = (tab: ConciergeTab, label: string) => {
+    setChosenLabel(label);
+    setChosenAt(nowTime());
+    setActiveTab(tab);
+    requestAnimationFrame(() => scrollRef.current?.scrollTo({ top: 0, behavior: "smooth" }));
+  };
+
+  const goHome = () => {
+    setActiveTab("home");
+    requestAnimationFrame(() => scrollRef.current?.scrollTo({ top: 0, behavior: "smooth" }));
+  };
+
+  const showInfo = (label: string, title: string, text: string) => {
+    setInfoTitle(title);
+    setInfoText(text);
+    choose("info", label);
+  };
+
+  const handleQuick = (label: string) => {
+    if (label === "Visa Services") {
+      showInfo("Do you provide visa services?", "Visa Services", "Yes! We provide visa assistance for popular destinations including Schengen, Dubai, USA, UK and more.");
+    } else if (label === "International Packages") {
+      setRegionFilter("International");
+      setSearchQuery("");
+      choose("explore", "International packages");
+    } else if (label === "Group Tours") {
+      setAnswers((prev) => ({ ...prev, party: "Group" }));
+      choose("plan", "Group tours");
+    } else if (label === "Flight Bookings") {
+      showInfo("Do you book flights?", "Flight Bookings", "Yes! We book domestic and international flights alongside your holiday package.");
+    }
+  };
+
+  // Simple keyword routing — no AI, no extra cost
+  const handleComposerSend = () => {
+    const text = composerText.trim();
+    if (!text) return;
+    setComposerText("");
+    const t = text.toLowerCase();
+    if (/visa/.test(t)) return handleQuick("Visa Services");
+    if (/flight|ticket/.test(t)) return handleQuick("Flight Bookings");
+    if (/group/.test(t)) return handleQuick("Group Tours");
+    if (/cost|price|budget|estimat/.test(t)) return choose("estimator", text);
+    if (/plan|honeymoon|family|trip/.test(t)) return choose("plan", text);
+    if (/call|talk|contact|team|human|agent/.test(t)) return choose("team", text);
+    const match = destinations.find((d) => t.includes(d.name.toLowerCase()));
+    if (match || /package|destination|tour|explore/.test(t)) {
+      setRegionFilter("All");
+      setSearchQuery(match ? match.name : "");
+      return choose("explore", text);
+    }
+    choose("team", text);
   };
 
   // Keyboard accessibility
