@@ -240,15 +240,15 @@ export const ItineraryEditorDrawer = ({
         if (itin.destination) setCurrentDestName(itin.destination);
 
         setTitle(itin.title || "");
-        setDuration(itin.duration || parsedData.duration || "");
-        setStartingPrice(itin.starting_price || parsedData.starting_price || "");
-        setOverview(itin.overview || parsedData.overview || "");
+        setDuration(itin.duration || String(parsedData.duration ?? ""));
+        setStartingPrice(itin.starting_price || String(parsedData.starting_price ?? ""));
+        setOverview(itin.overview || String(parsedData.overview ?? ""));
         setHighlights(highlightsList);
         setDays(finalDays);
         setHotels(finalHotels);
         setInclusions(finalInclusions);
         setExclusions(finalExclusions);
-        setTermsConditions(itin.terms_conditions || parsedData.terms_conditions || "");
+        setTermsConditions(itin.terms_conditions || String(parsedData.terms_conditions ?? ""));
         setDayImages((imagesRes.data ?? []) as DayImageRecord[]);
       } catch (err) {
         if (!cancelled) {
