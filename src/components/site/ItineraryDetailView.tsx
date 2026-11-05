@@ -88,6 +88,7 @@ const ItineraryDetailView = ({
   priceOverride,
   onEnquire,
   onDownload,
+  pdfUrl,
 }: Props) => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
